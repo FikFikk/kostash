@@ -37,9 +37,9 @@
             </ul>
 
             <div class="">
-                <a href="auth-signin-basic.html" class="btn btn-link fw-medium text-decoration-none text-dark">Sign
+                <a href="{{ route('auth.login') }}" class="btn btn-link fw-medium text-decoration-none text-dark">Sign
                     in</a>
-                <a href="auth-signup-basic.html" class="btn btn-primary">Sign Up</a>
+                <a href="{{ route('auth.register') }}" class="btn btn-primary">Sign Up</a>
             </div>
         </div>
 

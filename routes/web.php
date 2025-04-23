@@ -13,6 +13,7 @@ Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(f
         Route::get('login', 'login')->name('login');
         Route::post('login', 'login_process')->name('login.process');
         Route::get('register', 'register')->name('register');
+        Route::post('register', 'register_process')->name('register.process');
 
     });
 

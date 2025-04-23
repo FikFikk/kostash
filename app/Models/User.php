@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    use \Fahriztx\ModelUuid\Uuid;
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -20,7 +22,15 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'photo',
+        'phone',
+        'nik',
+        'alamat',
+        'tanggal_masuk',
+        'room_id',
+        'role',
         'password',
+        'catatan'
     ];
 
     /**

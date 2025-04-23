@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -34,6 +35,24 @@ class AuthController extends Controller
         }
 
         return redirect(route('auth.login'))->withInput()->with('error', 'Email atau password salah!');
+    }
+
+    public function register_process(Request $request)
+    {
+        // dd($request->all());
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6', // |confirmed Pastikan ada kolom password_confirmation di form jika menggunakan 'confirmed'
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+
+        return redirect()->route('auth.login')->with('success', 'Registration successful! You can now log in.');
     }
 
     public function logout_process(Request $request)

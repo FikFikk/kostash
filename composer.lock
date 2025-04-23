@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "88970a0117c062eed55fa8728fc43833",
+    "content-hash": "82945de71e7c7552a49feffea514acaa",
     "packages": [
         {
             "name": "brick/math",
@@ -509,6 +509,46 @@
                 }
             ],
             "time": "2025-03-06T22:45:56+00:00"
+        },
+        {
+            "name": "fahriztx/model-uuid",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FAHRIZTX/ModelUuid.git",
+                "reference": "baa5ecc57423bf1a80631589d35e5f109fa6cc66"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FAHRIZTX/ModelUuid/zipball/baa5ecc57423bf1a80631589d35e5f109fa6cc66",
+                "reference": "baa5ecc57423bf1a80631589d35e5f109fa6cc66",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": ">=10.10"
+            },
+            "type": "laravel-package",
+            "autoload": {
+                "psr-4": {
+                    "Fahriztx\\ModelUuid\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Muhammad Fahri",
+                    "email": "mfahri.dev@gmail.com"
+                }
+            ],
+            "description": "A Laravel Package to handle Primary Key using UUID",
+            "support": {
+                "issues": "https://github.com/FAHRIZTX/ModelUuid/issues",
+                "source": "https://github.com/FAHRIZTX/ModelUuid/tree/v1.0.1"
+            },
+            "time": "2025-03-09T19:02:43+00:00"
         },
         {
             "name": "fruitcake/php-cors",

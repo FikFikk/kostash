@@ -29,6 +29,9 @@ class User extends Authenticatable
         'tanggal_masuk',
         'room_id',
         'role',
+        'provider',
+        'provider_id',
+        'provider_token',
         'password',
         'catatan'
     ];

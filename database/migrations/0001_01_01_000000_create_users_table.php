@@ -23,6 +23,9 @@ return new class extends Migration
             $table->foreignUuid('room_id')->nullable(); 
             $table->enum('role', ['superadmin', 'tenants'])->default('tenants');
             $table->string('password');
+            $table->string('provider')->nullable();
+            $table->string('provider_id')->nullable();
+            $table->text('provider_token')->nullable();
             $table->text('catatan')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();

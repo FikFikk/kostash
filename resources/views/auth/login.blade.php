@@ -31,11 +31,11 @@
 								<p class="text-muted">Sign in to continue to KostASH</p>
 							</div>
 							<div class="p-2 mt-4">
-								<form action="index.html">
-	
+								<form action="{{ route('auth.login.process') }}" method="POST">
+									@csrf
 									<div class="mb-3">
-										<label for="username" class="form-label">Username</label>
-										<input type="text" class="form-control" id="username" placeholder="Enter username">
+										<label for="email" class="form-label">Email</label>
+										<input type="text" class="form-control" name="email" id="email" placeholder="Enter email">
 									</div>
 			
 									<div class="mb-3">
@@ -44,7 +44,7 @@
 										</div>
 										<label class="form-label" for="password-input">Password</label>
 										<div class="position-relative auth-pass-inputgroup mb-3">
-											<input type="password" class="form-control pe-5" placeholder="Enter password" id="password-input">
+											<input type="password" class="form-control pe-5" name="password" placeholder="Enter password" id="password-input">
 											<button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted" type="button" id="password-addon"><i class="ri-eye-fill align-middle"></i></button>
 										</div>
 									</div>

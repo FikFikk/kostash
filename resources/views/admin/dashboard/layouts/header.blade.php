@@ -1,3 +1,10 @@
+@php
+    $user = auth()->user();
+    $name = $user->name ?? 'Tuan';
+    $role = $user->role ?? 'Pengguna';
+    $avatar = $user->photo ?? 'assets/dashboard/images/users/avatar-1.jpg';
+@endphp
+
 <header id="page-topbar">
     <div class="layout-width">
         <div class="navbar-header">
@@ -468,17 +475,19 @@
                     <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         <span class="d-flex align-items-center">
-                            <img class="rounded-circle header-profile-user" src="{{ asset('assets/dashboard/images/users/avatar-1.jpg') }}"
-                                alt="Header Avatar">
+                            <img class="rounded-circle header-profile-user"
+                                src="{{ asset($avatar) }}"
+                                onerror="this.onerror=null;this.src='{{ asset('assets/dashboard/images/users/avatar-1.jpg') }}';"
+                                alt="User Avatar">
                             <span class="text-start ms-xl-2">
-                                <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">Anna Adame</span>
-                                <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">Founder</span>
+                                <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $name }}</span>
+                                <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">{{ ucfirst($role) }}</span>
                             </span>
                         </span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
                         <!-- item-->
-                        <h6 class="dropdown-header">Welcome Anna!</h6>
+                        <h6 class="dropdown-header">Selamat datang, {{ auth()->user()->name ?? 'Tuan' }}!</h6>
                         <a class="dropdown-item" href="pages-profile.html"><i
                                 class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle">Profile</span></a>

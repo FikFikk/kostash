@@ -28,7 +28,7 @@
                     <div class="col-12">
                         <div class="d-flex align-items-lg-center flex-lg-row flex-column">
                             <div class="flex-grow-1">
-                                <h4 class="fs-16 mb-1">Good Morning, Anna!</h4>
+                                <h4 class="fs-16 mb-1" id="greeting-text">Selamat datang!</h4>
                                 <p class="text-muted mb-0">Here's what's happening with your store
                                     today.</p>
                             </div>
@@ -1515,4 +1515,31 @@
     </div>
 
 </div>
+@endsection
+
+@section('script')
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Waktu berdasarkan GMT+7
+        const now = new Date();
+        const gmtOffset = 7 * 60; // dalam menit
+        const localTime = new Date(now.getTime() + (gmtOffset + now.getTimezoneOffset()) * 60000);
+        const hour = localTime.getHours();
+
+        let greeting = "Selamat Pagi";
+        if (hour >= 11 && hour < 15) {
+            greeting = "Selamat Siang";
+        } else if (hour >= 15 && hour < 18) {
+            greeting = "Selamat Sore";
+        } else if (hour >= 18 || hour < 4) {
+            greeting = "Selamat Malam";
+        }
+
+        // Nama user dari backend (bisa null)
+        const userName = @json(auth()->user()->name ?? 'Tuan');
+
+        // Ubah isi elemen sapaan
+        document.getElementById("greeting-text").innerText = `${greeting}, ${userName}!`;
+    });
+</script>
 @endsection

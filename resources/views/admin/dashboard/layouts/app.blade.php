@@ -9,7 +9,7 @@
         <meta name="kaywords" content="KostASH" />
         <meta name="author" content="KostASH.id" />
         <!-- App favicon -->
-        <link rel="shortcut icon" href="{{ asset('assets/dashboard/images/favicon.ico') }}">
+        <link rel="shortcut icon" href="{{ asset('assets/images/k-logo.png') }}">
         
         <!-- jsvectormap css -->
         <link href="{{ asset('assets/dashboard/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
@@ -42,6 +42,7 @@
                 @include('admin.dashboard.layouts.footer')
             </div>
         </div>
+        @yield('script')
 
         <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
             <i class="ri-arrow-up-line"></i>

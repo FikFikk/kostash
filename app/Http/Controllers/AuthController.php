@@ -30,8 +30,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // return redirect()->intended(route('dashboard.home'));
-            return redirect()->intended(route('auth.register')); //testing
+            return redirect()->intended(route('dashboard.home'));
         }
 
         return redirect(route('auth.login'))->withInput()->with('error', 'Email atau password salah!');

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\SocialAuthController;
 use Illuminate\Support\Facades\Route;
@@ -23,5 +24,15 @@ Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(f
 
     Route::middleware('auth')->group(function () {
         Route::get('logout', 'logout_process')->name('logout');
+    });
+});
+
+Route::middleware('auth')->group(function () {
+    Route::name('dashboard.')->prefix('dashboard')->group(function () {
+        Route::controller(DashboardController::class)->group(function () {
+            Route::get('/', 'index')->name('home');
+        });
+
+        
     });
 });

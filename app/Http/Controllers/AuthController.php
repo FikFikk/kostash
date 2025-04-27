@@ -29,8 +29,14 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-
-            return redirect()->intended(route('dashboard.home'));
+        
+            $user = Auth::user();
+            
+            if ($user->role === 'admin') {
+                return redirect()->intended(route('dashboard.home'));
+            } else {
+                return redirect()->intended(route('public.home'));
+            }
         }
 
         return redirect(route('auth.login'))->withInput()->with('error', 'Email atau password salah!');

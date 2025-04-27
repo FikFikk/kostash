@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Exception;
 
 class SocialAuthController extends Controller
@@ -43,13 +45,17 @@ class SocialAuthController extends Controller
                     // 'provider' => $provider,
                     'provider_id' => $googleUser->id,
                     'provider_token' => $googleUser->token,
-                    'password' => encrypt('qwerty123'),
+                    'password' => Hash::make(Str::random(40)),
                 ]
             );
 
             Auth::login($user);
             
-            return redirect()->route('public.home'); // Menggunakan named route
+            if ($user->role === 'admin') {
+                return redirect()->route('dashboard.home');
+            } else {
+                return redirect()->route('public.home');
+            }
 
         } catch (Exception $e) {
             // Log error jika diperlukan

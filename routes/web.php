@@ -25,6 +25,10 @@ Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(f
     Route::middleware('auth')->group(function () {
         Route::get('logout', 'logout_process')->name('logout');
     });
+
+    Route::get('logout-page', function () {
+        return view('auth.logout');
+    })->name('logout.page');
 });
 
 Route::middleware('auth')->group(function () {

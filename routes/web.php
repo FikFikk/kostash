@@ -13,6 +13,10 @@ Route::controller(PublicController::class)->name('public.')->group(function () {
 Route::get('auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
 
+Route::get('/error-500', function () {
+    abort(404);
+});
+
 Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('login', 'login')->name('login');

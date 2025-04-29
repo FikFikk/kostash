@@ -3,12 +3,19 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\RoomController;
 use App\Http\Controllers\SocialAuthController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Redirect;
 
 Route::controller(PublicController::class)->name('public.')->group(function () {
     Route::get('/', 'index')->name('home');
 });
+
+// Alias route 'login' supaya tidak error
+Route::get('login', function () {
+    return Redirect::route('auth.login');
+})->name('login');
 
 Route::get('auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
@@ -37,6 +44,13 @@ Route::middleware('auth')->group(function () {
             Route::get('/', 'index')->name('home');
         });
 
-        
+    });
+    Route::name('room.')->prefix('room')->group(function () {
+        Route::controller(RoomController::class)->group(function () {
+            Route::get('/', 'index')->name('home');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+        });
+
     });
 });

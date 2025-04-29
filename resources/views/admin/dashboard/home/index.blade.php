@@ -1008,7 +1008,7 @@
 
         </div> <!-- end col -->
 
-        <div class="col-auto layout-rightside-col">
+        <!-- <div class="col-auto layout-rightside-col">
             <div class="overlay"></div>
             <div class="layout-rightside">
                 <div class="card h-100 rounded-0">
@@ -1212,7 +1212,7 @@
                         </div>
                         <div class="p-3">
                             <h6 class="text-muted mb-3 text-uppercase fw-semibold">Products Reviews</h6>
-                            <!-- Swiper -->
+                            
                             <div class="swiper vertical-swiper" style="height: 250px;">
                                 <div class="swiper-wrapper">
                                     <div class="swiper-slide">
@@ -1396,7 +1396,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- end row -->
 
                                 <div class="row align-items-center g-2">
                                     <div class="col-auto">
@@ -1419,7 +1418,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- end row -->
+                                
 
                                 <div class="row align-items-center g-2">
                                     <div class="col-auto">
@@ -1442,7 +1441,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- end row -->
+                                
 
                                 <div class="row align-items-center g-2">
                                     <div class="col-auto">
@@ -1466,7 +1465,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- end row -->
+                                
 
                                 <div class="row align-items-center g-2">
                                     <div class="col-auto">
@@ -1488,7 +1487,7 @@
                                             <h6 class="mb-0 text-muted">408</h6>
                                         </div>
                                     </div>
-                                </div><!-- end row -->
+                                </div>
                             </div>
                         </div>
 
@@ -1508,10 +1507,10 @@
                         </div>
 
                     </div>
-                </div> <!-- end card-->
-            </div> <!-- end .rightbar-->
+                </div> 
+            </div> 
 
-        </div> <!-- end col -->
+        </div>  -->
     </div>
 
 </div>

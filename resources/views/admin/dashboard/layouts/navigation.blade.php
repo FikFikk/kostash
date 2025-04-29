@@ -38,8 +38,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="">
-                        <i class="ri-honour-line"></i> <span data-key="t-widgets">Plan</span>
+                    <a class="nav-link menu-link" href="{{ route('room.home') }}">
+                        <i class="ri-home-4-line"></i> <span data-key="t-room">Room</span>
                     </a>
                 </li>
 

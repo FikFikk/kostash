@@ -36,6 +36,11 @@ class User extends Authenticatable
         'catatan'
     ];
 
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

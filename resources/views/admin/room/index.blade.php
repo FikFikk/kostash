@@ -102,8 +102,8 @@
                                     </td>
 
                                     <td>
-                                        <a href="" class="btn btn-warning btn-sm">Edit</a>
-                                        <form action="" method="POST" style="display:inline-block;">
+                                        <a href="{{ route('room.edit', $room->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                        <form action="{{ route('room.destroy', $room->id) }}" method="POST" style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-sm">

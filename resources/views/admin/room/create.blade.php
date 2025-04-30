@@ -74,20 +74,6 @@
 @endsection
 
 @section('script')
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize FilePond
-        FilePond.registerPlugin(FilePondPluginImagePreview);
-        const inputElements = document.querySelectorAll('input.filepond');
-        FilePond.create(inputElements);
-    });
-
-    function removeRoomImage() {
-        // Your logic to remove the room image
-        updateFilePond(); // Call to reinitialize FilePond
-    }
-</script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const facilitiesInput = document.getElementById('facilities');

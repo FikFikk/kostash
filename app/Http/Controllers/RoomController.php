@@ -11,12 +11,12 @@ class RoomController extends Controller
     public function index()
     {
         $rooms = Room::with('user')->orderBy('created_at', 'asc')->paginate(10);
-        return view('admin.room.index', compact('rooms'));
+        return view('admin.dashboard.room.index', compact('rooms'));
     }
 
     public function create()
     {
-        return view('admin.room.create');
+        return view('admin.dashboard.room.create');
     }
 
     public function store(Request $request)
@@ -37,7 +37,7 @@ class RoomController extends Controller
     public function edit($id)
     {
         $room = Room::findOrFail($id);
-        return view('admin.room.edit', compact('room'));
+        return view('admin.dashboard.room.edit', compact('room'));
     }
 
     public function update(Request $request, $id)

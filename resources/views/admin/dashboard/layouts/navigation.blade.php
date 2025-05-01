@@ -38,9 +38,20 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('room.home') }}">
-                        <i class="ri-home-4-line"></i> <span data-key="t-room">Room</span>
+                    <a class="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarAuth">
+                        <i class="bx bxs-data"></i> <span data-key="t-authentication">Master Data</span>
                     </a>
+                    <div class="collapse menu-dropdown" id="sidebarAuth">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ route('room.home') }}" class="nav-link" data-key="t-room"> Room </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('room.home') }}" class="nav-link" data-key="t-room"> Global Setting </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
 
                 <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Template</span></li>

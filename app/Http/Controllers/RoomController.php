@@ -85,6 +85,9 @@ class RoomController extends Controller
             'description' => 'nullable|string',
             'status'      => 'required|in:available,occupied',
             'facilities'  => 'nullable|array',
+        ], [
+            'image.max' => 'Ukuran gambar maksimal 2MB.',
+            'image.image' => 'File yang diunggah harus berupa gambar (jpg, png, dll).',
         ]);
     }
 

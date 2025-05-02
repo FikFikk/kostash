@@ -89,5 +89,17 @@
         <script src="{{ asset('assets/dashboard/js/pages/form-file-upload.init.js') }}"></script>
         
         <script src="{{ asset('assets/dashboard/js/app.js') }}"></script>
+        <script>
+        function validateFileSize(input) {
+            const maxSize = 2 * 1024 * 1024; // 2MB
+            const errorEl = document.getElementById('image-error');
+            if (input.files[0] && input.files[0].size > maxSize) {
+                errorEl.textContent = 'Ukuran gambar tidak boleh lebih dari 2MB.';
+                input.value = ''; // reset file input
+            } else {
+                errorEl.textContent = '';
+            }
+        }
+        </script>
     </body>
 </html>

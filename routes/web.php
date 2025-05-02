@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/edit/{id}', 'edit')->name('edit');
             Route::put('/update/{id}', 'update')->name('update');
             Route::delete('/destroy/{room}', 'destroy')->name('destroy');
+            Route::post('/rooms/temp-upload', [RoomController::class, 'tempUpload'])->name('upload');
         });
 
     });

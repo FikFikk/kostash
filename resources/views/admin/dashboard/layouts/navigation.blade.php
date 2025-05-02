@@ -48,7 +48,7 @@
                                 <a href="{{ route('room.home') }}" class="nav-link" data-key="t-room"> Room </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('global.home') }}" class="nav-link" data-key="t-room"> Global Setting </a>
+                                <a href="{{ route('room.home') }}" class="nav-link" data-key="t-room"> Global Setting </a>
                             </li>
                         </ul>
                     </div>

@@ -31,7 +31,8 @@
 
                     <div class="mb-3">
                         <label for="image" class="form-label">Room Image</label>
-                        <input type="file" class="form-control" name="image" id="image">
+                        <input type="file" name="image" accept="image/*" onchange="validateFileSize(this)">
+                        <br><small id="image-error" style="color:red;"></small>
                         @if ($room->image)
                             <div class="mt-2">
                                 <small>Current image:</small><br>

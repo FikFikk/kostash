@@ -7,59 +7,30 @@ use Illuminate\Http\Request;
 
 class GlobalSettingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $global = GlobalSetting::first();
+        return view('admin.dashboard.global.index', compact('global'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function edit($id)
     {
-        //
+        $global = GlobalSetting::findOrFail($id);
+        return view('admin.dashboard.global.edit', compact('global'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function update(Request $request, $id)
     {
-        //
-    }
+        $global = GlobalSetting::findOrFail($id);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(GlobalSetting $globalSetting)
-    {
-        //
-    }
+        $validated = $request->validate([
+            'monthly_room_price' => 'required|integer|min:0',
+            'water_price' => 'required|integer|min:0',
+            'electric_price' => 'required|integer|min:0',
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(GlobalSetting $globalSetting)
-    {
-        //
-    }
+        $global->update($validated);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, GlobalSetting $globalSetting)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(GlobalSetting $globalSetting)
-    {
-        //
+        return redirect()->route('global.index')->with('success', 'Global settings updated successfully.');
     }
 }

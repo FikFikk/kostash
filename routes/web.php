@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GlobalSettingController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\SocialAuthController;
@@ -45,6 +46,7 @@ Route::middleware('auth')->group(function () {
         });
 
     });
+
     Route::name('room.')->prefix('room')->group(function () {
         Route::controller(RoomController::class)->group(function () {
             Route::get('/', 'index')->name('home');
@@ -54,6 +56,15 @@ Route::middleware('auth')->group(function () {
             Route::put('/update/{id}', 'update')->name('update');
             Route::delete('/destroy/{room}', 'destroy')->name('destroy');
             Route::post('/rooms/temp-upload', [RoomController::class, 'tempUpload'])->name('upload');
+        });
+
+    });
+
+    Route::name('global.')->prefix('global')->group(function () {
+        Route::controller(GlobalSettingController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::put('/update/{id}', 'update')->name('update');
         });
 
     });

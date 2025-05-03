@@ -31,6 +31,7 @@
                                 <th scope="col">Photo</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Facilities</th>
+                                <th scope="col">Tenants</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -100,7 +101,14 @@
                                         @endforeach
                                         </div>
                                     </td>
-
+                                    <td>
+                                        @if($room->user)
+                                            <span class="text-primary">{{ $room->user->name }}</span><br>
+                                            <small class="text-muted">{{ $room->user->email }}</small>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
                                     <td>
                                         <a href="{{ route('room.edit', $room->id) }}" class="btn btn-warning btn-sm">Edit</a>
                                         <form action="{{ route('room.destroy', $room->id) }}" method="POST" style="display:inline-block;">

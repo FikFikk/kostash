@@ -6,6 +6,7 @@ use App\Http\Controllers\GlobalSettingController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\SocialAuthController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
 
@@ -67,5 +68,11 @@ Route::middleware('auth')->group(function () {
             Route::put('/update/{id}', 'update')->name('update');
         });
 
+    });
+
+    Route::name('user.')->prefix('user')->group(function () {
+        Route::controller(UserController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+        });
     });
 });

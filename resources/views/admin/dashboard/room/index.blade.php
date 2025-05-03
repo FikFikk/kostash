@@ -89,9 +89,11 @@
                                         </div>
                                     </td>
 
-                                    <td class="{{ $room->status == 'available' ? 'text-success' : 'text-danger' }}">
-                                        <i class="ri-checkbox-circle-line fs-17 align-middle"></i> {{ ucfirst($room->status) }}
+                                    <td class="{{ $room->user ? 'text-danger' : 'text-success' }}">
+                                        <i class="ri-checkbox-circle-line fs-17 align-middle"></i> 
+                                        {{ $room->user ? 'Terisi' : 'Available' }}
                                     </td>
+
                                     <td>
                                         <div class="d-flex flex-wrap gap-2">
                                         @foreach(json_decode($room->facilities ?? '[]') as $facility)

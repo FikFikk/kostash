@@ -66,26 +66,20 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mx-auto mt-2 mt-lg-0" id="navbar-example">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#hero">Home</a>
+                    <a class="nav-link active" href="#hero">Beranda</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#services">Services</a>
+                    <a class="nav-link" href="#services">Layanan</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#features">Features</a>
+                    <a class="nav-link" href="#gallery">Galeri</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#plans">Plans</a>
+                    <a class="nav-link" href="#lokasi">Lokasi</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#reviews">Reviews</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#team">Team</a>
-                </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link" href="#contact">Contact</a>
-                </li>
+                </li> -->
             </ul>
 
             <div class="">

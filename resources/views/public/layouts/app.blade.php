@@ -13,7 +13,10 @@
     <link rel="shortcut icon" href="{{ asset('assets/images/k-logo.png') }}">
 
     <!-- Layout config Js -->
-    <script src="{{ asset('assets/js/layout.js') }}"></script>
+    <script src="{{ asset('assets/dashborad/js/layout.js') }}"></script>
+
+    <!-- glightbox css -->
+    <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/glightbox/css/glightbox.min.css') }}">
 
     <!-- CSS Assets -->
     <link href="{{ asset('assets/dashboard/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
@@ -53,8 +56,18 @@
     <script src="{{ asset('assets/dashboard/js/plugins.js') }}"></script>
     <script src="{{ asset('assets/dashboard/libs/swiper/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('assets/dashboard/js/pages/landing.init.js') }}"></script>
+    <script src="{{ asset('assets/dashboard/js/pages/swiper.init.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <!-- glightbox js -->
+    <script src="{{ asset('assets/dashboard/libs/glightbox/js/glightbox.min.js') }}"></script>
+
+    <!-- isotope-layout -->
+    <script src="{{ asset('assets/dashboard/libs/isotope-layout/isotope.pkgd.min.js') }}"></script>
+
+    <script src="{{ asset('assets/dashboard/js/pages/gallery.init.js') }}"></script>
+
     <script src="{{ asset('assets/dashboard/js/app.js') }}"></script>
 </body>
 

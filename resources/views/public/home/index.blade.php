@@ -13,13 +13,14 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-8 col-sm-10">
                         <div class="text-center mt-lg-5 pt-5">
-                            <h1 class="display-6 fw-semibold mb-3 lh-base">Kos asik, Bayar tinggal klik! di <span
+                            <!-- <h1 class="display-6 fw-semibold mb-3 lh-base">Kos asik, Bayar tinggal klik! di <span -->
+                            <h1 class="display-6 fw-semibold mb-3 lh-base">Kos asik, Nyaman & Praktis di <span
                                     class="text-success">KostASH </span></h1>
-                            <p class="lead text-muted lh-base">Velzon is a fully responsive, multipurpose and premium Bootstrap 5 Admin & Dashboard Template built in multiple frameworks.</p>
+                            <p class="lead text-muted lh-base">KostASH adalah hunian kost yang nyaman dan strategis, cocok untuk pelajar, mahasiswa, dan pekerja. Dapatkan informasi lengkap tentang ketersediaan kamar, fasilitas, dan lokasi hanya dalam sekali klik.</p>
 
                             <div class="d-flex gap-2 justify-content-center mt-4">
-                                <a href="auth-signup-basic.html" class="btn btn-primary">Get Started <i class="ri-arrow-right-line align-middle ms-1"></i></a>
-                                <a href="pages-pricing.html" class="btn btn-danger">View Plans <i class="ri-eye-line align-middle ms-1"></i></a>
+                                <a href="#gallery" class="btn btn-primary">Lihat Kamar <i class="ri-arrow-right-line align-middle ms-1"></i></a>
+                                <a href="#services" class="btn btn-danger">Cek Layanan <i class="ri-eye-line align-middle ms-1"></i></a>
                             </div>
                         </div>
 
@@ -32,26 +33,14 @@
                             </div>
                             <div class="carousel slide carousel-fade" data-bs-ride="carousel">
                                 <div class="carousel-inner shadow-lg p-2 bg-white rounded">
-                                    <div class="carousel-item active" data-bs-interval="2000">
-                                        <img src="{{ asset('assets/dashboard/images/demos/default.png') }}" class="d-block w-100" alt="...">
+                                    <div class="carousel-item active" data-bs-interval="3000">
+                                        <img src="{{ asset('assets/images/image-lp.jpg') }}" class="d-block w-100" alt="...">
                                     </div>
-                                    <div class="carousel-item" data-bs-interval="2000">
-                                        <img src="{{ asset('assets/dashboard/images/demos/saas.png') }}" class="d-block w-100" alt="...">
+                                    <div class="carousel-item" data-bs-interval="3000">
+                                        <img src="{{ asset('assets/images/image-lp2.jpg') }}" class="d-block w-100" alt="...">
                                     </div>
-                                    <div class="carousel-item" data-bs-interval="2000">
-                                        <img src="{{ asset('assets/dashboard/images/demos/material.png') }}" class="d-block w-100" alt="...">
-                                    </div>
-                                    <div class="carousel-item" data-bs-interval="2000">
-                                        <img src="{{ asset('assets/dashboard/images/demos/minimal.png') }}" class="d-block w-100" alt="...">
-                                    </div>
-                                    <div class="carousel-item" data-bs-interval="2000">
-                                        <img src="{{ asset('assets/dashboard/images/demos/creative.png') }}" class="d-block w-100" alt="...">
-                                    </div>
-                                    <div class="carousel-item" data-bs-interval="2000">
-                                        <img src="{{ asset('assets/dashboard/images/demos/modern.png') }}" class="d-block w-100" alt="...">
-                                    </div>
-                                    <div class="carousel-item" data-bs-interval="2000">
-                                        <img src="{{ asset('assets/dashboard/images/demos/interactive.png') }}" class="d-block w-100" alt="...">
+                                    <div class="carousel-item" data-bs-interval="3000">
+                                        <img src="{{ asset('assets/images/image-lp3.jpg') }}" class="d-block w-100" alt="...">
                                     </div>
                                 </div>
                             </div>
@@ -74,80 +63,17 @@
         </section>
         <!-- end hero section -->
 
-        <!-- start client section -->
-        <div class="pt-5 mt-5">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-
-                        <div class="text-center mt-5">
-                            <h5 class="fs-20">Trusted <span class="text-primary text-decoration-underline">by</span> the world's best</h5>
-
-                            <!-- Swiper -->
-                            <div class="swiper trusted-client-slider mt-sm-5 mt-4 mb-sm-5 mb-4" dir="ltr">
-                                <div class="swiper-wrapper">
-                                    <div class="swiper-slide">
-                                        <div class="client-images">
-                                            <img src="{{ asset('assets/dashboard/images/clients/amazon.svg') }}" alt="client-img"
-                                                class="mx-auto img-fluid d-block">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide">
-                                        <div class="client-images">
-                                            <img src="{{ asset('assets/dashboard/images/clients/walmart.svg') }}" alt="client-img"
-                                                class="mx-auto img-fluid d-block">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide">
-                                        <div class="client-images">
-                                            <img src="{{ asset('assets/dashboard/images/clients/lenovo.svg') }}" alt="client-img"
-                                                class="mx-auto img-fluid d-block">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide">
-                                        <div class="client-images">
-                                            <img src="{{ asset('assets/dashboard/images/clients/paypal.svg') }}" alt="client-img"
-                                                class="mx-auto img-fluid d-block">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide">
-                                        <div class="client-images">
-                                            <img src="{{ asset('assets/dashboard/images/clients/shopify.svg') }}" alt="client-img"
-                                                class="mx-auto img-fluid d-block">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide">
-                                        <div class="client-images">
-                                            <img src="{{ asset('assets/dashboard/images/clients/verizon.svg') }}" alt="client-img"
-                                                class="mx-auto img-fluid d-block">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                <!-- end row -->
-            </div>
-            <!-- end container -->
-        </div>
-        <!-- end client section -->
-
         <!-- start services -->
         <section class="section" id="services">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
                         <div class="text-center mb-5">
-                            <h1 class="mb-3 ff-secondary fw-semibold lh-base">A Digital web design studio creating modern & engaging online</h1>
-                            <p class="text-muted">To achieve this, it would be necessary to have uniform grammar,
-                                pronunciation and more common words. If several languages coalesce the grammar</p>
+                            <h1 class="mb-3 ff-secondary fw-semibold lh-base">Layanan KostASH – Nyaman, Aman, dan Responsif</h1>
+                            <p class="text-muted">Kami memberikan berbagai fasilitas dan dukungan untuk memastikan kenyamanan dan keamanan penghuni setiap hari.</p>
                         </div>
                     </div>
-                    <!-- end col -->
                 </div>
-                <!-- end row -->
 
                 <div class="row g-3">
                     <div class="col-lg-4">
@@ -155,757 +81,522 @@
                             <div class="flex-shrink-0 me-3">
                                 <div class="avatar-sm icon-effect">
                                     <div class="avatar-title bg-transparent text-success rounded-circle">
-                                        <i class="ri-pencil-ruler-2-line fs-36"></i>
+                                        <i class="ri-customer-service-2-line fs-36"></i>
                                     </div>
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="fs-18">Creative Design</h5>
-                                <p class="text-muted my-3 ff-secondary">The creative design includes designs that are unique, effective and memorable.</p>
-                                <div>
-                                    <a href="#" class="fs-13 fw-medium">Learn More <i class="ri-arrow-right-s-line align-bottom"></i></a>
-                                </div>
+                                <h5 class="fs-18">Respon Cepat 24/7</h5>
+                                <p class="text-muted my-3 ff-secondary">Kami selalu siap membantu jika ada kendala, cukup hubungi pengelola kapan saja.</p>
                             </div>
                         </div>
                     </div>
-                    <!-- end col -->
-                    <div class="col-lg-4">
-                        <div class="d-flex p-3">
-                            <div class="flex-shrink-0 me-3">
-                                <div class="avatar-sm icon-effect">
-                                    <div class="avatar-title bg-transparent text-success rounded-circle">
-                                        <i class="ri-palette-line fs-36"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h5 class="fs-18">Unlimited Colors</h5>
-                                <p class="text-muted my-3 ff-secondary">The collection of rules and guidelines which designers use to communicate with users through appealing.</p>
-                                <div>
-                                    <a href="#" class="fs-13 fw-medium">Learn More <i class="ri-arrow-right-s-line align-bottom"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                    <div class="col-lg-4">
-                        <div class="d-flex p-3">
-                            <div class="flex-shrink-0 me-3">
-                                <div class="avatar-sm icon-effect">
-                                    <div class="avatar-title bg-transparent text-success rounded-circle">
-                                        <i class="ri-lightbulb-flash-line fs-36"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h5 class="fs-18">Strategy Solutions</h5>
-                                <p class="text-muted my-3 ff-secondary">Business development firm that provides strategic planning, market research services and project.</p>
-                                <div>
-                                    <a href="#" class="fs-13 fw-medium">Learn More <i class="ri-arrow-right-s-line align-bottom"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                    <div class="col-lg-4">
-                        <div class="d-flex p-3">
-                            <div class="flex-shrink-0 me-3">
-                                <div class="avatar-sm icon-effect">
-                                    <div class="avatar-title bg-transparent text-success rounded-circle">
-                                        <i class="ri-customer-service-line fs-36"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h5 class="fs-18">Awesome Support</h5>
-                                <p class="text-muted my-3 ff-secondary">Awesome Support is the most versatile and feature-rich support plugin for all version.</p>
-                                <div>
-                                    <a href="#" class="fs-13 fw-medium">Learn More <i class="ri-arrow-right-s-line align-bottom"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                    <div class="col-lg-4">
-                        <div class="d-flex p-3">
-                            <div class="flex-shrink-0 me-3">
-                                <div class="avatar-sm icon-effect">
-                                    <div class="avatar-title bg-transparent text-success rounded-circle">
-                                        <i class="ri-stack-line fs-36"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h5 class="fs-18">Truly Multipurpose</h5>
-                                <p class="text-muted my-3 ff-secondary">You usually get a broad range of options to play with. This enables you to use a single theme across multiple.</p>
-                                <div>
-                                    <a href="#" class="fs-13 fw-medium">Learn More <i class="ri-arrow-right-s-line align-bottom"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                    <div class="col-lg-4">
-                        <div class="d-flex p-3">
-                            <div class="flex-shrink-0 me-3">
-                                <div class="avatar-sm icon-effect">
-                                    <div class="avatar-title bg-transparent text-success rounded-circle">
-                                        <i class="ri-settings-2-line fs-36"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h5 class="fs-18">Easy to customize</h5>
-                                <p class="text-muted my-3 ff-secondary">Personalise your own website, no matter what theme and what customization options.</p>
-                                <div>
-                                    <a href="#" class="fs-13 fw-medium">Learn More <i class="ri-arrow-right-s-line align-bottom"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end col -->
 
                     <div class="col-lg-4">
                         <div class="d-flex p-3">
                             <div class="flex-shrink-0 me-3">
                                 <div class="avatar-sm icon-effect">
                                     <div class="avatar-title bg-transparent text-success rounded-circle">
-                                        <i class="ri-slideshow-line fs-36"></i>
+                                        <i class="ri-hotel-bed-line fs-36"></i>
                                     </div>
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="fs-18">Responsive & Clean Design</h5>
-                                <p class="text-muted my-3 ff-secondary">Responsive design is a graphic user interface (GUI) design approach used to create content.</p>
-                                <div>
-                                    <a href="#" class="fs-13 fw-medium">Learn More <i class="ri-arrow-right-s-line align-bottom"></i></a>
-                                </div>
+                                <h5 class="fs-18">Fasilitas Kamar Siap Pakai</h5>
+                                <p class="text-muted my-3 ff-secondary">Kamar dilengkapi kasur lantai dan rak baju, langsung bisa digunakan tanpa repot.</p>
                             </div>
                         </div>
                     </div>
-                    <!-- end col -->
+
                     <div class="col-lg-4">
                         <div class="d-flex p-3">
                             <div class="flex-shrink-0 me-3">
                                 <div class="avatar-sm icon-effect">
                                     <div class="avatar-title bg-transparent text-success rounded-circle">
-                                        <i class="ri-google-fill fs-36"></i>
+                                        <i class="ri-showers-line fs-36"></i>
                                     </div>
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="fs-18">Google Font Collection</h5>
-                                <p class="text-muted my-3 ff-secondary">Google Fonts is a collection of 915 fonts, all available to use for free on your website.</p>
-                                <div>
-                                    <a href="#" class="fs-13 fw-medium">Learn More <i class="ri-arrow-right-s-line align-bottom"></i></a>
-                                </div>
+                                <h5 class="fs-18">Air Selalu Tersedia</h5>
+                                <p class="text-muted my-3 ff-secondary">Air bersih tersedia setiap saat untuk kebutuhan mandi dan mencuci.</p>
                             </div>
                         </div>
                     </div>
-                    <!-- end col -->
+
                     <div class="col-lg-4">
                         <div class="d-flex p-3">
                             <div class="flex-shrink-0 me-3">
                                 <div class="avatar-sm icon-effect">
                                     <div class="avatar-title bg-transparent text-success rounded-circle">
-                                        <i class="ri-briefcase-5-line fs-36"></i>
+                                        <i class="ri-home-gear-line fs-36"></i>
                                     </div>
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="fs-18">Top Industry Specialists</h5>
-                                <p class="text-muted my-3 ff-secondary">An industrial specialist works with industrial operations to ensure that manufacturing facilities work.</p>
-                                <div>
-                                    <a href="#" class="fs-13 fw-medium">Learn More <i class="ri-arrow-right-s-line align-bottom"></i></a>
-                                </div>
+                                <h5 class="fs-18">Area Aman dengan Pagar</h5>
+                                <p class="text-muted my-3 ff-secondary">Lingkungan tertutup dan dilindungi pagar untuk menjaga keamanan penghuni.</p>
                             </div>
                         </div>
                     </div>
-                    <!-- end col -->
+
+                    <div class="col-lg-4">
+                        <div class="d-flex p-3">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="avatar-sm icon-effect">
+                                    <div class="avatar-title bg-transparent text-success rounded-circle">
+                                        <i class="mdi mdi-hanger fs-36"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="fs-18">Jemuran Bersama</h5>
+                                <p class="text-muted my-3 ff-secondary">Tersedia gantungan besi untuk menjemur pakaian di area depan kost.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="d-flex p-3">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="avatar-sm icon-effect">
+                                    <div class="avatar-title bg-transparent text-success rounded-circle">
+                                        <i class="ri-delete-bin-line fs-36"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="fs-18">Tempat Sampah Disediakan</h5>
+                                <p class="text-muted my-3 ff-secondary">Tempat sampah tersedia. Penghuni diharapkan menjaga kebersihan, termasuk membakar sampah secara mandiri.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- end row -->
             </div>
-            <!-- end container -->
         </section>
         <!-- end services -->
 
-        <!-- start features -->
-        <section class="section bg-light py-5" id="features">
-            <div class="container">
-                <div class="row align-items-center gy-4">
-                    <div class="col-lg-6 col-sm-7 mx-auto">
-                        <div>
-                            <img src="{{ asset('assets/dashboard/images/landing/features/img-1.png') }}" alt="" class="img-fluid mx-auto">
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="text-muted">
-                            <div class="avatar-sm icon-effect mb-4">
-                                <div class="avatar-title bg-transparent rounded-circle text-success h1">
-                                    <i class="ri-collage-line fs-36"></i>
-                                </div>
-                            </div>
-                            <h3 class="mb-3 fs-20">Huge collection of widgets</h3>
-                            <p class="mb-4 ff-secondary fs-16">Collection widgets specialize in displaying many elements of the same type, such as a collection of pictures from a collection of articles from a news app or a collection of messages from a communication app.</p>
-
-                            <div class="row pt-3">
-                                <div class="col-3">
-                                    <div class="text-center">
-                                        <h4>5</h4>
-                                        <p>Dashboards</p>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div class="text-center">
-                                        <h4>150+</h4>
-                                        <p>Pages</p>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="text-center">
-                                        <h4>7+</h4>
-                                        <p>Functional Apps</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end col -->
+        <!-- Swiper -->
+        <div class="swiper effect-coverflow-swiper rounded pb-5">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="{{ asset('assets/images/image-lp.jpg') }}" alt="" class="img-fluid" />
                 </div>
-                <!-- end row -->
+                <div class="swiper-slide">
+                    <img src="{{ asset('assets/images/image-lp2.jpg') }}" alt="" class="img-fluid" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="{{ asset('assets/images/image-lp.jpg') }}" alt="" class="img-fluid" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="{{ asset('assets/images/image-lp.jpg') }}" alt="" class="img-fluid" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="{{ asset('assets/images/image-lp.jpg') }}" alt="" class="img-fluid" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="{{ asset('assets/images/image-lp.jpg') }}" alt="" class="img-fluid" />
+                </div>
             </div>
-            <!-- end container -->
-        </section>
-        <!-- end features -->
-
-        <!-- start cta -->
-        <section class="py-5 bg-primary position-relative">
-            <div class="bg-overlay bg-overlay-pattern opacity-50"></div>
-            <div class="container">
-                <div class="row align-items-center gy-4">
-                    <div class="col-sm">
-                        <div>
-                            <h4 class="text-white mb-0 fw-semibold">Build your web App/SaaS with Velzon dashboard</h4>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                    <div class="col-sm-auto">
-                        <div>
-                            <a href="https://1.envato.market/velzon-admin" target="_blank" class="btn bg-gradient btn-danger"><i class="ri-shopping-cart-2-line align-middle me-1"></i> Buy Now</a>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                </div>
-                <!-- end row -->
-            </div>
-            <!-- end container -->
-        </section>
-        <!-- end cta -->
-
-        <!-- start features -->
-        <section class="section">
-            <div class="container">
-                <div class="row align-items-center gy-4">
-                    <div class="col-lg-6 order-2 order-lg-1">
-                        <div class="text-muted">
-                            <h5 class="fs-12 text-uppercase text-success">Design</h5>
-                            <h4 class="mb-3">Well Designed Dashboards</h4>
-                            <p class="mb-4 ff-secondary">Quality Dashboards (QD) is a condition-specific, actionable web-based application for quality reporting and population
-                            management that is integrated into the Electronic Health Record (EHR).</p>
-
-                            <div class="row">
-                                <div class="col-sm-5">
-                                    <div class="vstack gap-2">
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0 me-2">
-                                                <div class="avatar-xs icon-effect">
-                                                    <div
-                                                        class="avatar-title bg-transparent text-success rounded-circle h2">
-                                                        <i class="ri-check-fill"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <h5 class="fs-14 mb-0">Ecommerce</h5>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0 me-2">
-                                                <div class="avatar-xs icon-effect">
-                                                    <div
-                                                        class="avatar-title bg-transparent text-success rounded-circle h2">
-                                                        <i class="ri-check-fill"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <h5 class="fs-14 mb-0">Analytics</h5>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0 me-2">
-                                                <div class="avatar-xs icon-effect">
-                                                    <div
-                                                        class="avatar-title bg-transparent text-success rounded-circle h2">
-                                                        <i class="ri-check-fill"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <h5 class="fs-14 mb-0">CRM</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-5">
-                                    <div class="vstack gap-2">
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0 me-2">
-                                                <div class="avatar-xs icon-effect">
-                                                    <div
-                                                        class="avatar-title bg-transparent text-success rounded-circle h2">
-                                                        <i class="ri-check-fill"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <h5 class="fs-14 mb-0">Crypto</h5>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0 me-2">
-                                                <div class="avatar-xs icon-effect">
-                                                    <div
-                                                        class="avatar-title bg-transparent text-success rounded-circle h2">
-                                                        <i class="ri-check-fill"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <h5 class="fs-14 mb-0">Projects</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-4">
-                                <a href="index.html" class="btn btn-primary">Learn More <i class="ri-arrow-right-line align-middle ms-1"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                    <div class="col-lg-6 col-sm-7 col-10 ms-auto order-1 order-lg-2">
-                        <div>
-                            <img src="{{ asset('assets/dashboard/images/landing/features/img-2.png') }}" alt="" class="img-fluid">
-                        </div>
-                    </div>
-                </div>
-                <!-- end row -->
-
-                <div class="row align-items-center mt-5 pt-lg-5 gy-4">
-                    <div class="col-lg-6 col-sm-7 col-10 mx-auto">
-                        <div>
-                            <img src="{{ asset('assets/dashboard/images/landing/features/img-3.png') }}" alt="" class="img-fluid">
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="text-muted ps-lg-5">
-                            <h5 class="fs-12 text-uppercase text-success">structure</h5>
-                            <h4 class="mb-3">Well Documented</h4>
-                            <p class="mb-4">used to describe something that is known about or known to be true because there are many documents that describe it,
-                            prove it, etc.</p>
-
-                            <div class="vstack gap-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0 me-2">
-                                        <div class="avatar-xs icon-effect">
-                                            <div class="avatar-title bg-transparent text-success rounded-circle h2">
-                                                <i class="ri-check-fill"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <p class="mb-0">Dynamic Conetnt</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0 me-2">
-                                        <div class="avatar-xs icon-effect">
-                                            <div class="avatar-title bg-transparent text-success rounded-circle h2">
-                                                <i class="ri-check-fill"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <p class="mb-0">Setup plugin's information.</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0 me-2">
-                                        <div class="avatar-xs icon-effect">
-                                            <div class="avatar-title bg-transparent text-success rounded-circle h2">
-                                                <i class="ri-check-fill"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <p class="mb-0">Themes customization information</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                </div>
-                <!-- end row -->
-            </div>
-            <!-- end container -->
-        </section>
-        <!-- end features -->
+            <div class="swiper-pagination swiper-pagination-dark"></div>
+        </div>
 
         <!-- start plan -->
-        <section class="section bg-light" id="plans">
+        <section class="section bg-light" id="gallery">
             <div class="bg-overlay bg-overlay-pattern"></div>
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
                         <div class="text-center mb-5">
-                            <h3 class="mb-3 fw-semibold">Choose the plan that's right for you</h3>
-                            <p class="text-muted mb-4">Simple pricing. No hidden fees. Advanced features for you
-                                business.</p>
-
-                            <div class="d-flex justify-content-center align-items-center">
-                                <div>
-                                    <h5 class="fs-14 mb-0">Month</h5>
-                                </div>
-                                <div class="form-check form-switch fs-20 ms-3 " onclick="check()">
-                                    <input class="form-check-input" type="checkbox" id="plan-switch">
-                                    <label class="form-check-label" for="plan-switch"></label>
-                                </div>
-                                <div>
-                                    <h5 class="fs-14 mb-0">Annual <span class="badge badge-soft-success">Save 20%</span></h5>
-                                </div>
-                            </div>
+                            <h2 class="mb-3 fw-semibold">Galeri</h2>
+                            <p class="text-muted mb-4">Lihat berbagai foto dan dokumentasi kamar serta fasilitas kos kami. Transparan dan tanpa biaya tersembunyi.</p>
                         </div>
                     </div>
                     <!-- end col -->
                 </div>
-                <!-- end row -->
+                
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="text-center">
+                                            <ul class="list-inline categories-filter animation-nav" id="filter">
+                                                <li class="list-inline-item"><a class="categories active" data-filter="*">All</a></li>
+                                                <li class="list-inline-item"><a class="categories" data-filter=".project">Project</a></li>
+                                                <li class="list-inline-item"><a class="categories" data-filter=".designing">Designing</a></li>
+                                                <li class="list-inline-item"><a class="categories" data-filter=".photography">Photography</a></li>
+                                                <li class="list-inline-item"><a class="categories" data-filter=".development">Development</a></li>
+                                            </ul>
+                                        </div>
+        
+                                        <div class="row gallery-wrapper">
+                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 project designing development"  data-category="designing development">
+                                                <div class="gallery-box card">
+                                                    <div class="gallery-container">
+                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
+                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
+                                                            <div class="gallery-overlay">
+                                                                <h5 class="overlay-caption">Glasses and laptop from above</h5>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+    
+                                                    <div class="box-content">
+                                                        <div class="d-flex align-items-center mt-1">
+                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Ron Mackie</a></div>
+                                                            <div class="flex-shrink-0">
+                                                                <div class="d-flex gap-3">
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 2.2K
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 1.3K
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end col -->
+                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
+                                                <div class="gallery-box card">
+                                                    <div class="gallery-container">
+                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
+                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
+                                                            <div class="gallery-overlay">
+                                                                <h5 class="overlay-caption">Working at a coffee shop</h5>
+                                                            </div>
+                                                        </a>
+                                                        
+                                                    </div>
+    
+                                                    <div class="box-content">
+                                                        <div class="d-flex align-items-center mt-1">
+                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Nancy Martino</a></div>
+                                                            <div class="flex-shrink-0">
+                                                                <div class="d-flex gap-3">
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 3.2K
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 1.1K
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end col -->
+                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 project development" data-category="development">
+                                                <div class="gallery-box card">
+                                                    <div class="gallery-container">
+                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
+                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
+                                                            <div class="gallery-overlay">
+                                                                <h5 class="overlay-caption">Photo was taken in Beach</h5>
+                                                            </div>
+                                                        </a>
+                                                    </div>
 
-                <div class="row gy-4">
-                    <div class="col-lg-4">
-                        <div class="card plan-box mb-0">
-                            <div class="card-body p-4 m-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1">
-                                        <h5 class="mb-1 fw-semibold">Basic Plan</h5>
-                                        <p class="text-muted mb-0">For Startup</p>
-                                    </div>
-                                    <div class="avatar-sm">
-                                        <div class="avatar-title bg-light rounded-circle text-primary">
-                                            <i class="ri-book-mark-line fs-20"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="py-4 text-center">
-                                    <h1 class="month"><sup><small>$</small></sup><span class="ff-secondary fw-bold">19</span> <span
-                                            class="fs-13 text-muted">/Month</span></h1>
-                                    <h1 class="annual"><sup><small>$</small></sup><span class="ff-secondary fw-bold">171</span> <span
-                                            class="fs-13 text-muted">/Year</span></h1>
-                                </div>
+                                                    <div class="box-content">
+                                                        <div class="d-flex align-items-center mt-1">
+                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Elwood Arter</a></div>
+                                                            <div class="flex-shrink-0">
+                                                                <div class="d-flex gap-3">
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 2.1K
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 1K
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end col -->
+                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 project designing" data-category="project designing">
+                                                <div class="gallery-box card">
+                                                    <div class="gallery-container">
+                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
+                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
+                                                            <div class="gallery-overlay">
+                                                                <h5 class="overlay-caption">Drawing a sketch</h5>
+                                                            </div>
+                                                        </a>
+                                                        
+                                                    </div>
+    
+                                                    <div class="box-content">
+                                                        <div class="d-flex align-items-center mt-1">
+                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Jason McQuaid</a></div>
+                                                            <div class="flex-shrink-0">
+                                                                <div class="d-flex gap-3">
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 825
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 101
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end col -->
+                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 project designing" data-category="project designing">
+                                                <div class="gallery-box card">
+                                                    <div class="gallery-container">
+                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
+                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
+                                                            <div class="gallery-overlay">
+                                                                <h5 class="overlay-caption">Working from home little spot</h5>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                    <div class="box-content">
+                                                        <div class="d-flex align-items-center mt-1">
+                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Henry Baird</a></div>
+                                                            <div class="flex-shrink-0">
+                                                                <div class="d-flex gap-3">
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 632
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 95
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end col -->
+                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
+                                                <div class="gallery-box card">
+                                                    <div class="gallery-container">
+                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
+                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
+                                                            <div class="gallery-overlay">
+                                                                <h5 class="overlay-caption">Project discussion with team</h5>
+                                                            </div>
+                                                        </a>
+                                                    </div>
 
-                                <div>
-                                    <ul class="list-unstyled text-muted vstack gap-3 ff-secondary">
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    Upto <b>3</b> Projects
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    Upto <b>299</b> Customers
+                                                    <div class="box-content">
+                                                        <div class="d-flex align-items-center mt-1">
+                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Erica Kernan</a></div>
+                                                            <div class="flex-shrink-0">
+                                                                <div class="d-flex gap-3">
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 3.4K
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 1.3k
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    Scalable Bandwidth
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <b>5</b> FTP Login
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-danger me-1">
-                                                    <i class="ri-close-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <b>24/7</b> Support
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-danger me-1">
-                                                    <i class="ri-close-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <b>Unlimited</b> Storage
+                                            <!-- end col -->
+                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 project designing development"  data-category="designing development">
+                                                <div class="gallery-box card">
+                                                    <div class="gallery-container">
+                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
+                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
+                                                            <div class="gallery-overlay">
+                                                                <h5 class="overlay-caption">Sunrise above a beach</h5>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+    
+                                                    <div class="box-content">
+                                                        <div class="d-flex align-items-center mt-1">
+                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">James Ballard</a></div>
+                                                            <div class="flex-shrink-0">
+                                                                <div class="d-flex gap-3">
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 735
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 150
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-danger me-1">
-                                                    <i class="ri-close-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    Domain
+                                            <!-- end col -->
+                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
+                                                <div class="gallery-box card">
+                                                    <div class="gallery-container">
+                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
+                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
+                                                            <div class="gallery-overlay">
+                                                                <h5 class="overlay-caption">Glasses and laptop from above</h5>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+    
+                                                    <div class="box-content">
+                                                        <div class="d-flex align-items-center mt-1">
+                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Ruby Griffin</a></div>
+                                                            <div class="flex-shrink-0">
+                                                                <div class="d-flex gap-3">
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 1.5k
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 250
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </li>
-                                    </ul>
-                                    <div class="mt-4">
-                                        <a href="javascript:void(0);" class="btn btn-soft-success w-100">Get
-                                            Started</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--end col-->
-                    <div class="col-lg-4">
-                        <div class="card plan-box mb-0 ribbon-box right">
-                            <div class="card-body p-4 m-2">
-                                <div class="ribbon-two ribbon-two-danger"><span>Popular</span></div>
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1">
-                                        <h5 class="mb-1 fw-semibold">Pro Business</h5>
-                                        <p class="text-muted mb-0">Professional plans</p>
-                                    </div>
-                                    <div class="avatar-sm">
-                                        <div class="avatar-title bg-light rounded-circle text-primary">
-                                            <i class="ri-medal-fill fs-20"></i>
+                                            <!-- end col -->
+
+                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 project designing development"  data-category="designing development">
+                                                <div class="gallery-box card">
+                                                    <div class="gallery-container">
+                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
+                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
+                                                            <div class="gallery-overlay">
+                                                                <h5 class="overlay-caption">Dramatic clouds at the Golden Gate Bridge</h5>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+    
+                                                    <div class="box-content">
+                                                        <div class="d-flex align-items-center mt-1">
+                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Ron Mackie</a></div>
+                                                            <div class="flex-shrink-0">
+                                                                <div class="d-flex gap-3">
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 2.2K
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 1.3K
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end col -->
+
+                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 project designing" data-category="project designing">
+                                                <div class="gallery-box card">
+                                                    <div class="gallery-container">
+                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
+                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
+                                                            <div class="gallery-overlay">
+                                                                <h5 class="overlay-caption">Fun day at the Hill Station</h5>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                    <div class="box-content">
+                                                        <div class="d-flex align-items-center mt-1">
+                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Henry Baird</a></div>
+                                                            <div class="flex-shrink-0">
+                                                                <div class="d-flex gap-3">
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 632
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 95
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end col -->
+
+                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
+                                                <div class="gallery-box card">
+                                                    <div class="gallery-container">
+                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
+                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
+                                                            <div class="gallery-overlay">
+                                                                <h5 class="overlay-caption">Cycling in the countryside</h5>
+                                                            </div>
+                                                        </a>
+                                                        
+                                                    </div>
+    
+                                                    <div class="box-content">
+                                                        <div class="d-flex align-items-center mt-1">
+                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Nancy Martino</a></div>
+                                                            <div class="flex-shrink-0">
+                                                                <div class="d-flex gap-3">
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 3.2K
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 1.1K
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end col -->
+
+                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
+                                                <div class="gallery-box card">
+                                                    <div class="gallery-container">
+                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
+                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
+                                                            <div class="gallery-overlay">
+                                                                <h5 class="overlay-caption">A mix of friends and strangers heading off to find an adventure.</h5>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+
+                                                    <div class="box-content">
+                                                        <div class="d-flex align-items-center mt-1">
+                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Erica Kernan</a></div>
+                                                            <div class="flex-shrink-0">
+                                                                <div class="d-flex gap-3">
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 3.4K
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
+                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 1.3k
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end col -->
                                         </div>
                                     </div>
                                 </div>
-                                <div class="py-4 text-center">
-                                    <h1 class="month"><sup><small>$</small></sup><span class="ff-secondary fw-bold">29</span> <span
-                                            class="fs-13 text-muted">/Month</span></h1>
-                                    <h1 class="annual"><sup><small>$</small></sup><span class="ff-secondary fw-bold">261</span> <span
-                                            class="fs-13 text-muted">/Year</span></h1>
-                                </div>
-                    
-                                <div>
-                                    <ul class="list-unstyled text-muted vstack gap-3 ff-secondary">
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    Upto <b>15</b> Projects
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <b>Unlimited</b> Customers
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    Scalable Bandwidth
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <b>12</b> FTP Login
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <b>24/7</b> Support
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-danger me-1">
-                                                    <i class="ri-close-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <b>Unlimited</b> Storage
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-danger me-1">
-                                                    <i class="ri-close-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    Domain
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <div class="mt-4">
-                                        <a href="javascript:void(0);" class="btn btn-soft-success w-100">Get
-                                            Started</a>
-                                    </div>
-                                </div>
+                                <!-- end row -->
                             </div>
+                            <!-- ene card body -->
                         </div>
+                        <!-- end card -->
                     </div>
-                    <!--end col-->
-                    <div class="col-lg-4">
-                        <div class="card plan-box mb-0">
-                            <div class="card-body p-4 m-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1">
-                                        <h5 class="mb-1 fw-semibold">Platinum Plan</h5>
-                                        <p class="text-muted mb-0">Enterprise Businesses</p>
-                                    </div>
-                                    <div class="avatar-sm">
-                                        <div class="avatar-title bg-light rounded-circle text-primary">
-                                            <i class="ri-stack-fill fs-20"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="py-4 text-center">
-                                    <h1 class="month"><sup><small>$</small></sup><span class="ff-secondary fw-bold">39</span> <span
-                                            class="fs-13 text-muted">/Month</span></h1>
-                                    <h1 class="annual"><sup><small>$</small></sup><span class="ff-secondary fw-bold">351</span> <span
-                                            class="fs-13 text-muted">/Year</span></h1>
-                                </div>
-                    
-                                <div>
-                                    <ul class="list-unstyled text-muted vstack gap-3 ff-secondary">
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <b>Unlimited</b> Projects
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <b>Unlimited</b> Customers
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    Scalable Bandwidth
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <b>Unlimited</b> FTP Login
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <b>24/7</b> Support
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <b>Unlimited</b> Storage
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-success me-1">
-                                                    <i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    Domain
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <div class="mt-4">
-                                        <a href="javascript:void(0);" class="btn btn-soft-success w-100">Get
-                                            Started</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--end col-->
+                    <!-- end col -->
                 </div>
-                <!--end row-->
+                <!-- end row -->
             </div>
             <!-- end container -->
         </section>
@@ -917,18 +608,21 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
                         <div class="text-center mb-5">
-                            <h3 class="mb-3 fw-semibold">Frequently Asked Questions</h3>
-                            <p class="text-muted mb-4 ff-secondary">If you can not find answer to your question in our FAQ, you can
-                                always contact us or email us. We will answer you shortly!</p>
-
-                            <div class="">
-                                <button type="button" class="btn btn-primary btn-label rounded-pill"><i class="ri-mail-line label-icon align-middle rounded-pill fs-16 me-2"></i> Email Us</button>
-                                <button type="button" class="btn btn-info btn-label rounded-pill"><i class="ri-twitter-line label-icon align-middle rounded-pill fs-16 me-2"></i> Send Us Tweet</button>
+                            <h3 class="mb-3 fw-semibold">Pertanyaan yang Sering Diajukan</h3>
+                            <p class="text-muted mb-4 ff-secondary">
+                                Berikut beberapa pertanyaan umum tentang kos kami. Jika masih ada yang ingin ditanyakan, silakan hubungi kami langsung.
+                            </p>
+                            <div>
+                                <a href="https://wa.me/6281315793349" target="_blank" class="btn btn-success btn-label rounded-pill">
+                                    <i class="ri-whatsapp-line label-icon align-middle rounded-pill fs-16 me-2"></i> Hubungi via WhatsApp
+                                </a>
+                                <a href="mailto:fikri225456@gmail.com.com" class="btn btn-primary btn-label rounded-pill">
+                                    <i class="ri-mail-line label-icon align-middle rounded-pill fs-16 me-2"></i> Kirim Email
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- end row -->
 
                 <div class="row g-lg-5 g-4">
                     <div class="col-lg-6">
@@ -937,665 +631,174 @@
                                 <i class="ri-question-line fs-24 align-middle text-success me-1"></i>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 fw-semibold">General Questions</h5>
+                                <h5 class="mb-0 fw-semibold">Informasi Umum</h5>
                             </div>
                         </div>
-                        <div class="accordion custom-accordionwithicon custom-accordion-border accordion-border-box"
-                            id="genques-accordion">
+                        <div class="accordion" id="faq-kos">
                             <div class="accordion-item">
-                                <h2 class="accordion-header" id="genques-headingOne">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#genques-collapseOne" aria-expanded="true"
-                                        aria-controls="genques-collapseOne">
-                                        What is the purpose of using themes ?
+                                <h2 class="accordion-header" id="faqOne">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                        Berapa jumlah kamar dan statusnya?
                                     </button>
                                 </h2>
-                                <div id="genques-collapseOne" class="accordion-collapse collapse show"
-                                    aria-labelledby="genques-headingOne" data-bs-parent="#genques-accordion">
-                                    <div class="accordion-body ff-secondary">
-                                        A theme is a set of colors, fonts, effects, and more that can be applied to your entire presentation to give it a
-                                        consistent, professional look. You've already been using a theme, even if you didn't know it: the default Office theme,
-                                        which consists.
+                                <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#faq-kos">
+                                    <div class="accordion-body">
+                                        Kos kami memiliki 6 kamar.
                                     </div>
                                 </div>
                             </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="genques-headingTwo">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#genques-collapseTwo" aria-expanded="false"
-                                        aria-controls="genques-collapseTwo">
-                                        Can a theme have more than one theme?
-                                    </button>
-                                </h2>
-                                <div id="genques-collapseTwo" class="accordion-collapse collapse"
-                                    aria-labelledby="genques-headingTwo" data-bs-parent="#genques-accordion">
-                                    <div class="accordion-body ff-secondary">
-                                        A story can have as many themes as the reader can identify based on recurring patterns and parallels within the story
-                                        itself. In looking at ways to separate themes into a hierarchy, we might find it useful to follow the example of a
-                                        single book.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="genques-headingThree">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#genques-collapseThree" aria-expanded="false"
-                                        aria-controls="genques-collapseThree">
-                                        What are theme features?
-                                    </button>
-                                </h2>
-                                <div id="genques-collapseThree" class="accordion-collapse collapse"
-                                    aria-labelledby="genques-headingThree" data-bs-parent="#genques-accordion">
-                                    <div class="accordion-body ff-secondary">
-                                        Theme features is a set of specific functionality that may be enabled by theme authors. Themes must register each
-                                        individual Theme Feature that the author wishes to support. Theme support functions should be called in the theme's
-                                        functions.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="genques-headingFour">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#genques-collapseFour" aria-expanded="false"
-                                        aria-controls="genques-collapseFour">
-                                        What is simple theme?
-                                    </button>
-                                </h2>
-                                <div id="genques-collapseFour" class="accordion-collapse collapse"
-                                    aria-labelledby="genques-headingFour" data-bs-parent="#genques-accordion">
-                                    <div class="accordion-body ff-secondary">
-                                        Simple is a free WordPress theme, by Themify, built exactly what it is named for: simplicity. Immediately upgrade the
-                                        quality of your WordPress site with the simple theme To use the built-in Chrome theme editor.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--end accordion-->
 
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqTwo">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                        Apakah bisa melihat langsung lokasi kos?
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse show" data-bs-parent="#faq-kos">
+                                    <div class="accordion-body">
+                                        Tentu! Silakan kunjungi kami langsung. Alamat lengkap bisa Anda lihat di bagian "Kontak" di bawah halaman ini.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqThree">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                        Fasilitas apa saja yang tersedia?
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faq-kos">
+                                    <div class="accordion-body">
+                                        Kami menyediakan kamar mandi dalam, Kasur Lantai, Rak Baju, tempat parkir motor.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqFour">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                                        Bagaimana cara memesan kamar?
+                                    </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#faq-kos">
+                                    <div class="accordion-body">
+                                        Anda bisa memesan atau menanyakan ketersediaan kamar langsung melalui WhatsApp atau datang langsung ke lokasi.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqFive">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive">
+                                        Berapa ukuran kamar di kos ini?
+                                    </button>
+                                </h2>
+                                <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#faq-kos">
+                                <div class="accordion-body">
+                                    Setiap kamar berukuran 3,5 meter x 5 meter, cukup luas dan nyaman untuk ditinggali sendiri maupun berdua.
+                                </div>
+                                </div>
+                            </div>
+                            
+                        </div>
                     </div>
-                    <!-- end col -->
+
                     <div class="col-lg-6">
                         <div class="d-flex align-items-center mb-2">
                             <div class="flex-shrink-0 me-1">
-                                <i class="ri-shield-keyhole-line fs-24 align-middle text-success me-1"></i>
+                                <i class="ri-shield-user-line fs-24 align-middle text-success me-1"></i>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 fw-semibold">Privacy &amp; Security</h5>
+                                <h5 class="mb-0 fw-semibold">Ketentuan & Lain-lain</h5>
                             </div>
                         </div>
+                        <div class="accordion" id="faq-others">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqk1">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsek1">
+                                        Apakah ada batasan untuk tamu?
+                                    </button>
+                                </h2>
+                                <div id="collapsek1" class="accordion-collapse collapse show" data-bs-parent="#faq-others">
+                                    <div class="accordion-body">
+                                        Demi kenyamanan bersama, tamu lawan jenis tidak diperbolehkan menginap. Tamu hanya diperbolehkan berkunjung sampai pukul 21.00 WIB.
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="accordion custom-accordionwithicon custom-accordion-border accordion-border-box"
-                            id="privacy-accordion">
                             <div class="accordion-item">
-                                <h2 class="accordion-header" id="privacy-headingOne">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#privacy-collapseOne" aria-expanded="false"
-                                        aria-controls="privacy-collapseOne">
-                                        Does Word have night mode?
+                                <h2 class="accordion-header" id="faqk2">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsek2">
+                                        Apakah ada pembayaran online?
                                     </button>
                                 </h2>
-                                <div id="privacy-collapseOne" class="accordion-collapse collapse"
-                                    aria-labelledby="privacy-headingOne" data-bs-parent="#privacy-accordion">
-                                    <div class="accordion-body ff-secondary">
-                                        You can run Microsoft Word in dark mode, which uses a dark color palette to help reduce eye strain in low light
-                                        settings. You can choose to make the document white or black using the Switch Modes button in the ribbon's View tab.
+                                <div id="collapsek2" class="accordion-collapse collapse" data-bs-parent="#faq-others">
+                                    <div class="accordion-body">
+                                        Untuk saat ini, pembayaran bisa dilakukan via transfer bank atau QRIS. Informasi nomor rekening akan diberikan setelah konfirmasi.
                                     </div>
                                 </div>
                             </div>
+
                             <div class="accordion-item">
-                                <h2 class="accordion-header" id="privacy-headingTwo">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#privacy-collapseTwo" aria-expanded="true"
-                                        aria-controls="privacy-collapseTwo">
-                                        Is theme an opinion?
-                                    </button>
+                                <h2 class="accordion-header" id="faqk3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsek3">
+                                    Apakah air tersedia 24 jam?
+                                </button>
                                 </h2>
-                                <div id="privacy-collapseTwo" class="accordion-collapse collapse show"
-                                    aria-labelledby="privacy-headingTwo" data-bs-parent="#privacy-accordion">
-                                    <div class="accordion-body ff-secondary">
-                                        A theme is an opinion the author expresses on the subject, for instance, the author's dissatisfaction with the narrow
-                                        confines of French bourgeois marriage during that period theme is an idea that a writer repeats.
-                                    </div>
+                                <div id="collapsek3" class="accordion-collapse collapse" data-bs-parent="#faq-others">
+                                <div class="accordion-body">
+                                    Ya, air di kos kami dijamin tidak akan mati dan tersedia 24 jam penuh setiap hari.
+                                </div>
                                 </div>
                             </div>
+
                             <div class="accordion-item">
-                                <h2 class="accordion-header" id="privacy-headingThree">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#privacy-collapseThree" aria-expanded="false"
-                                        aria-controls="privacy-collapseThree">
-                                        How do you develop a theme?
+                                <h2 class="accordion-header" id="faqk4">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsek4">
+                                    Berapa minimal waktu sewa?
                                     </button>
                                 </h2>
-                                <div id="privacy-collapseThree" class="accordion-collapse collapse"
-                                    aria-labelledby="privacy-headingThree" data-bs-parent="#privacy-accordion">
-                                    <div class="accordion-body ff-secondary">
-                                    A short story, novella, or novel presents a narrative to its reader. Perhaps that narrative involves mystery, terror,
-                                    romance, comedy, or all of the above. These works of fiction may also contain memorable characters, vivid
-                                    world-building, literary devices.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="privacy-headingFour">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#privacy-collapseFour" aria-expanded="false"
-                                        aria-controls="privacy-collapseFour">
-                                        Do stories need themes?
-                                    </button>
-                                </h2>
-                                <div id="privacy-collapseFour" class="accordion-collapse collapse"
-                                    aria-labelledby="privacy-headingFour" data-bs-parent="#privacy-accordion">
-                                    <div class="accordion-body ff-secondary">
-                                        A story can have as many themes as the reader can identify based on recurring patterns and parallels within the story
-                                        itself. In looking at ways to separate themes into a hierarchy, we might find it useful to follow the example of a
-                                        single book.
+                                <div id="collapsek4" class="accordion-collapse collapse" data-bs-parent="#faq-others">
+                                    <div class="accordion-body">
+                                    Minimal sewa adalah 1 bulan. Tidak tersedia sistem harian/mingguan.
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!--end accordion-->
                     </div>
-                    <!-- end col -->
                 </div>
-                <!-- end row -->
             </div>
-            <!-- end container -->
         </section>
         <!-- end faqs -->
 
-        <!-- start review -->
-        <section class="section bg-primary" id="reviews">
-            <div class="bg-overlay bg-overlay-pattern"></div>
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-10">
-                        <div class="text-center">
-                            <div>
-                                <i class="ri-double-quotes-l text-success display-3"></i>
-                            </div>
-                            <h4 class="text-white mb-5"><span class="text-success">19k</span>+ Satisfied clients</h4>
-
-                            <!-- Swiper -->
-                            <div class="swiper client-review-swiper rounded" dir="ltr">
-                                <div class="swiper-wrapper">
-                                    <div class="swiper-slide">
-                                        <div class="row justify-content-center">
-                                            <div class="col-10">
-                                                <div class="text-white-50">
-                                                    <p class="fs-20 ff-secondary mb-4">" I am givng 5 stars. Theme is great and everyone one stuff everything in theme. Future request should not affect current
-                                                    state of theme. "</p>
-
-                                                    <div>
-                                                        <h5 class="text-white">gregoriusus</h5>
-                                                        <p>- Skote User</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- end slide -->
-                                    <div class="swiper-slide">
-                                        <div class="row justify-content-center">
-                                            <div class="col-10">
-                                                <div class="text-white-50">
-                                                    <p class="fs-20 ff-secondary mb-4">" Awesome support. Had few issues while setting up because of my device, the support team helped me fix them up in a day.
-                                                    Everything looks clean and good. Highly recommended! "</p>
-
-                                                    <div>
-                                                        <h5 class="text-white">GeekyGreenOwl</h5>
-                                                        <p>- Skote User</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- end slide -->
-                                    <div class="swiper-slide">
-                                        <div class="row justify-content-center">
-                                            <div class="col-10">
-                                                <div class="text-white-50">
-                                                    <p class="fs-20 ff-secondary mb-4">" Amazing template, Redux store and components is nicely designed.
-                                                        It's a great start point for an admin based project. Clean Code and good documentation. Template is
-                                                        completely in React and absolutely no usage of jQuery "</p>
-                                    
-                                                    <div>
-                                                        <h5 class="text-white">sreeks456</h5>
-                                                        <p>- Veltrix User</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- end slide -->
-                                </div>
-                                <div class="swiper-button-next bg-white rounded-circle"></div>
-                                <div class="swiper-button-prev bg-white rounded-circle"></div>
-                                <div class="swiper-pagination position-relative mt-2"></div>
-                            </div>
-                            <!-- end slider -->
-                        </div>
-                    </div>
-                    <!-- end col -->
-                </div>
-                <!-- end row -->
+        <!-- SECTION: Lokasi Kos -->
+        <section class="section bg-light" id="lokasi">
+        <div class="container">
+            <div class="text-center mb-4">
+            <h3 class="fw-semibold">Lokasi Kos</h3>
+            <p class="text-muted ff-secondary">
+                Berikut adalah lokasi Kos Bu Aspiyah. Klik peta untuk membuka di Google Maps.
+            </p>
             </div>
-            <!-- end container -->
-        </section>
-        <!-- end review -->
 
-        <!-- start counter -->
-        <section class="py-5 position-relative bg-light">
-            <div class="container">
-                <div class="row text-center gy-4">
-                    <div class="col-lg-3 col-6">
-                        <div>
-                            <h2 class="mb-2"><span class="counter-value" data-target="100">0</span>+</h2>
-                            <div class="text-muted">Projects Completed</div>
-                        </div>
-                    </div>
-                    <!-- end col -->
-
-                    <div class="col-lg-3 col-6">
-                        <div>
-                            <h2 class="mb-2"><span class="counter-value" data-target="24">0</span></h2>
-                            <div class="text-muted">Win Awards</div>
-                        </div>
-                    </div>
-                    <!-- end col -->
-
-                    <div class="col-lg-3 col-6">
-                        <div>
-                            <h2 class="mb-2"><span class="counter-value" data-target="20.3">0</span>k</h2>
-                            <div class="text-muted">Satisfied Clients</div>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                    <div class="col-lg-3 col-6">
-                        <div>
-                            <h2 class="mb-2"><span class="counter-value" data-target="50">0</span></h2>
-                            <div class="text-muted">Employees</div>
-                        </div>
-                    </div>
-                    <!-- end col -->
+            <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="ratio ratio-16x9 shadow rounded overflow-hidden">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15831.170043738534!2d112.5880371!3d-7.2925238!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7807006753476d%3A0x34a76384b4491661!2sKos%20Bu%20Aspiyah!5e0!3m2!1sid!2sid!4v1746338914240!5m2!1sid!2sid"
+                        width="600"
+                        height="450"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
                 </div>
-                <!-- end row -->
             </div>
-            <!-- end container -->
-        </section>
-        <!-- end counter -->
-
-        <!-- start Work Process -->
-        <section class="section">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="text-center mb-5">
-                            <h3 class="mb-3 fw-semibold">Our Work Process</h3>
-                            <p class="text-muted mb-4 ff-secondary">In an ideal world this website wouldn’t exist, a client would
-                                acknowledge the importance of having web copy before the Proin vitae ipsum vel ex
-                                finibus semper design starts.</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- end row -->
-
-                <div class="row text-center">
-                    <div class="col-lg-4">
-                        <div class="process-card mt-4">
-                            <div class="process-arrow-img d-none d-lg-block">
-                                <img src="{{ asset('assets/dashboard/images/landing/process-arrow-img.png') }}" alt="" class="img-fluid">
-                            </div>
-                            <div class="avatar-sm icon-effect mx-auto mb-4">
-                                <div class="avatar-title bg-transparent text-success rounded-circle h1">
-                                    <i class="ri-quill-pen-line"></i>
-                                </div>
-                            </div>
-
-                            <h5>Tell us what you need</h5>
-                            <p class="text-muted ff-secondary">The profession and the employer and your desire to make your mark.</p>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                    <div class="col-lg-4">
-                        <div class="process-card mt-4">
-                            <div class="process-arrow-img d-none d-lg-block">
-                                <img src="{{ asset('assets/dashboard/images/landing/process-arrow-img.png') }}" alt="" class="img-fluid">
-                            </div>
-                            <div class="avatar-sm icon-effect mx-auto mb-4">
-                                <div class="avatar-title bg-transparent text-success rounded-circle h1">
-                                    <i class="ri-user-follow-line"></i>
-                                </div>
-                            </div>
-
-                            <h5>Get free quotes</h5>
-                            <p class="text-muted ff-secondary">The most important aspect of beauty was, therefore, an inherent part.</p>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                    <div class="col-lg-4">
-                        <div class="process-card mt-4">
-                            <div class="avatar-sm icon-effect mx-auto mb-4">
-                                <div class="avatar-title bg-transparent text-success rounded-circle h1">
-                                    <i class="ri-book-mark-line"></i>
-                                </div>
-                            </div>
-
-                            <h5>Deliver high quality product</h5>
-                            <p class="text-muted ff-secondary">We quickly learn to fear and thus automatically avoid potentially.</p>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                </div>
-                <!-- end row -->
             </div>
-            <!-- end container -->
+        </div>
         </section>
-        <!-- end Work Process -->
 
-        <!-- start team -->
-        <section class="section bg-light" id="team">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="text-center mb-5">
-                            <h3 class="mb-3 fw-semibold">Our <span class="text-danger">Team</span></h3>
-                            <p class="text-muted mb-4 ff-secondary">To achieve this, it would be necessary to have uniform grammar,
-                                pronunciation and more common words. If several languages coalesce the grammar.</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- end row -->
-                <div class="row">
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="card">
-                            <div class="card-body text-center p-4">
-                                <div class="avatar-xl mx-auto mb-4 position-relative">
-                                    <img src="{{ asset('assets/dashboard/images/users/avatar-2.jpg" alt="" class="img-fluid rounded-circle">
-                                    <a href="apps-mailbox.html"
-                                        class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
-                                        <div class="avatar-title bg-transparent">
-                                            <i class="ri-mail-fill align-bottom"></i>
-                                        </div>
-                                    </a>
-                                </div>
-                                <!-- end card body -->
-                                <h5 class="mb-1"><a href="pages-profile.html" class="text-body">Nancy Martino</a></h5>
-                                <p class="text-muted mb-0 ff-secondary">Team Leader</p>
-                            </div>
-                        </div>
-                        <!-- end card -->
-                    </div>
-                    <!-- end col -->
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="card">
-                            <div class="card-body text-center p-4">
-                                <div class="avatar-xl mx-auto mb-4 position-relative">
-                                    <img src="{{ asset('assets/dashboard/images/users/avatar-10.jpg" alt="" class="img-fluid rounded-circle">
-                                    <a href="apps-mailbox.html"
-                                        class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
-                                        <div class="avatar-title bg-transparent">
-                                            <i class="ri-mail-fill align-bottom"></i>
-                                        </div>
-                                    </a>
-                                </div>
-                                <!-- end card body -->
-                                <h5 class="mb-1"><a href="pages-profile.html" class="text-body">Henry Baird</a></h5>
-                                <p class="text-muted mb-0 ff-secondary">Full Stack Developer</p>
-                            </div>
-                        </div>
-                        <!-- end card -->
-                    </div>
-                    <!-- end col -->
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="card">
-                            <div class="card-body text-center p-4">
-                                <div class="avatar-xl mx-auto mb-4 position-relative">
-                                    <img src="{{ asset('assets/dashboard/images/users/avatar-3.jpg" alt="" class="img-fluid rounded-circle">
-                                    <a href="apps-mailbox.html"
-                                        class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
-                                        <div class="avatar-title bg-transparent">
-                                            <i class="ri-mail-fill align-bottom"></i>
-                                        </div>
-                                    </a>
-                                </div>
-                                <!-- end card body -->
-                                <h5 class="mb-1"><a href="pages-profile.html" class="text-body">Frank Hook</a></h5>
-                                <p class="text-muted mb-0 ff-secondary">Project Manager</p>
-                            </div>
-                        </div>
-                        <!-- end card -->
-                    </div>
-                    <!-- end col -->
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="card">
-                            <div class="card-body text-center p-4">
-                                <div class="avatar-xl mx-auto mb-4 position-relative">
-                                    <img src="{{ asset('assets/dashboard/images/users/avatar-8.jpg" alt="" class="img-fluid rounded-circle">
-                                    <a href="apps-mailbox.html"
-                                        class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
-                                        <div class="avatar-title bg-transparent">
-                                            <i class="ri-mail-fill align-bottom"></i>
-                                        </div>
-                                    </a>
-                                </div>
-                                <!-- end card body -->
-                                <h5 class="mb-1"><a href="pages-profile.html" class="text-body">Donald Palmer</a></h5>
-                                <p class="text-muted mb-0 ff-secondary">UI/UX Designer</p>
-                            </div>
-                        </div>
-                        <!-- end card -->
-                    </div>
-                    <!-- end col -->
-                </div>
-                <!-- end row -->
-                <div class="row">
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="card">
-                            <div class="card-body text-center p-4">
-                                <div class="avatar-xl mx-auto mb-4 position-relative">
-                                    <img src="{{ asset('assets/dashboard/images/users/avatar-5.jpg" alt="" class="img-fluid rounded-circle">
-                                    <a href="apps-mailbox.html"
-                                        class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
-                                        <div class="avatar-title bg-transparent">
-                                            <i class="ri-mail-fill align-bottom"></i>
-                                        </div>
-                                    </a>
-                                </div>
-                                <!-- end card body -->
-                                <h5 class="mb-1"><a href="pages-profile.html" class="text-body">Erica Kernan</a></h5>
-                                <p class="text-muted mb-0 ff-secondary">Web Designer</p>
-                            </div>
-                        </div>
-                        <!-- end card -->
-                    </div>
-                    <!-- end col -->
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="card">
-                            <div class="card-body text-center p-4">
-                                <div class="avatar-xl mx-auto mb-4 position-relative">
-                                    <img src="{{ asset('assets/dashboard/images/users/avatar-4.jpg" alt="" class="img-fluid rounded-circle">
-                                    <a href="apps-mailbox.html"
-                                        class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
-                                        <div class="avatar-title bg-transparent">
-                                            <i class="ri-mail-fill align-bottom"></i>
-                                        </div>
-                                    </a>
-                                </div>
-                                <!-- end card body -->
-                                <h5 class="mb-1"><a href="pages-profile.html" class="text-body">Alexis Clarke</a></h5>
-                                <p class="text-muted mb-0 ff-secondary">Backend Developer</p>
-                            </div>
-                        </div>
-                        <!-- end card -->
-                    </div>
-                    <!-- end col -->
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="card">
-                            <div class="card-body text-center p-4">
-                                <div class="avatar-xl mx-auto mb-4 position-relative">
-                                    <img src="{{ asset('assets/dashboard/images/users/avatar-6.jpg" alt="" class="img-fluid rounded-circle">
-                                    <a href="apps-mailbox.html"
-                                        class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
-                                        <div class="avatar-title bg-transparent">
-                                            <i class="ri-mail-fill align-bottom"></i>
-                                        </div>
-                                    </a>
-                                </div>
-                                <!-- end card body -->
-                                <h5 class="mb-1"><a href="pages-profile.html" class="text-body">Marie Ward</a></h5>
-                                <p class="text-muted mb-0 ff-secondary">Full Stack Developer</p>
-                            </div>
-                        </div>
-                        <!-- end card -->
-                    </div>
-                    <!-- end col -->
-
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="card">
-                            <div class="card-body text-center p-4">
-                                <div class="avatar-xl mx-auto mb-4 position-relative">
-                                    <img src="{{ asset('assets/dashboard/images/users/avatar-7.jpg" alt="" class="img-fluid rounded-circle">
-                                    <a href="apps-mailbox.html"
-                                        class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle avatar-xs">
-                                        <div class="avatar-title bg-transparent">
-                                            <i class="ri-mail-fill align-bottom"></i>
-                                        </div>
-                                    </a>
-                                </div>
-                                <!-- end card body -->
-                                <h5 class="mb-1"><a href="pages-profile.html" class="text-body">Jack Gough</a></h5>
-                                <p class="text-muted mb-0 ff-secondary">React Js Developer</p>
-                            </div>
-                        </div>
-                        <!-- end card -->
-                    </div>
-                    <!-- end col -->
-                </div>
-                <!-- end row -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="text-center mt-2">
-                            <a href="pages-team.html" class="btn btn-primary">View All Members <i
-                                    class="ri-arrow-right-line ms-1 align-bottom"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <!-- end row -->
-            </div>
-            <!-- end container -->
-        </section>
-        <!-- end team -->
-
-        <!-- start contact -->
-        <section class="section" id="contact">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="text-center mb-5">
-                            <h3 class="mb-3 fw-semibold">Get In Touch</h3>
-                            <p class="text-muted mb-4 ff-secondary">We thrive when coming up with innovative ideas but also
-                                understand that a smart concept should be supported with faucibus sapien odio measurable
-                                results.</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- end row -->
-
-                <div class="row gy-4">
-                    <div class="col-lg-4">
-                        <div>
-                            <div class="mt-4">
-                                <h5 class="fs-13 text-muted text-uppercase">Office Address 1:</h5>
-                                <div class="ff-secondary fw-semibold">4461 Cedar Street Moro, <br/>AR 72368</div>
-                            </div>
-                            <div class="mt-4">
-                                <h5 class="fs-13 text-muted text-uppercase">Office Address 2:</h5>
-                                <div class="ff-secondary fw-semibold">2467 Swick Hill Street <br />New Orleans, LA</div>
-                            </div>
-                            <div class="mt-4">
-                                <h5 class="fs-13 text-muted text-uppercase">Working Hours:</h5>
-                                <div class="ff-secondary fw-semibold">9:00am to 6:00pm</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                    <div class="col-lg-8">
-                        <div>
-                            <form>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-4">
-                                            <label for="name" class="form-label fs-13">Name</label>
-                                            <input name="name" id="name" type="text"
-                                                class="form-control bg-light border-light" placeholder="Your name*">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="mb-4">
-                                            <label for="email" class="form-label fs-13">Email</label>
-                                            <input name="email" id="email" type="email"
-                                                class="form-control bg-light border-light" placeholder="Your email*">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="mb-4">
-                                            <label for="subject" class="form-label fs-13">Subject</label>
-                                            <input type="text" class="form-control bg-light border-light" id="subject"
-                                                name="subject" placeholder="Your Subject.." />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="mb-3">
-                                            <label for="comments" class="form-label fs-13">Message</label>
-                                            <textarea name="comments" id="comments" rows="3"
-                                                class="form-control bg-light border-light"
-                                                placeholder="Your message..."></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12 text-end">
-                                        <input type="submit" id="submit" name="send" class="submitBnt btn btn-primary"
-                                            value="Send Message">
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <!-- end row -->
-            </div>
-            <!-- end container -->
-        </section>
-        <!-- end contact -->
-
-        <!-- start cta -->
-        <section class="py-5 bg-primary position-relative">
-            <div class="bg-overlay bg-overlay-pattern opacity-50"></div>
-            <div class="container">
-                <div class="row align-items-center gy-4">
-                    <div class="col-sm">
-                        <div>
-                            <h4 class="text-white mb-0 fw-semibold">Build your web App/SaaS with Velzon dashboard</h4>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                    <div class="col-sm-auto">
-                        <div>
-                            <a href="https://1.envato.market/velzon-admin" target="_blank" class="btn bg-gradient btn-danger"><i class="ri-shopping-cart-2-line align-middle me-1"></i> Buy Now</a>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                </div>
-                <!-- end row -->
-            </div>
-            <!-- end container -->
-        </section>
-        <!-- end cta -->
 
     </div>
     <!-- end layout wrapper -->

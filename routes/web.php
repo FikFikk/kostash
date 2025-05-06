@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\GlobalSettingController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\RoomController;
@@ -68,6 +69,17 @@ Route::middleware('auth')->group(function () {
             Route::put('/update/{id}', 'update')->name('update');
         });
 
+    });
+
+    Route::name('gallery.')->prefix('gallery')->group(function () {
+        Route::controller(GalleryController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{gallery}', 'edit')->name('edit');
+            Route::put('/update/{gallery}', 'update')->name('update');
+            Route::delete('/destroy/{gallery}', 'destroy')->name('destroy');
+        });
     });
 
     Route::name('user.')->prefix('user')->group(function () {

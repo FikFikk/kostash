@@ -50,6 +50,9 @@
                             <li class="nav-item">
                                 <a href="{{ route('global.index') }}" class="nav-link" data-key="t-room"> Global Setting </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('gallery.index') }}" class="nav-link" data-key="t-gallery"> Gallery </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

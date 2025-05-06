@@ -24,7 +24,10 @@ class GalleryController extends Controller
         $validated = $this->validateGallery($request);
 
         $validated['filename'] = $this->handleFileUpload($request);
-        $validated['categories'] = $this->parseCategories($request->categories ?? '');
+        $validated['categories'] = $this->parseCategories(
+            $request->input('preset_categories', []),
+            $request->input('custom_categories', '')
+        );
 
         Gallery::create($validated);
 
@@ -47,7 +50,10 @@ class GalleryController extends Controller
             $validated['filename'] = $this->handleFileUpload($request);
         }
 
-        $validated['categories'] = $this->parseCategories($request->categories ?? '');
+        $validated['categories'] = $this->parseCategories(
+            $request->input('preset_categories', []),
+            $request->input('custom_categories', '')
+        );
 
         $gallery->update($validated);
 
@@ -76,7 +82,9 @@ class GalleryController extends Controller
             'filename' => $isCreate ? 'required|image|max:2048' : 'nullable|image|max:2048',
             'uploader_name' => 'nullable|string|max:100',
             'description' => 'nullable|string',
-            'categories' => 'nullable|string',
+            'preset_categories' => 'nullable|array',
+            'preset_categories.*' => 'string|max:50',
+            'custom_categories' => 'nullable|string',
         ]);
     }
 
@@ -85,8 +93,9 @@ class GalleryController extends Controller
         return $request->file('filename')->store('uploads/gallery', 'public');
     }
 
-    protected function parseCategories($categories)
+    protected function parseCategories($preset = [], $custom = '')
     {
-        return $categories ? array_map('trim', explode(',', $categories)) : [];
+        $customArray = $custom ? array_map('trim', explode(',', $custom)) : [];
+        return array_values(array_filter(array_unique(array_merge($preset, $customArray))));
     }
 }

@@ -26,8 +26,19 @@
                     <textarea name="description" class="form-control">{{ old('description', $gallery->description) }}</textarea>
                 </div>
                 <div class="mb-3">
-                    <label>Kategori (pisahkan dengan koma)</label>
-                    <input type="text" name="categories" value="{{ implode(',', $gallery->categories ?? []) }}" class="form-control">
+                    <label>Kategori</label><br>
+                    <!-- Preset categories checkbox -->
+                    @foreach(['room', 'facility', 'surroundings'] as $presetCategory)
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="preset_categories[]" value="{{ $presetCategory }}" 
+                                {{ in_array($presetCategory, $gallery->categories) ? 'checked' : '' }}>
+                            <label class="form-check-label">{{ ucfirst($presetCategory) }}</label>
+                        </div>
+                    @endforeach
+                    
+                    <!-- Manual input for additional categories -->
+                    <input type="text" name="custom_categories" value="{{ old('custom_categories', implode(',', array_diff($gallery->categories ?? [], ['interior', 'eksterior', 'surroundings']))) }}" 
+                           class="form-control mt-2" placeholder="Tambah kategori lain (pisahkan dengan koma)">
                 </div>
                 <div class="mb-3">
                     <label>Gambar Sekarang</label><br>

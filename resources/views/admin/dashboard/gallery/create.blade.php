@@ -24,9 +24,24 @@
                     <textarea name="description" class="form-control" rows="3"></textarea>
                 </div>
                 <div class="mb-3">
-                    <label>Kategori (pisahkan dengan koma)</label>
-                    <input type="text" name="categories" class="form-control" placeholder="Contoh: interior,eksterior">
+                    <label>Kategori</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="preset_categories[]" value="room" id="catRoom">
+                        <label class="form-check-label" for="catRoom">Kamar</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="preset_categories[]" value="facility" id="catFacility">
+                        <label class="form-check-label" for="catFacility">Fasilitas</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" name="preset_categories[]" value="surroundings" id="catDurroundings">
+                        <label class="form-check-label" for="catSurroundings">Lingkungan Sekitar</label>
+                    </div>
+                    <label for="customCategory">Kategori Lain (opsional)</label>
+                    <input type="text" name="custom_categories" class="form-control" placeholder="Contoh: halaman belakang, dapur umum">
+                    <small class="text-muted">Pisahkan dengan koma jika lebih dari satu.</small>
                 </div>
+
                 <div class="mb-3">
                     <label>Gambar</label>
                     <input type="file" name="filename" class="form-control" accept="image/*" required>

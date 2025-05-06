@@ -176,32 +176,24 @@
         </section>
         <!-- end services -->
 
-        <!-- Swiper -->
+        <!-- start swiper -->
         <div class="swiper effect-coverflow-swiper rounded pb-5">
             <div class="swiper-wrapper">
-                <div class="swiper-slide">
-                    <img src="{{ asset('assets/images/image-lp.jpg') }}" alt="" class="img-fluid" />
-                </div>
-                <div class="swiper-slide">
-                    <img src="{{ asset('assets/images/image-lp2.jpg') }}" alt="" class="img-fluid" />
-                </div>
-                <div class="swiper-slide">
-                    <img src="{{ asset('assets/images/image-lp.jpg') }}" alt="" class="img-fluid" />
-                </div>
-                <div class="swiper-slide">
-                    <img src="{{ asset('assets/images/image-lp.jpg') }}" alt="" class="img-fluid" />
-                </div>
-                <div class="swiper-slide">
-                    <img src="{{ asset('assets/images/image-lp.jpg') }}" alt="" class="img-fluid" />
-                </div>
-                <div class="swiper-slide">
-                    <img src="{{ asset('assets/images/image-lp.jpg') }}" alt="" class="img-fluid" />
-                </div>
+                @forelse($viewGalleries as $gallery)
+                    <div class="swiper-slide">
+                        <img src="{{ asset('storage/' . $gallery->filename) }}" alt="{{ $gallery->title }}" class="img-fluid" />
+                    </div>
+                @empty
+                    <div class="swiper-slide">
+                        <img src="{{ asset('assets/images/kostash-logo-tp.png') }}" alt="No Image" class="img-fluid" />
+                    </div>
+                @endforelse
             </div>
             <div class="swiper-pagination swiper-pagination-dark"></div>
         </div>
+        <!-- end swiper -->
 
-        <!-- start plan -->
+        <!-- start gallery -->
         <section class="section bg-light" id="gallery">
             <div class="bg-overlay bg-overlay-pattern"></div>
             <div class="container">
@@ -212,395 +204,59 @@
                             <p class="text-muted mb-4">Lihat berbagai foto dan dokumentasi kamar serta fasilitas kos kami. Transparan dan tanpa biaya tersembunyi.</p>
                         </div>
                     </div>
-                    <!-- end col -->
                 </div>
-                
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="text-center">
-                                            <ul class="list-inline categories-filter animation-nav" id="filter">
-                                                <li class="list-inline-item"><a class="categories active" data-filter="*">All</a></li>
-                                                <li class="list-inline-item"><a class="categories" data-filter=".project">Project</a></li>
-                                                <li class="list-inline-item"><a class="categories" data-filter=".designing">Designing</a></li>
-                                                <li class="list-inline-item"><a class="categories" data-filter=".photography">Photography</a></li>
-                                                <li class="list-inline-item"><a class="categories" data-filter=".development">Development</a></li>
-                                            </ul>
+
+                <div class="text-center mb-4">
+                    <ul class="list-inline categories-filter animation-nav" id="filter">
+                        <li class="list-inline-item"><a class="categories active" data-filter="*">Semua</a></li>
+                        <li class="list-inline-item"><a class="categories" data-filter=".room">Kamar</a></li>
+                        <li class="list-inline-item"><a class="categories" data-filter=".facility">Fasilitas</a></li>
+                        <li class="list-inline-item"><a class="categories" data-filter=".surroundings">Lingkungan Sekitar</a></li>
+                    </ul>
+                </div>
+
+                <div class="row gallery-wrapper">
+                    @forelse($galleries as $gallery)
+                        @php
+                            $categoryClasses = collect(is_array($gallery->categories) ? $gallery->categories : json_decode($gallery->categories ?? '[]'))
+                                ->map(fn($cat) => strtolower(trim($cat)))
+                                ->implode(' ');
+                        @endphp
+
+                        <div class="element-item col-xxl-3 col-xl-4 col-sm-6 {{ $categoryClasses }}" data-category="{{ $categoryClasses }}">
+                            <div class="gallery-box card">
+                                <div class="gallery-container">
+                                    <a class="image-popup" href="{{ asset('storage/' . $gallery->filename) }}" title="{{ $gallery->title }}">
+                                        <img class="gallery-img img-fluid mx-auto" src="{{ asset('storage/' . $gallery->filename) }}" alt="{{ $gallery->title }}" />
+                                        <div class="gallery-overlay">
+                                            <h5 class="overlay-caption">{{ $gallery->title }}</h5>
                                         </div>
-        
-                                        <div class="row gallery-wrapper">
-                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 project designing development"  data-category="designing development">
-                                                <div class="gallery-box card">
-                                                    <div class="gallery-container">
-                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
-                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
-                                                            <div class="gallery-overlay">
-                                                                <h5 class="overlay-caption">Glasses and laptop from above</h5>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-    
-                                                    <div class="box-content">
-                                                        <div class="d-flex align-items-center mt-1">
-                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Ron Mackie</a></div>
-                                                            <div class="flex-shrink-0">
-                                                                <div class="d-flex gap-3">
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 2.2K
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 1.3K
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- end col -->
-                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
-                                                <div class="gallery-box card">
-                                                    <div class="gallery-container">
-                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
-                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
-                                                            <div class="gallery-overlay">
-                                                                <h5 class="overlay-caption">Working at a coffee shop</h5>
-                                                            </div>
-                                                        </a>
-                                                        
-                                                    </div>
-    
-                                                    <div class="box-content">
-                                                        <div class="d-flex align-items-center mt-1">
-                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Nancy Martino</a></div>
-                                                            <div class="flex-shrink-0">
-                                                                <div class="d-flex gap-3">
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 3.2K
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 1.1K
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- end col -->
-                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 project development" data-category="development">
-                                                <div class="gallery-box card">
-                                                    <div class="gallery-container">
-                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
-                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
-                                                            <div class="gallery-overlay">
-                                                                <h5 class="overlay-caption">Photo was taken in Beach</h5>
-                                                            </div>
-                                                        </a>
-                                                    </div>
+                                    </a>
+                                </div>
 
-                                                    <div class="box-content">
-                                                        <div class="d-flex align-items-center mt-1">
-                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Elwood Arter</a></div>
-                                                            <div class="flex-shrink-0">
-                                                                <div class="d-flex gap-3">
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 2.1K
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 1K
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- end col -->
-                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 project designing" data-category="project designing">
-                                                <div class="gallery-box card">
-                                                    <div class="gallery-container">
-                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
-                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
-                                                            <div class="gallery-overlay">
-                                                                <h5 class="overlay-caption">Drawing a sketch</h5>
-                                                            </div>
-                                                        </a>
-                                                        
-                                                    </div>
-    
-                                                    <div class="box-content">
-                                                        <div class="d-flex align-items-center mt-1">
-                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Jason McQuaid</a></div>
-                                                            <div class="flex-shrink-0">
-                                                                <div class="d-flex gap-3">
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 825
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 101
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- end col -->
-                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 project designing" data-category="project designing">
-                                                <div class="gallery-box card">
-                                                    <div class="gallery-container">
-                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
-                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
-                                                            <div class="gallery-overlay">
-                                                                <h5 class="overlay-caption">Working from home little spot</h5>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                    <div class="box-content">
-                                                        <div class="d-flex align-items-center mt-1">
-                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Henry Baird</a></div>
-                                                            <div class="flex-shrink-0">
-                                                                <div class="d-flex gap-3">
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 632
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 95
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- end col -->
-                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
-                                                <div class="gallery-box card">
-                                                    <div class="gallery-container">
-                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
-                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
-                                                            <div class="gallery-overlay">
-                                                                <h5 class="overlay-caption">Project discussion with team</h5>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-
-                                                    <div class="box-content">
-                                                        <div class="d-flex align-items-center mt-1">
-                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Erica Kernan</a></div>
-                                                            <div class="flex-shrink-0">
-                                                                <div class="d-flex gap-3">
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 3.4K
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 1.3k
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- end col -->
-                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 project designing development"  data-category="designing development">
-                                                <div class="gallery-box card">
-                                                    <div class="gallery-container">
-                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
-                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
-                                                            <div class="gallery-overlay">
-                                                                <h5 class="overlay-caption">Sunrise above a beach</h5>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-    
-                                                    <div class="box-content">
-                                                        <div class="d-flex align-items-center mt-1">
-                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">James Ballard</a></div>
-                                                            <div class="flex-shrink-0">
-                                                                <div class="d-flex gap-3">
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 735
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 150
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- end col -->
-                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
-                                                <div class="gallery-box card">
-                                                    <div class="gallery-container">
-                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
-                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
-                                                            <div class="gallery-overlay">
-                                                                <h5 class="overlay-caption">Glasses and laptop from above</h5>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-    
-                                                    <div class="box-content">
-                                                        <div class="d-flex align-items-center mt-1">
-                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Ruby Griffin</a></div>
-                                                            <div class="flex-shrink-0">
-                                                                <div class="d-flex gap-3">
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 1.5k
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 250
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- end col -->
-
-                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 project designing development"  data-category="designing development">
-                                                <div class="gallery-box card">
-                                                    <div class="gallery-container">
-                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
-                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
-                                                            <div class="gallery-overlay">
-                                                                <h5 class="overlay-caption">Dramatic clouds at the Golden Gate Bridge</h5>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-    
-                                                    <div class="box-content">
-                                                        <div class="d-flex align-items-center mt-1">
-                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Ron Mackie</a></div>
-                                                            <div class="flex-shrink-0">
-                                                                <div class="d-flex gap-3">
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 2.2K
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 1.3K
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- end col -->
-
-                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 project designing" data-category="project designing">
-                                                <div class="gallery-box card">
-                                                    <div class="gallery-container">
-                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
-                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
-                                                            <div class="gallery-overlay">
-                                                                <h5 class="overlay-caption">Fun day at the Hill Station</h5>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                    <div class="box-content">
-                                                        <div class="d-flex align-items-center mt-1">
-                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Henry Baird</a></div>
-                                                            <div class="flex-shrink-0">
-                                                                <div class="d-flex gap-3">
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 632
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 95
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- end col -->
-
-                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
-                                                <div class="gallery-box card">
-                                                    <div class="gallery-container">
-                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
-                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
-                                                            <div class="gallery-overlay">
-                                                                <h5 class="overlay-caption">Cycling in the countryside</h5>
-                                                            </div>
-                                                        </a>
-                                                        
-                                                    </div>
-    
-                                                    <div class="box-content">
-                                                        <div class="d-flex align-items-center mt-1">
-                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Nancy Martino</a></div>
-                                                            <div class="flex-shrink-0">
-                                                                <div class="d-flex gap-3">
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 3.2K
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 1.1K
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- end col -->
-
-                                            <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
-                                                <div class="gallery-box card">
-                                                    <div class="gallery-container">
-                                                        <a class="image-popup" href="{{ asset('assets/images/image-lp.jpg') }}" title="">
-                                                            <img class="gallery-img img-fluid mx-auto" src="{{ asset('assets/images/image-lp.jpg') }}" alt="" />
-                                                            <div class="gallery-overlay">
-                                                                <h5 class="overlay-caption">A mix of friends and strangers heading off to find an adventure.</h5>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-
-                                                    <div class="box-content">
-                                                        <div class="d-flex align-items-center mt-1">
-                                                            <div class="flex-grow-1 text-muted">by <a href="" class="text-body text-truncate">Erica Kernan</a></div>
-                                                            <div class="flex-shrink-0">
-                                                                <div class="d-flex gap-3">
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-thumb-up-fill text-muted align-bottom me-1"></i> 3.4K
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-sm fs-12 btn-link text-body text-decoration-none px-0">
-                                                                        <i class="ri-question-answer-fill text-muted align-bottom me-1"></i> 1.3k
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- end col -->
+                                <div class="box-content">
+                                    <div class="d-flex align-items-center mt-1 justify-content-between">
+                                        <div class="text-muted">
+                                            by <a href="#" class="text-body text-truncate">{{ $gallery->uploader_name ?? 'Admin' }}</a>
+                                        </div>
+                                        <div class="text-muted">
+                                            <i class="ri-calendar-line me-1 align-middle"></i>
+                                            {{ \Carbon\Carbon::parse($gallery->created_at)->translatedFormat('d F Y') }}
                                         </div>
                                     </div>
                                 </div>
-                                <!-- end row -->
+
                             </div>
-                            <!-- ene card body -->
                         </div>
-                        <!-- end card -->
-                    </div>
-                    <!-- end col -->
+                    @empty
+                        <div class="text-center">
+                            <p class="text-muted">Belum ada gambar yang tersedia.</p>
+                        </div>
+                    @endforelse
                 </div>
-                <!-- end row -->
             </div>
-            <!-- end container -->
         </section>
-        <!-- end plan -->
+        <!-- end gallery -->
 
         <!-- start faqs -->
         <section class="section">

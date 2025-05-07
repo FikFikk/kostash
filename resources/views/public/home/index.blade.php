@@ -19,7 +19,7 @@
                             <p class="lead text-muted lh-base">KostASH adalah hunian kost yang nyaman dan strategis, cocok untuk pelajar, mahasiswa, dan pekerja. Dapatkan informasi lengkap tentang ketersediaan kamar, fasilitas, dan lokasi hanya dalam sekali klik.</p>
 
                             <div class="d-flex gap-2 justify-content-center mt-4">
-                                <a href="#gallery" class="btn btn-primary">Lihat Kamar <i class="ri-arrow-right-line align-middle ms-1"></i></a>
+                                <a href="#room" class="btn btn-primary">Lihat Kamar <i class="ri-arrow-right-line align-middle ms-1"></i></a>
                                 <a href="#services" class="btn btn-danger">Cek Layanan <i class="ri-eye-line align-middle ms-1"></i></a>
                             </div>
                         </div>
@@ -257,6 +257,61 @@
             </div>
         </section>
         <!-- end gallery -->
+
+        
+        <section class="section bg-light" id="room">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="text-center mb-5">
+                            <h2 class="mb-3 fw-semibold">Kamar</h2>
+                            <p class="text-muted mb-4">Lihat daftar kamar yang tersedia dan cek status ketersediaannya secara real-time.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    @foreach($rooms as $room)
+                    @php
+                        $tenant = $users->firstWhere('room_id', $room->id);
+                        $isOccupied = $tenant !== null;
+                    @endphp
+                    <div class="col">
+                        <div class="card h-100 shadow-sm border-0">
+                            <img src="{{ asset('storage/' . $room->image) }}" class="card-img-top" alt="{{ $room->name }}" style="height: 180px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ $room->name }}</h5>
+                                
+                                <p class="card-text mb-1">
+                                    <strong>Status:</strong>
+                                    @if ($isOccupied)
+                                        <span class="badge bg-danger">Terisi</span>
+                                    @else
+                                        <span class="badge bg-success">Available</span>
+                                    @endif
+                                </p>
+
+                                <p class="small text-muted">
+                                    @php
+                                        $tenant = $users->firstWhere('room_id', $room->id);
+                                    @endphp
+                                    <strong>Penghuni:</strong> {{ $tenant->name ?? '-' }}
+                                </p>
+
+                                <div class="mb-2">
+                                    <strong>Fasilitas:</strong><br>
+                                    @foreach(json_decode($room->facilities ?? '[]') as $facility)
+                                        @foreach(explode(',', $facility) as $item)
+                                            <span class="badge badge-soft-primary text-dark badge-border">{{ trim($item) }}</span>
+                                        @endforeach
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
 
         <!-- start faqs -->
         <section class="section">

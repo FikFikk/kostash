@@ -75,6 +75,9 @@
                     <a class="nav-link" href="#gallery">Galeri</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="#room">Kamar</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="#lokasi">Lokasi</a>
                 </li>
                 <!-- <li class="nav-item">

@@ -9,7 +9,7 @@
             <h4 class="card-title">Upload Gambar Baru</h4>
         </div>
         <div class="card-body">
-            <form action="{{ route('gallery.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('dashboard.gallery.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <label>Judul</label>
@@ -46,7 +46,7 @@
                     <label>Gambar</label>
                     <input type="file" name="filename" class="form-control" accept="image/*" required>
                 </div>
-                <a href="{{ route('gallery.index') }}" class="btn btn-outline-primary me-2">Batal</a>
+                <a href="{{ route('dashboard.gallery.index') }}" class="btn btn-outline-primary me-2">Batal</a>
                 <button type="submit" class="btn btn-primary">Upload</button>
             </form>
         </div>

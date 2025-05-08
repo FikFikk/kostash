@@ -10,7 +10,7 @@
             <h4 class="card-title mb-0 flex-grow-1">Room Tables</h4>
             <div class="flex-shrink-0">
                 <div class="form-check form-switch form-switch-right form-switch-md">
-                    <a href="{{ route('room.create') }}" class="btn btn-primary btn-label waves-effect waves-light"><i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Add Room</a>
+                    <a href="{{ route('dashboard.room.create') }}" class="btn btn-primary btn-label waves-effect waves-light"><i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Add Room</a>
                 </div>
             </div>
         </div><!-- end card header -->  
@@ -112,8 +112,8 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('room.edit', $room->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                        <form action="{{ route('room.destroy', $room->id) }}" method="POST" style="display:inline-block;">
+                                        <a href="{{ route('dashboard.room.edit', $room->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                        <form action="{{ route('dashboard.room.destroy', $room->id) }}" method="POST" style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-sm">

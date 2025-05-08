@@ -19,7 +19,7 @@
         <div class="card-body">
             <!-- <p class="text-muted">More complex forms can be built using our grid classes. Use these for form layouts that require multiple columns, varied widths, and additional alignment options. <span class="fw-medium">Requires the <code>$enable-grid-classes</code> Sass variable to be enabled</span> (on by default).</p> -->
             <div class="live-preview">
-                <form action="{{ route('room.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('dashboard.room.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
                         <label for="name" class="form-label">Room Name</label>

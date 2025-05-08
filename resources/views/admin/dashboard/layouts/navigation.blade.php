@@ -45,20 +45,20 @@
                     <div class="collapse menu-dropdown" id="sidebarAuth">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ route('room.home') }}" class="nav-link" data-key="t-room"> Room </a>
+                                <a href="{{ route('dashboard.room.index') }}" class="nav-link" data-key="t-room"> Room </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('global.index') }}" class="nav-link" data-key="t-room"> Global Setting </a>
+                                <a href="{{ route('dashboard.global.index') }}" class="nav-link" data-key="t-room"> Global Setting </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('gallery.index') }}" class="nav-link" data-key="t-gallery"> Gallery </a>
+                                <a href="{{ route('dashboard.gallery.index') }}" class="nav-link" data-key="t-gallery"> Gallery </a>
                             </li>
                         </ul>
                     </div>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('user.index') }}">
+                    <a class="nav-link menu-link" href="{{ route('dashboard.user.index') }}">
                         <i class="ri-account-circle-line"></i> <span data-key="t-authentication">User</span>
                     </a>
                 </li>

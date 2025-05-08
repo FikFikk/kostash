@@ -8,7 +8,7 @@
         <div class="card-header d-flex align-items-center">
             <h4 class="card-title mb-0 flex-grow-1">Gallery</h4>
             <div class="flex-shrink-0">
-                <a href="{{ route('gallery.create') }}" class="btn btn-primary btn-label">
+                <a href="{{ route('dashboard.gallery.create') }}" class="btn btn-primary btn-label">
                     <i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Add Image
                 </a>
             </div>
@@ -27,8 +27,8 @@
                                         <span class="badge bg-info">{{ $category }}</span>
                                     @endforeach
                                 </div>
-                                <a href="{{ route('gallery.edit', $gallery->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                <form action="{{ route('gallery.destroy', $gallery->id) }}" method="POST" style="display:inline-block;">
+                                <a href="{{ route('dashboard.gallery.edit', $gallery->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                <form action="{{ route('dashboard.gallery.destroy', $gallery->id) }}" method="POST" style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" onclick="return confirm('Yakin ingin menghapus gambar ini?')" class="btn btn-sm btn-danger">Delete</button>

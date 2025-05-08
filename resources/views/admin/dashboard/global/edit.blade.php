@@ -12,7 +12,7 @@
                     <h4 class="mb-0 text-white"><i class="ri-edit-line me-2"></i>Edit Global Setting</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('global.update', $global->id) }}" method="POST">
+                    <form action="{{ route('dashboard.global.update', $global->id) }}" method="POST">
                         @csrf
                         @method('PUT')
 
@@ -35,7 +35,7 @@
                         </div>
 
                         <div class="text-end">
-                            <a href="{{ route('global.index') }}" class="btn btn-secondary me-2">Batal</a>
+                            <a href="{{ route('dashboard.global.index') }}" class="btn btn-secondary me-2">Batal</a>
                             <button type="submit" class="btn btn-success">
                                 <i class="ri-save-line me-1"></i> Simpan
                             </button>

@@ -113,4 +113,15 @@ class RoomController extends Controller
 
         return $facilities ? json_encode($facilities) : null;
     }
+
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (auth()->user()->role !== 'admin') {
+                abort(403, 'Unauthorized');
+            }
+
+            return $next($request);
+        });
+    }
 }

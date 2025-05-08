@@ -41,15 +41,13 @@ Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(f
     })->name('logout.page');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::name('dashboard.')->prefix('dashboard')->group(function () {
-        Route::controller(DashboardController::class)->group(function () {
-            Route::get('/', 'index')->name('home');
-        });
+// -----------------------------
+// Admin Dashboard Route
+// -----------------------------
+Route::middleware(['auth', 'role:admin'])->prefix('dashboard')->name('dashboard.')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('home');
 
-    });
-
-    Route::name('room.')->prefix('room')->group(function () {
+    Route::prefix('room')->name('room.')->group(function () {
         Route::controller(RoomController::class)->group(function () {
             Route::get('/', 'index')->name('home');
             Route::get('/create', 'create')->name('create');
@@ -57,21 +55,19 @@ Route::middleware('auth')->group(function () {
             Route::get('/edit/{id}', 'edit')->name('edit');
             Route::put('/update/{id}', 'update')->name('update');
             Route::delete('/destroy/{room}', 'destroy')->name('destroy');
-            Route::post('/rooms/temp-upload', [RoomController::class, 'tempUpload'])->name('upload');
+            Route::post('/rooms/temp-upload', 'tempUpload')->name('upload');
         });
-
     });
 
-    Route::name('global.')->prefix('global')->group(function () {
+    Route::prefix('global')->name('global.')->group(function () {
         Route::controller(GlobalSettingController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/edit/{id}', 'edit')->name('edit');
             Route::put('/update/{id}', 'update')->name('update');
         });
-
     });
 
-    Route::name('gallery.')->prefix('gallery')->group(function () {
+    Route::prefix('gallery')->name('gallery.')->group(function () {
         Route::controller(GalleryController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/create', 'create')->name('create');
@@ -82,9 +78,19 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    Route::name('user.')->prefix('user')->group(function () {
+    Route::prefix('user')->name('user.')->group(function () {
         Route::controller(UserController::class)->group(function () {
             Route::get('/', 'index')->name('index');
         });
     });
+});
+
+// -----------------------------
+// Tenant Dashboard Route
+// -----------------------------
+Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->group(function () {
+    // Route::get('/', [TenantDashboardController::class, 'index'])->name('home');
+
+    // Tambahkan fitur lainnya khusus tenant di sini nanti
+    // Route::get('/bills', [TenantBillController::class, 'index'])->name('bills');
 });

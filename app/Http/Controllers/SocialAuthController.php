@@ -51,11 +51,7 @@ class SocialAuthController extends Controller
 
             Auth::login($user);
             
-            if ($user->role === 'admin') {
-                return redirect()->route('dashboard.home');
-            } else {
-                return redirect()->route('public.home');
-            }
+            return response()->view('auth.social-success', ['redirectTo' => $user->role === 'admin' ? route('dashboard.home') : route('public.home')]);
 
         } catch (Exception $e) {
             // Log error jika diperlukan

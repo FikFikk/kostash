@@ -12,8 +12,11 @@ class MeterController extends Controller
      */
     public function index()
     {
-        //
+        $meters = Meter::with('room')->orderBy('period', 'desc')->paginate(10);
+
+        return view('admin.dashboard.meters.index', compact('meters'));
     }
+
 
     /**
      * Show the form for creating a new resource.

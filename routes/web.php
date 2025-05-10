@@ -5,6 +5,7 @@ use App\Http\Controllers\{
     DashboardController,
     GalleryController,
     GlobalSettingController,
+    MeterController,
     PublicController,
     RoomController,
     SocialAuthController,
@@ -77,6 +78,17 @@ Route::middleware(['auth', 'role:admin'])->prefix('dashboard')->name('dashboard.
             Route::get('/edit/{gallery}', 'edit')->name('edit');
             Route::put('/update/{gallery}', 'update')->name('update');
             Route::delete('/destroy/{gallery}', 'destroy')->name('destroy');
+        });
+    });
+
+    Route::prefix('meter')->name('meter.')->group(function () {
+        Route::controller(MeterController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create'); //controller not ready
+            Route::post('/store', 'store')->name('store'); //controller not ready
+            Route::get('/edit/{id}', 'edit')->name('edit'); //controller not ready
+            Route::put('/update/{id}', 'update')->name('update'); //controller not ready
+            Route::delete('/destroy/{id}', 'destroy')->name('destroy'); //controller not ready
         });
     });
 

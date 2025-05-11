@@ -14,6 +14,9 @@ class Meter extends Model
         'water_meter_end',
         'electric_meter_start',
         'electric_meter_end',
+        'total_water',
+        'total_electric',
+        'total_bill',
         'period',
     ];
 

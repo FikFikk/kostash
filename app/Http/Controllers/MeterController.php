@@ -12,13 +12,22 @@ class MeterController extends Controller
 {
     public function index()
     {
-        $meters = Meter::with('room')->latest()->paginate(10);
-        return view('admin.dashboard.meters.index', compact('meters'));
+        $rooms = Room::orderBy('name')->get();
+        $roomMeters = [];
+    
+        foreach ($rooms as $room) {
+            $roomMeters[$room->id] = Meter::with('room')
+                ->where('room_id', $room->id)
+                ->orderByDesc('period')
+                ->paginate(5, ['*'], 'page_' . $room->id); // penting: pagination key unik per kamar
+        }
+    
+        return view('admin.dashboard.meters.index', compact('rooms', 'roomMeters'));
     }
 
     public function create()
     {
-        $rooms = Room::all();
+        $rooms = Room::orderBy('name')->get();
         return view('admin.dashboard.meters.create', compact('rooms'));
     }
 

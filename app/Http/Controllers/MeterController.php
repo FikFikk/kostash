@@ -28,7 +28,20 @@ class MeterController extends Controller
     public function create()
     {
         $rooms = Room::orderBy('name')->get();
-        return view('admin.dashboard.meters.create', compact('rooms'));
+
+        $defaultStartValues = [];
+
+        foreach ($rooms as $room) {
+            $lastMeter = Meter::where('room_id', $room->id)
+                ->orderByDesc('period')
+                ->first();
+
+            $defaultStartValues[$room->id] = [
+                'water_meter_start' => $lastMeter?->water_meter_end ?? 0,
+                'electric_meter_start' => $lastMeter?->electric_meter_end ?? 0,
+            ];
+        }
+        return view('admin.dashboard.meters.create', compact('rooms', 'defaultStartValues'));
     }
 
     public function store(Request $request)

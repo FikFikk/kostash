@@ -15,10 +15,12 @@
 
                 <div class="mb-3">
                     <label for="room_id" class="form-label">Kamar</label>
-                    <select name="room_id" class="form-select" required>
+                    <select name="room_id" id="room_id" class="form-select" onchange="updateDefaultMeter(this.value)">
                         <option value="">-- Pilih Kamar --</option>
                         @foreach($rooms as $room)
-                            <option value="{{ $room->id }}">{{ $room->name }}</option>
+                            <option value="{{ $room->id }}" {{ old('room_id') == $room->id ? 'selected' : '' }}>
+                                {{ $room->name }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -33,10 +35,10 @@
                         <label class="form-label">Air (m³)</label>
                         <div class="row">
                             <div class="col">
-                                <input type="number" name="water_meter_start" class="form-control" placeholder="Awal" required>
+                                <input type="number" id="water_meter_start" name="water_meter_start" placeholder="Isi meter air awal" class="form-control" value="{{ old('water_meter_start') }}" required>
                             </div>
                             <div class="col">
-                                <input type="number" name="water_meter_end" class="form-control" placeholder="Akhir" required>
+                                <input type="number" name="water_meter_end" class="form-control" placeholder="Isi meter air akhir" required>
                             </div>
                         </div>
                     </div>
@@ -45,10 +47,10 @@
                         <label class="form-label">Listrik (kWh)</label>
                         <div class="row">
                             <div class="col">
-                                <input type="number" name="electric_meter_start" class="form-control" placeholder="Awal" required>
+                                <input type="number" id="electric_meter_start" name="electric_meter_start" placeholder="Isi meter listrik awal" class="form-control" value="{{ old('electric_meter_start') }}" required>
                             </div>
                             <div class="col">
-                                <input type="number" name="electric_meter_end" class="form-control" placeholder="Akhir" required>
+                                <input type="number" name="electric_meter_end" class="form-control" placeholder="Isi meter listrik akhir" required>
                             </div>
                         </div>
                     </div>
@@ -59,4 +61,32 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('script')
+
+<script>
+    const defaultValues = @json($defaultStartValues);
+
+    function updateDefaultMeter(roomId) {
+        const values = defaultValues[roomId];
+        if (values) {
+            document.getElementById('water_meter_start').value = values.water_meter_start;
+            document.getElementById('electric_meter_start').value = values.electric_meter_start;
+        } else {
+            document.getElementById('water_meter_start').value = 0;
+            document.getElementById('electric_meter_start').value = 0;
+        }
+    }
+
+    // Optional: panggil saat halaman dimuat jika sudah ada old('room_id')
+    document.addEventListener("DOMContentLoaded", function () {
+        const selectedRoomId = document.getElementById('room_id').value;
+        if (selectedRoomId) {
+            updateDefaultMeter(selectedRoomId);
+        }
+    });
+</script>
+
+
 @endsection

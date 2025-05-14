@@ -5,6 +5,11 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h4 class="card-title mb-0">Users Table</h4>
+            <div class="flex-shrink-0">
+                <a href="{{ route('dashboard.user.create') }}" class="btn btn-primary btn-label">
+                    <i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Tambah
+                </a>
+            </div>
         </div>
 
         <div class="card-body table-responsive">
@@ -28,9 +33,9 @@
                             <td>{{ $user->room ? $user->room->name : '-' }}</td>
                             <td>{{ $user->created_at->format('Y-m-d') }}</td>
                             <td>
-                                <a href="" class="btn btn-info btn-sm">Detail</a>
-                                <a href="" class="btn btn-warning btn-sm">Edit</a>
-                                <form action="" method="POST" style="display:inline-block;">
+                                <a href="{{ route('dashboard.user.show', $user->id) }}" class="btn btn-info btn-sm">Detail</a>
+                                <a href="{{ route('dashboard.user.edit', $user->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <form action="{{ route('dashboard.user.destroy', $user->id) }}" method="POST" style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-sm">

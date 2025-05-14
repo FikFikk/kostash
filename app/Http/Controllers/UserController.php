@@ -4,17 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Room;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
     public function index(Request $request)
     {
         $search = $request->input('search');
-        
+
         $users = User::query()
             ->when($search, function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
             })
             ->orderBy('created_at')
             ->paginate(10)
@@ -23,4 +29,98 @@ class UserController extends Controller
         return view('admin.dashboard.users.index', compact('users', 'search'));
     }
 
+    public function create()
+    {
+        $rooms = $this->getAvailableRooms();
+        return view('admin.dashboard.users.create', compact('rooms'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $this->validateRequest($request);
+
+        $validated['id'] = Str::uuid();
+        $validated['password'] = Hash::make($validated['password']);
+
+        User::create($validated);
+
+        return redirect()->route('dashboard.user.index')->with('success', 'User created successfully.');
+    }
+
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+        $rooms = $this->getAvailableRooms($user->room_id);
+        return view('admin.dashboard.users.edit', compact('user', 'rooms'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $validated = $this->validateRequest($request, $user->id);
+
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+
+        $user->update($validated);
+
+        return redirect()->route('dashboard.user.index')->with('success', 'User updated successfully.');
+    }
+
+    public function show($id)
+    {
+        $user = User::findOrFail($id);
+        $rooms = Room::orderBy('name')->get();
+        return view('admin.dashboard.users.show', compact('user', 'rooms'));
+    }
+
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+
+        // Tidak bisa hapus admin
+        if ($user->role === 'admin') {
+            return redirect()->back()->with('error', 'Tidak dapat menghapus akun admin.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('dashboard.user.index')->with('success', 'User deleted successfully.');
+    }
+
+    // --- PRIVATE FUNCTIONS ---
+
+    private function validateRequest(Request $request, $userId = null): array
+    {
+        $rules = [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($userId)],
+            'phone' => ['nullable', Rule::unique('users', 'phone')->ignore($userId)],
+            'nik' => ['nullable', 'string', 'max:50'],
+            'address' => ['nullable', 'string'],
+            'date_entry' => ['nullable', 'date'],
+            'role' => ['nullable', 'in:admin,tenants'],
+            'status' => ['nullable', 'in:aktif,nonaktif'],
+            'catatan' => ['nullable', 'string'],
+            'room_id' => ['nullable', 'exists:rooms,id'],
+            'password' => $userId
+                ? ['nullable', 'string', 'min:6', 'confirmed']
+                : ['required', 'string', 'min:6', 'confirmed'],
+        ];
+
+        return $request->validate($rules);
+    }
+
+    private function getAvailableRooms($currentRoomId = null)
+    {
+        $usedRoomIds = User::whereNotNull('room_id')
+            ->when($currentRoomId, fn ($q) => $q->where('room_id', '!=', $currentRoomId))
+            ->pluck('room_id');
+
+        return Room::whereNotIn('id', $usedRoomIds)->orderBy('name')->get();
+    }
 }

@@ -48,8 +48,19 @@ class MeterController extends Controller
     {
         $validated = $this->validateMeter($request);
 
-        $global = $this->getGlobalSettings();
         $period = $this->parsePeriod($validated['period']);
+
+        $exists = Meter::where('room_id', $validated['room_id'])
+            ->where('period', $period)
+            ->exists();
+
+        if ($exists) {
+            return back()->withInput()->withErrors([
+                'period' => 'Data meter untuk kamar dan periode ini sudah ada.',
+            ]);
+        }
+
+        $global = $this->getGlobalSettings();
 
         $billData = $this->calculateTotalBill(
             $validated['water_meter_start'],

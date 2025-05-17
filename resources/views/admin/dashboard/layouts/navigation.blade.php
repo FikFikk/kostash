@@ -64,6 +64,12 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('dashboard.bill.index') }}">
+                        <i class="ri-window-2-line"></i> <span data-key="t-meter">Bills</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link menu-link" href="{{ route('dashboard.user.index') }}">
                         <i class="ri-account-circle-line"></i> <span data-key="t-authentication">User</span>
                     </a>

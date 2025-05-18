@@ -10,8 +10,9 @@ class GalleryController extends Controller
 {
     public function index()
     {
-        $galleries = Gallery::latest()->paginate(8);
-        return view('admin.dashboard.gallery.index', compact('galleries'));
+        return view('admin.dashboard.gallery.index', [
+            'galleries' => Gallery::latest()->paginate(8)
+        ]);
     }
 
     public function create()
@@ -22,16 +23,12 @@ class GalleryController extends Controller
     public function store(Request $request)
     {
         $validated = $this->validateGallery($request);
+        $data = $this->prepareGalleryData($request, $validated);
 
-        $validated['filename'] = $this->handleFileUpload($request);
-        $validated['categories'] = $this->parseCategories(
-            $request->input('preset_categories', []),
-            $request->input('custom_categories', '')
-        );
+        Gallery::create($data);
 
-        Gallery::create($validated);
-
-        return redirect()->route('gallery.index')->with('success', 'Gambar berhasil diunggah.');
+        return redirect()->route('dashboard.gallery.index')
+            ->with('success', 'Gambar berhasil diunggah.');
     }
 
     public function edit(Gallery $gallery)
@@ -42,44 +39,31 @@ class GalleryController extends Controller
     public function update(Request $request, Gallery $gallery)
     {
         $validated = $this->validateGallery($request, false);
+        $data = $this->prepareGalleryData($request, $validated, $gallery);
 
-        if ($request->hasFile('filename')) {
-            if (Storage::disk('public')->exists($gallery->filename)) {
-                Storage::disk('public')->delete($gallery->filename);
-            }
-            $validated['filename'] = $this->handleFileUpload($request);
-        }
+        $gallery->update($data);
 
-        $validated['categories'] = $this->parseCategories(
-            $request->input('preset_categories', []),
-            $request->input('custom_categories', '')
-        );
-
-        $gallery->update($validated);
-
-        return redirect()->route('gallery.index')->with('success', 'Gambar berhasil diperbarui.');
+        return redirect()->route('dashboard.gallery.index')
+            ->with('success', 'Gambar berhasil diperbarui.');
     }
 
     public function destroy(Gallery $gallery)
     {
-        if (Storage::disk('public')->exists($gallery->filename)) {
-            Storage::disk('public')->delete($gallery->filename);
-        }
-
+        $this->deleteFile($gallery->filename);
         $gallery->delete();
 
         return back()->with('success', 'Gambar berhasil dihapus.');
     }
 
     // -----------------------
-    // ✅ Helper Methods Below
+    // ✅ Helper Methods
     // -----------------------
 
-    protected function validateGallery(Request $request, $isCreate = true)
+    protected function validateGallery(Request $request, bool $isCreate = true): array
     {
         return $request->validate([
             'title' => 'required|string|max:255',
-            'filename' => $isCreate ? 'required|image|max:2048' : 'nullable|image|max:2048',
+            'filename' => ($isCreate ? 'required' : 'nullable') . '|image|max:2048',
             'uploader_name' => 'nullable|string|max:100',
             'description' => 'nullable|string',
             'preset_categories' => 'nullable|array',
@@ -88,14 +72,36 @@ class GalleryController extends Controller
         ]);
     }
 
-    protected function handleFileUpload(Request $request)
+    protected function prepareGalleryData(Request $request, array $validated, ?Gallery $gallery = null): array
     {
-        return $request->file('filename')->store('uploads/gallery', 'public');
+        // Handle file upload
+        if ($request->hasFile('filename')) {
+            if ($gallery) {
+                $this->deleteFile($gallery->filename);
+            }
+
+            $validated['filename'] = $request->file('filename')->store('uploads/gallery', 'public');
+        }
+
+        // Parse categories
+        $validated['categories'] = $this->parseCategories(
+            $request->input('preset_categories', []),
+            $request->input('custom_categories', '')
+        );
+
+        return $validated;
     }
 
-    protected function parseCategories($preset = [], $custom = '')
+    protected function parseCategories($preset = [], $custom = ''): array
     {
         $customArray = $custom ? array_map('trim', explode(',', $custom)) : [];
         return array_values(array_filter(array_unique(array_merge($preset, $customArray))));
+    }
+
+    protected function deleteFile(string $path): void
+    {
+        if (Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
     }
 }

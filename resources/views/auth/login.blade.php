@@ -63,10 +63,17 @@
 											<h5 class="fs-13 mb-4 title">Sign In with</h5>
 										</div>
 										<div>
-											<!-- <button type="button" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-facebook-fill fs-16"></i></button> -->
-											<a href="{{ route('auth.google') }}" id="google-login-btn" class="btn btn-danger btn-icon waves-effect waves-light" title="Login with Google"><i class="ri-google-fill fs-16"></i></a>
-											<!-- <button type="button" class="btn btn-dark btn-icon waves-effect waves-light"><i class="ri-github-fill fs-16"></i></button>
-											<button type="button" class="btn btn-info btn-icon waves-effect waves-light"><i class="ri-twitter-fill fs-16"></i></button> -->
+											<a href="{{ route('social.redirect', 'google') }}" id="google-login-btn" class="btn btn-danger btn-icon waves-effect waves-light" title="Login with Google">
+												<i class="ri-google-fill fs-16"></i>
+											</a>
+											<a href="{{ route('social.redirect', 'facebook') }}" id="facebook-login-btn" class="btn btn-primary btn-icon waves-effect waves-light" title="Login with Facebook">
+												<i class="ri-facebook-fill fs-16"></i>
+											</a>
+											<a href="{{ route('social.redirect', 'twitter') }}" id="twitter-login-btn" class="btn btn-info btn-icon waves-effect waves-light" title="Login with Twitter">
+												<i class="ri-twitter-fill fs-16"></i>
+											</a>
+
+											<!-- <button type="button" class="btn btn-dark btn-icon waves-effect waves-light"><i class="ri-github-fill fs-16"></i></button> -->
 										</div>
 									</div>
 								</form>
@@ -94,22 +101,23 @@
 @push('scripts')
 <script src="{{ asset('dashboard/js/pages/password-addon.init.js') }}"></script>
 
-<noscript>
-    <a href="{{ route('auth.google') }}" target="" class="btn btn-danger btn-icon waves-effect waves-light mt-2">
-        <i class="ri-google-fill fs-16"></i> Login dengan Google
-    </a>
-</noscript>
-
 <script>
-    document.getElementById('google-login-btn').addEventListener('click', function (e) {
-        e.preventDefault();
-        const url = this.href;
-        const width = 500;
-        const height = 600;
-        const left = (window.innerWidth / 2) - (width / 2);
-        const top = (window.innerHeight / 2) - (height / 2);
+    const providers = ['google', 'facebook', 'twitter'];
 
-        window.open(url, 'Login with Google', `width=${width},height=${height},top=${top},left=${left}`);
+    providers.forEach(provider => {
+        const btn = document.getElementById(`${provider}-login-btn`);
+        if (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const url = this.href;
+                const width = 500;
+                const height = 600;
+                const left = (window.innerWidth / 2) - (width / 2);
+                const top = (window.innerHeight / 2) - (height / 2);
+
+                window.open(url, `Login with ${provider.charAt(0).toUpperCase() + provider.slice(1)}`, `width=${width},height=${height},top=${top},left=${left}`);
+            });
+        }
     });
 </script>
 @endpush

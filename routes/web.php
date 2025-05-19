@@ -23,8 +23,8 @@ Route::get('login', function () {
     return Redirect::route('auth.login');
 })->name('login');
 
-Route::get('auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
-Route::get('auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
+Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirectToProvider'])->name('social.redirect');
+Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback'])->name('social.callback');
 
 Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(function () {
     Route::middleware('guest')->group(function () {

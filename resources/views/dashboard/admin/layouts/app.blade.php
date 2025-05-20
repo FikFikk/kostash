@@ -44,15 +44,15 @@
     </head>
     <body>
         <div id="layout-wrapper">
-            @include('admin.dashboard.layouts.header')
-            @include('admin.dashboard.layouts.navigation')
+            @include('dashboard.admin.layouts.header')
+            @include('dashboard.admin.layouts.navigation')
             <!-- Vertical Overlay-->
             <div class="vertical-overlay"></div>
             <div class="main-content">
                 <div class="page-content">
                     @yield('content')
                 </div>
-                @include('admin.dashboard.layouts.footer')
+                @include('dashboard.admin.layouts.footer')
             </div>
         </div>
         @yield('script')

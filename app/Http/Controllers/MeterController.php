@@ -22,7 +22,7 @@ class MeterController extends Controller
                 ->paginate(5, ['*'], 'page_' . $room->id);
         }
 
-        return view('admin.dashboard.meters.index', compact('rooms', 'roomMeters'));
+        return view('dashboard.admin.meters.index', compact('rooms', 'roomMeters'));
     }
 
     public function create()
@@ -41,7 +41,7 @@ class MeterController extends Controller
             ];
         }
 
-        return view('admin.dashboard.meters.create', compact('rooms', 'defaultStartValues'));
+        return view('dashboard.admin.meters.create', compact('rooms', 'defaultStartValues'));
     }
 
     public function store(Request $request)
@@ -80,7 +80,7 @@ class MeterController extends Controller
         $meter = Meter::findOrFail($id);
         $rooms = Room::orderBy('name')->get();
 
-        return view('admin.dashboard.meters.edit', compact('meter', 'rooms'));
+        return view('dashboard.admin.meters.edit', compact('meter', 'rooms'));
     }
 
     public function update(Request $request, $id)

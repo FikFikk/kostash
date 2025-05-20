@@ -10,14 +10,14 @@ class GalleryController extends Controller
 {
     public function index()
     {
-        return view('admin.dashboard.gallery.index', [
+        return view('dashboard.admin.gallery.index', [
             'galleries' => Gallery::latest()->paginate(8)
         ]);
     }
 
     public function create()
     {
-        return view('admin.dashboard.gallery.create');
+        return view('dashboard.admin.gallery.create');
     }
 
     public function store(Request $request)
@@ -33,7 +33,7 @@ class GalleryController extends Controller
 
     public function edit(Gallery $gallery)
     {
-        return view('admin.dashboard.gallery.edit', compact('gallery'));
+        return view('dashboard.admin.gallery.edit', compact('gallery'));
     }
 
     public function update(Request $request, Gallery $gallery)

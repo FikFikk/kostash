@@ -26,13 +26,13 @@ class UserController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('admin.dashboard.users.index', compact('users', 'search'));
+        return view('dashboard.admin.users.index', compact('users', 'search'));
     }
 
     public function create()
     {
         $rooms = $this->getAvailableRooms();
-        return view('admin.dashboard.users.create', compact('rooms'));
+        return view('dashboard.admin.users.create', compact('rooms'));
     }
 
     public function store(Request $request)
@@ -51,7 +51,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $rooms = $this->getAvailableRooms($user->room_id);
-        return view('admin.dashboard.users.edit', compact('user', 'rooms'));
+        return view('dashboard.admin.users.edit', compact('user', 'rooms'));
     }
 
     public function update(Request $request, $id)
@@ -75,7 +75,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $rooms = Room::orderBy('name')->get();
-        return view('admin.dashboard.users.show', compact('user', 'rooms'));
+        return view('dashboard.admin.users.show', compact('user', 'rooms'));
     }
 
     public function destroy($id)

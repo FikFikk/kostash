@@ -10,13 +10,13 @@ class GlobalSettingController extends Controller
     public function index()
     {
         $global = $this->getSetting();
-        return view('admin.dashboard.global.index', compact('global'));
+        return view('dashboard.admin.global.index', compact('global'));
     }
 
     public function edit()
     {
         $global = $this->getSetting();
-        return view('admin.dashboard.global.edit', compact('global'));
+        return view('dashboard.admin.global.edit', compact('global'));
     }
 
     public function update(Request $request)

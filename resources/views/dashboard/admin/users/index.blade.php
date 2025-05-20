@@ -53,7 +53,7 @@
             </table>
 
             <div class="d-flex justify-content-end mt-3">
-                {{ $users->links('admin.dashboard.layouts.pagination') }}
+                {{ $users->links('dashboard.admin.layouts.pagination') }}
             </div>
         </div>
     </div>

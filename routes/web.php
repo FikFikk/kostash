@@ -11,6 +11,8 @@ use App\Http\Controllers\{
     SocialAuthController,
     UserController,
 };
+
+use App\Http\Controllers\Tenants\TenantDashboardController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
 
@@ -109,7 +111,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('dashboard')->name('dashboard.
 // Tenant Dashboard Route
 // -----------------------------
 Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->group(function () {
-    // Route::get('/', [TenantDashboardController::class, 'index'])->name('home');
+    Route::get('/', [TenantDashboardController::class, 'index'])->name('home');
 
     // Tambahkan fitur lainnya khusus tenant di sini nanti
     // Route::get('/bills', [TenantBillController::class, 'index'])->name('bills');

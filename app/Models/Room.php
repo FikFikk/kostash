@@ -22,4 +22,14 @@ class Room extends Model
     {
         return $this->hasOne(User::class, 'room_id');
     }
+    
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function meters()
+    {
+        return $this->hasMany(Meter::class);
+    }
 }

@@ -45,7 +45,7 @@ class SocialAuthController extends Controller
             Auth::login($user);
 
             return response()->view('auth.social-success', [
-                'redirectTo' => $user->role === 'admin' ? route('dashboard.home') : route('public.home')
+                'redirectTo' => $user->role === 'admin' ? route('dashboard.home') : route('tenant.home')
             ]);
         } catch (\Exception $e) {
             \Log::error("{$provider} login error: " . $e->getMessage());

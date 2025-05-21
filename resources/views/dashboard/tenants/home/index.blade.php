@@ -4,29 +4,48 @@
 <div class="container">
     <h3 class="mb-4">Dashboard Penyewa</h3>
 
+    <div>
+        <h5>{{ auth()->user()->name }}</h5>
+        <p class="mb-0">Kamar: {{ $room->name ?? '-' }}</p>
+        <p class="mb-0 text-muted">Tanggal Masuk: {{ $user->date_entry ? \Carbon\Carbon::parse($user->date_entry)->translatedFormat('d F Y') : '-' }}</p>
+    </div>
+    
     <div class="card mb-4">
         <div class="card-body">
-            <form method="GET" action="{{ route('tenant.home') }}" class="row g-3 align-items-end">
-                <div class="col-md-4">
-                    <label for="month" class="form-label">Bulan</label>
-                    <select name="month" id="month" class="form-select">
-                        @foreach(range(1, 12) as $m)
-                            <option value="{{ $m }}" {{ $month == $m ? 'selected' : '' }}>
-                                {{ DateTime::createFromFormat('!m', $m)->format('F') }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label for="year" class="form-label">Tahun</label>
-                    <select name="year" id="year" class="form-select">
-                        @foreach($availableYears as $y)
-                            <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>{{ $y }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary w-100">Tampilkan</button>
+            <form method="GET" action="{{ route('tenant.home') }}">
+                <div class="row g-3 align-items-end">
+                    <!-- Pilihan Bulan dan Tahun -->
+                    <div class="col-md-6">
+                        <label for="month" class="form-label">Periode Tagihan</label>
+                        <div class="input-group">
+                            <select name="month" id="month" class="form-select">
+                                @foreach(range(1, 12) as $m)
+                                    <option value="{{ $m }}" {{ $month == $m ? 'selected' : '' }}>
+                                        {{ DateTime::createFromFormat('!m', $m)->format('F') }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <select name="year" id="year" class="form-select">
+                                @foreach($availableYears as $y)
+                                    <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Tampilkan -->
+                    <div class="col-md-3 mt-md-4">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="ri-search-line me-1"></i> Tampilkan
+                        </button>
+                    </div>
+
+                    <!-- Tombol Export PDF -->
+                    <div class="col-md-3 mt-md-4">
+                        <a href="{{ route('tenant.export', ['month' => $month, 'year' => $year]) }}" class="btn btn-outline-danger w-100">
+                            <i class="ri-file-pdf-line me-1"></i> Export PDF
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>

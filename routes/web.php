@@ -112,6 +112,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('dashboard')->name('dashboard.
 // -----------------------------
 Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->group(function () {
     Route::get('/', [TenantDashboardController::class, 'index'])->name('home');
+    Route::get('/export', [TenantDashboardController::class, 'exportInvoice'])->name('export');
 
     // Tambahkan fitur lainnya khusus tenant di sini nanti
     // Route::get('/bills', [TenantBillController::class, 'index'])->name('bills');

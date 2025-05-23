@@ -476,8 +476,7 @@
                         aria-haspopup="true" aria-expanded="false">
                         <span class="d-flex align-items-center">
                             <img class="rounded-circle header-profile-user"
-                                src="{{ asset($avatar) }}"
-                                onerror="this.onerror=null;this.src='{{ asset('assets/dashboard/images/users/avatar-1.jpg') }}';"
+                                src="{{ asset('storage/uploads/profile/' . $user->photo) }}"
                                 alt="User Avatar">
                             <span class="text-start ms-xl-2">
                                 <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $name }}</span>
@@ -488,7 +487,7 @@
                     <div class="dropdown-menu dropdown-menu-end">
                         <!-- item-->
                         <h6 class="dropdown-header">Selamat datang, {{ auth()->user()->name ?? 'Tuan' }}!</h6>
-                        <a class="dropdown-item" href="pages-profile.html"><i
+                        <a class="dropdown-item" href="{{ route('tenant.profile.index') }}"><i
                                 class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle">Profile</span></a>
                         <!-- <a class="dropdown-item" href="apps-chat.html"><i
@@ -497,19 +496,19 @@
                         <a class="dropdown-item" href="apps-tasks-kanban.html"><i
                                 class="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle">Taskboard</span></a> -->
-                        <a class="dropdown-item" href="pages-faqs.html"><i
+                        <a class="dropdown-item" href=""><i
                                 class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle">Help</span></a>
                         <div class="dropdown-divider"></div>
                         <!-- <a class="dropdown-item" href="pages-profile.html"><i
                                 class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span
-                                class="align-middle">Balance : <b>$5971.67</b></span></a>
-                        <a class="dropdown-item" href="pages-profile-settings.html">
-                            <span class="badge bg-soft-success text-success mt-1 float-end">New</span>
-                            <i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i>
-                            <span class="align-middle">Settings</span>
+                                class="align-middle">Balance : <b>$5971.67</b></span></a> -->
+                        <a class="dropdown-item" href="{{ route('tenant.profile.change-password') }}">
+                            <i class="mdi mdi-key text-muted fs-16 align-middle me-1"></i>
+                            <span class="align-middle">Change Password</span>
                         </a>
-                        <a class="dropdown-item" href="auth-lockscreen-basic.html">
+                        <!-- <a class="dropdown-item" href="auth-lockscreen-basic.html">
+                            <span class="badge bg-soft-success text-success mt-1 float-end">New</span>
                             <i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i>
                             <span class="align-middle">Lock screen</span>
                         </a> -->

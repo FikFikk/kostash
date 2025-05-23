@@ -25,6 +25,7 @@ class User extends Authenticatable
         'photo',
         'phone',
         'nik',
+        'address',
         'alamat',
         'tanggal_masuk',
         'room_id',

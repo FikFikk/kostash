@@ -13,6 +13,7 @@ use App\Http\Controllers\{
 };
 
 use App\Http\Controllers\Tenants\TenantDashboardController;
+use App\Http\Controllers\Tenants\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
 
@@ -113,6 +114,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('dashboard')->name('dashboard.
 Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->group(function () {
     Route::get('/', [TenantDashboardController::class, 'index'])->name('home');
     Route::get('/export', [TenantDashboardController::class, 'exportInvoice'])->name('export');
+
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::controller(ProfileController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/edit', 'edit')->name('edit');
+            Route::put('/update', 'update')->name('update');
+            Route::get('/profile/change-password', 'changePasswordForm')->name('change-password');
+            Route::post('/profile/change-password', 'changePassword')->name('change-password');
+        });
+    });
 
     // Tambahkan fitur lainnya khusus tenant di sini nanti
     // Route::get('/bills', [TenantBillController::class, 'index'])->name('bills');

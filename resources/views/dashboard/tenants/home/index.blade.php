@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="mb-0">Dashboard Penyewa</h3>
         <div>
-            <a href="" class="btn btn-outline-secondary btn-elegant">
+            <a href="{{ route('tenant.profile.index') }}" class="btn btn-outline-secondary btn-elegant">
                 <i class="mdi mdi-account-outline me-1"></i> Kelola Profil
             </a>
         </div>
@@ -17,8 +17,14 @@
                 <!-- Avatar Section -->
                 <div class="col-auto">
                     <div class="avatar-container position-relative">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=667eea&color=fff&size=120&font-size=0.4"
-                            alt="Avatar" class="avatar-img rounded-circle shadow-sm">
+                        @if($user->photo)
+                            <img src="{{ asset('storage/uploads/profile/' . $user->photo) }}" 
+                                 alt="Profile Picture" 
+                                 class="avatar-img rounded-circle shadow-sm" style='object-fit: cover;'>
+                        @else
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=667eea&color=fff&size=120&font-size=0.4"
+                                alt="Avatar" class="avatar-img rounded-circle shadow-sm">
+                        @endif
                         <div class="avatar-border"></div>
                     </div>
                 </div>

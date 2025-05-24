@@ -80,19 +80,20 @@
                                     <div class="flex-grow-1 overflow-hidden">
                                         <p
                                             class="text-uppercase fw-medium text-muted text-truncate mb-0">
-                                            Total Earnings</p>
+                                            Total Revenue</p>
                                     </div>
-                                    <div class="flex-shrink-0">
+                                    <div class="flex-shrink-0 text-end">
                                         <h5 class="text-success fs-14 mb-0">
                                             <i class="ri-arrow-right-up-line fs-13 align-middle"></i>
                                             +16.24 %
                                         </h5>
+                                        <small class="text-muted d-block">Monthly change</small>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-end justify-content-between mt-4">
                                     <div>
-                                        <h4 class="fs-22 fw-semibold ff-secondary mb-4">$<span
-                                                class="counter-value" data-target="559.25">0</span>k
+                                        <h4 class="fs-22 fw-semibold ff-secondary mb-4">Rp <span
+                                                class="counter-value" data-target="{{ $totalRevenue }}">0</span>
                                         </h4>
                                         <a href="" class="text-decoration-underline">View net
                                             earnings</a>
@@ -117,11 +118,12 @@
                                             class="text-uppercase fw-medium text-muted text-truncate mb-0">
                                             Orders</p>
                                     </div>
-                                    <div class="flex-shrink-0">
+                                    <div class="flex-shrink-0 text-end">
                                         <h5 class="text-danger fs-14 mb-0">
                                             <i class="ri-arrow-right-down-line fs-13 align-middle"></i>
                                             -3.57 %
                                         </h5>
+                                        <small class="text-muted d-block">Monthly orders change</small>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-end justify-content-between mt-4">
@@ -148,19 +150,20 @@
                                     <div class="flex-grow-1 overflow-hidden">
                                         <p
                                             class="text-uppercase fw-medium text-muted text-truncate mb-0">
-                                            Customers</p>
+                                            Tenants</p>
                                     </div>
-                                    <div class="flex-shrink-0">
-                                        <h5 class="text-success fs-14 mb-0">
-                                            <i class="ri-arrow-right-up-line fs-13 align-middle"></i>
-                                            +29.08 %
+                                    <div class="flex-shrink-0 text-end">
+                                        <h5 class="{{ $growthPercent >= 0 ? 'text-success' : 'text-danger' }} float-right fs-14 mb-0">
+                                            <i class="ri-arrow-{{ $growthPercent >= 0 ? 'right-up' : 'right-down' }}-line fs-13 align-middle"></i>
+                                            {{ $growthPercent < 0 ? '-' : '+' }}{{ number_format(abs($growthPercent), 2) }}%
                                         </h5>
+                                        <small class="text-muted d-block">Monthly tenant growth</small>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-end justify-content-between mt-4">
                                     <div>
                                         <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span
-                                                class="counter-value" data-target="183.35">0</span>M
+                                                class="counter-value" data-target="{{ $totalTenants }}">0</span>
                                         </h4>
                                         <a href="" class="text-decoration-underline">See details</a>
                                     </div>
@@ -182,12 +185,13 @@
                                     <div class="flex-grow-1 overflow-hidden">
                                         <p
                                             class="text-uppercase fw-medium text-muted text-truncate mb-0">
-                                            My Balance</p>
+                                            Total Paid Bills</p>
                                     </div>
-                                    <div class="flex-shrink-0">
+                                    <div class="flex-shrink-0 text-end">
                                         <h5 class="text-muted fs-14 mb-0">
                                             +0.00 %
                                         </h5>
+                                        <small class="text-muted d-block">Bills paid this month</small>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-end justify-content-between mt-4">

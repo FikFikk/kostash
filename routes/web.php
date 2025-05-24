@@ -120,8 +120,8 @@ Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->
             Route::get('/', 'index')->name('index');
             Route::get('/edit', 'edit')->name('edit');
             Route::put('/update', 'update')->name('update');
-            Route::get('/profile/change-password', 'changePasswordForm')->name('change-password');
-            Route::post('/profile/change-password', 'changePassword')->name('change-password');
+            Route::get('/change-password', 'changePasswordForm')->name('change-password');
+            Route::post('/change-password', 'changePassword')->name('change-password');
         });
     });
 

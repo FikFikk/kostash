@@ -32,7 +32,7 @@
                                 <p class="text-muted mb-0">Here's what's happening with your store
                                     today.</p>
                             </div>
-                            <div class="mt-3 mt-lg-0">
+                            <!-- <div class="mt-3 mt-lg-0">
                                 <form action="javascript:void(0);">
                                     <div class="row g-3 mb-0 align-items-center">
                                         <div class="col-sm-auto">
@@ -48,23 +48,19 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <!--end col-->
                                         <div class="col-auto">
                                             <button type="button" class="btn btn-soft-success"><i
                                                     class="ri-add-circle-line align-middle me-1"></i>
                                                 Add Product</button>
                                         </div>
-                                        <!--end col-->
                                         <div class="col-auto">
                                             <button type="button"
                                                 class="btn btn-soft-info btn-icon waves-effect waves-light layout-rightside-btn"><i
                                                     class="ri-pulse-line"></i></button>
                                         </div>
-                                        <!--end col-->
                                     </div>
-                                    <!--end row-->
                                 </form>
-                            </div>
+                            </div> -->
                         </div><!-- end card header -->
                     </div>
                     <!--end col-->
@@ -83,9 +79,9 @@
                                             Total Revenue</p>
                                     </div>
                                     <div class="flex-shrink-0 text-end">
-                                        <h5 class="text-success fs-14 mb-0">
-                                            <i class="ri-arrow-right-up-line fs-13 align-middle"></i>
-                                            +16.24 %
+                                        <h5 class="{{ $revenueGrowthPercent >= 0 ? 'text-success' : 'text-danger' }} float-right fs-14 mb-0">
+                                            <i class="ri-arrow-{{ $revenueGrowthPercent >= 0 ? 'right-up' : 'right-down' }}-line fs-13 align-middle"></i>
+                                            {{ $revenueGrowthPercent < 0 ? '-' : '+' }}{{ number_format(abs($revenueGrowthPercent), 2) }}%
                                         </h5>
                                         <small class="text-muted d-block">Monthly change</small>
                                     </div>
@@ -116,9 +112,9 @@
                                     <div class="flex-grow-1 overflow-hidden">
                                         <p
                                             class="text-uppercase fw-medium text-muted text-truncate mb-0">
-                                            Orders</p>
+                                            Gallery Photo</p>
                                     </div>
-                                    <div class="flex-shrink-0 text-end">
+                                    <div class="flex-shrink-0 text-end" style="visibility: hidden;">
                                         <h5 class="text-danger fs-14 mb-0">
                                             <i class="ri-arrow-right-down-line fs-13 align-middle"></i>
                                             -3.57 %
@@ -129,12 +125,14 @@
                                 <div class="d-flex align-items-end justify-content-between mt-4">
                                     <div>
                                         <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span
-                                                class="counter-value" data-target="36894">0</span></h4>
-                                        <a href="" class="text-decoration-underline">View all orders</a>
+                                                class="counter-value" data-target="{{ $totalGalleryItems }}">0</span> 
+                                                <small class="text-muted">photo</small>
+                                            </h4>
+                                        <a href="" class="text-decoration-underline">View all photo</a>
                                     </div>
                                     <div class="avatar-sm flex-shrink-0">
                                         <span class="avatar-title bg-soft-info rounded fs-3">
-                                            <i class="bx bx-shopping-bag text-info"></i>
+                                            <i class="bx bx-photo-album text-info"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -163,7 +161,8 @@
                                 <div class="d-flex align-items-end justify-content-between mt-4">
                                     <div>
                                         <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span
-                                                class="counter-value" data-target="{{ $totalTenants }}">0</span>
+                                                class="counter-value" data-target="{{ $totalTenants }}">0</span> 
+                                                <small class="text-muted"> pengguna</small>
                                         </h4>
                                         <a href="" class="text-decoration-underline">See details</a>
                                     </div>
@@ -187,7 +186,7 @@
                                             class="text-uppercase fw-medium text-muted text-truncate mb-0">
                                             Total Paid Bills</p>
                                     </div>
-                                    <div class="flex-shrink-0 text-end">
+                                    <div class="flex-shrink-0 text-end" style=" visibility: hidden;">
                                         <h5 class="text-muted fs-14 mb-0">
                                             +0.00 %
                                         </h5>
@@ -196,8 +195,9 @@
                                 </div>
                                 <div class="d-flex align-items-end justify-content-between mt-4">
                                     <div>
-                                        <h4 class="fs-22 fw-semibold ff-secondary mb-4">$<span
-                                                class="counter-value" data-target="165.89">0</span>k
+                                        <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span
+                                                class="counter-value" data-target="{{ $totalMeters }}">0</span> 
+                                                <small class="text-muted">bill</small>
                                         </h4>
                                         <a href="" class="text-decoration-underline">Withdraw money</a>
                                     </div>
@@ -210,6 +210,251 @@
                             </div><!-- end card body -->
                         </div><!-- end card -->
                     </div><!-- end col -->
+                </div> <!-- end row-->
+
+                <div class="row">
+                    <div class="col-xl-4">
+                        <div class="card card-height-100 overflow-hidden" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);">
+                            <div class="card-header border-0 bg-transparent">
+                                <h4 class="card-title mb-0 text-white fw-bold">Room Status</h4>
+                            </div>
+
+                            <div class="card-body pt-0">
+                                <!-- Main Stats -->
+                                <div class="row g-3 mb-4">
+                                    <div class="col-6">
+                                        <div class="p-3 rounded-3 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-20">
+                                            <div class="text-center">
+                                                <div class="avatar-sm bg-success bg-gradient rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2">
+                                                    <i class="ri-home-4-line text-white fs-16"></i>
+                                                </div>
+                                                <h3 class="mb-0 text-white fw-bold">{{ $roomsWithTenants }}</h3>
+                                                <p class="text-white-50 mb-0 fs-13">Terisi</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-3 rounded-3 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-20">
+                                            <div class="text-center">
+                                                <div class="avatar-sm bg-info bg-gradient rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2">
+                                                    <i class="ri-home-line text-white fs-16"></i>
+                                                </div>
+                                                <h3 class="mb-0 text-white fw-bold">{{ $roomsWithoutTenants }}</h3>
+                                                <p class="text-white-50 mb-0 fs-13">Kosong</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Donut Chart -->
+                                <div class="bg-white bg-opacity-10 rounded-3 p-3 backdrop-blur border border-white border-opacity-20">
+                                    <div id="room-occupancy-chart" class="apex-charts"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <style>
+                    .backdrop-blur {
+                        backdrop-filter: blur(10px);
+                        -webkit-backdrop-filter: blur(10px);
+                    }
+
+                    .card-height-100:hover {
+                        transform: translateY(-5px);
+                        box-shadow: 0 25px 50px rgba(102, 126, 234, 0.3) !important;
+                        transition: all 0.3s ease;
+                    }
+
+                    @keyframes float {
+                        0%, 100% { transform: translateY(0px); }
+                        50% { transform: translateY(-5px); }
+                    }
+
+                    .avatar-sm {
+                        animation: float 2s ease-in-out infinite;
+                    }
+                    </style>
+
+                    <div class="col-xl-8">
+                        <div class="card">
+                            <div class="card-header align-items-center d-flex">
+                                <h4 class="card-title mb-0 flex-grow-1">Recent Orders</h4>
+                                <div class="flex-shrink-0">
+                                    <button type="button" class="btn btn-soft-info btn-sm">
+                                        <i class="ri-file-list-3-line align-middle"></i> Generate Report
+                                    </button>
+                                </div>
+                            </div><!-- end card header -->
+
+                            <div class="card-body">
+                                <div class="table-responsive table-card">
+                                    <table
+                                        class="table table-borderless table-centered align-middle table-nowrap mb-2 mt-2">
+                                        <thead class="text-muted table-light mt-1">
+                                            <tr>
+                                                <th scope="col">Order ID</th>
+                                                <th scope="col">Customer</th>
+                                                <th scope="col">Product</th>
+                                                <th scope="col">Amount</th>
+                                                <th scope="col">Vendor</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Rating</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <a href="apps-ecommerce-order-details.html"
+                                                        class="fw-medium link-primary">#VZ2112</a>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-shrink-0 me-2">
+                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-1.jpg') }}"
+                                                                alt=""
+                                                                class="avatar-xs rounded-circle" />
+                                                        </div>
+                                                        <div class="flex-grow-1">Alex Smith</div>
+                                                    </div>
+                                                </td>
+                                                <td>Clothes</td>
+                                                <td>
+                                                    <span class="text-success">$109.00</span>
+                                                </td>
+                                                <td>Zoetic Fashion</td>
+                                                <td>
+                                                    <span class="badge badge-soft-success">Paid</span>
+                                                </td>
+                                                <td>
+                                                    <h5 class="fs-14 fw-medium mb-0">5.0<span
+                                                            class="text-muted fs-11 ms-1">(61
+                                                            votes)</span></h5>
+                                                </td>
+                                            </tr><!-- end tr -->
+                                            <tr>
+                                                <td>
+                                                    <a href="apps-ecommerce-order-details.html"
+                                                        class="fw-medium link-primary">#VZ2111</a>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-shrink-0 me-2">
+                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-2.jpg') }}"
+                                                                alt=""
+                                                                class="avatar-xs rounded-circle" />
+                                                        </div>
+                                                        <div class="flex-grow-1">Jansh Brown</div>
+                                                    </div>
+                                                </td>
+                                                <td>Kitchen Storage</td>
+                                                <td>
+                                                    <span class="text-success">$149.00</span>
+                                                </td>
+                                                <td>Micro Design</td>
+                                                <td>
+                                                    <span
+                                                        class="badge badge-soft-warning">Pending</span>
+                                                </td>
+                                                <td>
+                                                    <h5 class="fs-14 fw-medium mb-0">4.5<span
+                                                            class="text-muted fs-11 ms-1">(61
+                                                            votes)</span></h5>
+                                                </td>
+                                            </tr><!-- end tr -->
+                                            <tr>
+                                                <td>
+                                                    <a href="apps-ecommerce-order-details.html"
+                                                        class="fw-medium link-primary">#VZ2109</a>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-shrink-0 me-2">
+                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-3.jpg') }}"
+                                                                alt=""
+                                                                class="avatar-xs rounded-circle" />
+                                                        </div>
+                                                        <div class="flex-grow-1">Ayaan Bowen</div>
+                                                    </div>
+                                                </td>
+                                                <td>Bike Accessories</td>
+                                                <td>
+                                                    <span class="text-success">$215.00</span>
+                                                </td>
+                                                <td>Nesta Technologies</td>
+                                                <td>
+                                                    <span class="badge badge-soft-success">Paid</span>
+                                                </td>
+                                                <td>
+                                                    <h5 class="fs-14 fw-medium mb-0">4.9<span
+                                                            class="text-muted fs-11 ms-1">(89
+                                                            votes)</span></h5>
+                                                </td>
+                                            </tr><!-- end tr -->
+                                            <tr>
+                                                <td>
+                                                    <a href="apps-ecommerce-order-details.html"
+                                                        class="fw-medium link-primary">#VZ2108</a>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-shrink-0 me-2">
+                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-4.jpg') }}"
+                                                                alt=""
+                                                                class="avatar-xs rounded-circle" />
+                                                        </div>
+                                                        <div class="flex-grow-1">Prezy Mark</div>
+                                                    </div>
+                                                </td>
+                                                <td>Furniture</td>
+                                                <td>
+                                                    <span class="text-success">$199.00</span>
+                                                </td>
+                                                <td>Syntyce Solutions</td>
+                                                <td>
+                                                    <span class="badge badge-soft-danger">Unpaid</span>
+                                                </td>
+                                                <td>
+                                                    <h5 class="fs-14 fw-medium mb-0">4.3<span
+                                                            class="text-muted fs-11 ms-1">(47
+                                                            votes)</span></h5>
+                                                </td>
+                                            </tr><!-- end tr -->
+                                            <tr>
+                                                <td>
+                                                    <a href="apps-ecommerce-order-details.html"
+                                                        class="fw-medium link-primary">#VZ2107</a>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-shrink-0 me-2">
+                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-6.jpg') }}"
+                                                                alt=""
+                                                                class="avatar-xs rounded-circle" />
+                                                        </div>
+                                                        <div class="flex-grow-1">Vihan Hudda</div>
+                                                    </div>
+                                                </td>
+                                                <td>Bags and Wallets</td>
+                                                <td>
+                                                    <span class="text-success">$330.00</span>
+                                                </td>
+                                                <td>iTest Factory</td>
+                                                <td>
+                                                    <span class="badge badge-soft-success">Paid</span>
+                                                </td>
+                                                <td>
+                                                    <h5 class="fs-14 fw-medium mb-0">4.7<span
+                                                            class="text-muted fs-11 ms-1">(161
+                                                            votes)</span></h5>
+                                                </td>
+                                            </tr><!-- end tr -->
+                                        </tbody><!-- end tbody -->
+                                    </table><!-- end table -->
+                                </div>
+                            </div>
+                        </div> <!-- .card-->
+                    </div> <!-- .col-->
                 </div> <!-- end row-->
 
                 <div class="row">
@@ -797,217 +1042,6 @@
                     </div> <!-- .col-->
                 </div> <!-- end row-->
 
-                <div class="row">
-                    <div class="col-xl-4">
-                        <div class="card card-height-100">
-                            <div class="card-header align-items-center d-flex">
-                                <h4 class="card-title mb-0 flex-grow-1">Store Visits by Source</h4>
-                                <div class="flex-shrink-0">
-                                    <div class="dropdown card-header-dropdown">
-                                        <a class="text-reset dropdown-btn" href="#"
-                                            data-bs-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            <span class="text-muted">Report<i
-                                                    class="mdi mdi-chevron-down ms-1"></i></span>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-end">
-                                            <a class="dropdown-item" href="#">Download Report</a>
-                                            <a class="dropdown-item" href="#">Export</a>
-                                            <a class="dropdown-item" href="#">Import</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div><!-- end card header -->
-
-                            <div class="card-body">
-                                <div id="store-visits-source"
-                                    data-colors='["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-info"]'
-                                    class="apex-charts" dir="ltr"></div>
-                            </div>
-                        </div> <!-- .card-->
-                    </div> <!-- .col-->
-
-                    <div class="col-xl-8">
-                        <div class="card">
-                            <div class="card-header align-items-center d-flex">
-                                <h4 class="card-title mb-0 flex-grow-1">Recent Orders</h4>
-                                <div class="flex-shrink-0">
-                                    <button type="button" class="btn btn-soft-info btn-sm">
-                                        <i class="ri-file-list-3-line align-middle"></i> Generate Report
-                                    </button>
-                                </div>
-                            </div><!-- end card header -->
-
-                            <div class="card-body">
-                                <div class="table-responsive table-card">
-                                    <table
-                                        class="table table-borderless table-centered align-middle table-nowrap mb-0">
-                                        <thead class="text-muted table-light">
-                                            <tr>
-                                                <th scope="col">Order ID</th>
-                                                <th scope="col">Customer</th>
-                                                <th scope="col">Product</th>
-                                                <th scope="col">Amount</th>
-                                                <th scope="col">Vendor</th>
-                                                <th scope="col">Status</th>
-                                                <th scope="col">Rating</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <a href="apps-ecommerce-order-details.html"
-                                                        class="fw-medium link-primary">#VZ2112</a>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="flex-shrink-0 me-2">
-                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-1.jpg') }}"
-                                                                alt=""
-                                                                class="avatar-xs rounded-circle" />
-                                                        </div>
-                                                        <div class="flex-grow-1">Alex Smith</div>
-                                                    </div>
-                                                </td>
-                                                <td>Clothes</td>
-                                                <td>
-                                                    <span class="text-success">$109.00</span>
-                                                </td>
-                                                <td>Zoetic Fashion</td>
-                                                <td>
-                                                    <span class="badge badge-soft-success">Paid</span>
-                                                </td>
-                                                <td>
-                                                    <h5 class="fs-14 fw-medium mb-0">5.0<span
-                                                            class="text-muted fs-11 ms-1">(61
-                                                            votes)</span></h5>
-                                                </td>
-                                            </tr><!-- end tr -->
-                                            <tr>
-                                                <td>
-                                                    <a href="apps-ecommerce-order-details.html"
-                                                        class="fw-medium link-primary">#VZ2111</a>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="flex-shrink-0 me-2">
-                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-2.jpg') }}"
-                                                                alt=""
-                                                                class="avatar-xs rounded-circle" />
-                                                        </div>
-                                                        <div class="flex-grow-1">Jansh Brown</div>
-                                                    </div>
-                                                </td>
-                                                <td>Kitchen Storage</td>
-                                                <td>
-                                                    <span class="text-success">$149.00</span>
-                                                </td>
-                                                <td>Micro Design</td>
-                                                <td>
-                                                    <span
-                                                        class="badge badge-soft-warning">Pending</span>
-                                                </td>
-                                                <td>
-                                                    <h5 class="fs-14 fw-medium mb-0">4.5<span
-                                                            class="text-muted fs-11 ms-1">(61
-                                                            votes)</span></h5>
-                                                </td>
-                                            </tr><!-- end tr -->
-                                            <tr>
-                                                <td>
-                                                    <a href="apps-ecommerce-order-details.html"
-                                                        class="fw-medium link-primary">#VZ2109</a>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="flex-shrink-0 me-2">
-                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-3.jpg') }}"
-                                                                alt=""
-                                                                class="avatar-xs rounded-circle" />
-                                                        </div>
-                                                        <div class="flex-grow-1">Ayaan Bowen</div>
-                                                    </div>
-                                                </td>
-                                                <td>Bike Accessories</td>
-                                                <td>
-                                                    <span class="text-success">$215.00</span>
-                                                </td>
-                                                <td>Nesta Technologies</td>
-                                                <td>
-                                                    <span class="badge badge-soft-success">Paid</span>
-                                                </td>
-                                                <td>
-                                                    <h5 class="fs-14 fw-medium mb-0">4.9<span
-                                                            class="text-muted fs-11 ms-1">(89
-                                                            votes)</span></h5>
-                                                </td>
-                                            </tr><!-- end tr -->
-                                            <tr>
-                                                <td>
-                                                    <a href="apps-ecommerce-order-details.html"
-                                                        class="fw-medium link-primary">#VZ2108</a>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="flex-shrink-0 me-2">
-                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-4.jpg') }}"
-                                                                alt=""
-                                                                class="avatar-xs rounded-circle" />
-                                                        </div>
-                                                        <div class="flex-grow-1">Prezy Mark</div>
-                                                    </div>
-                                                </td>
-                                                <td>Furniture</td>
-                                                <td>
-                                                    <span class="text-success">$199.00</span>
-                                                </td>
-                                                <td>Syntyce Solutions</td>
-                                                <td>
-                                                    <span class="badge badge-soft-danger">Unpaid</span>
-                                                </td>
-                                                <td>
-                                                    <h5 class="fs-14 fw-medium mb-0">4.3<span
-                                                            class="text-muted fs-11 ms-1">(47
-                                                            votes)</span></h5>
-                                                </td>
-                                            </tr><!-- end tr -->
-                                            <tr>
-                                                <td>
-                                                    <a href="apps-ecommerce-order-details.html"
-                                                        class="fw-medium link-primary">#VZ2107</a>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="flex-shrink-0 me-2">
-                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-6.jpg') }}"
-                                                                alt=""
-                                                                class="avatar-xs rounded-circle" />
-                                                        </div>
-                                                        <div class="flex-grow-1">Vihan Hudda</div>
-                                                    </div>
-                                                </td>
-                                                <td>Bags and Wallets</td>
-                                                <td>
-                                                    <span class="text-success">$330.00</span>
-                                                </td>
-                                                <td>iTest Factory</td>
-                                                <td>
-                                                    <span class="badge badge-soft-success">Paid</span>
-                                                </td>
-                                                <td>
-                                                    <h5 class="fs-14 fw-medium mb-0">4.7<span
-                                                            class="text-muted fs-11 ms-1">(161
-                                                            votes)</span></h5>
-                                                </td>
-                                            </tr><!-- end tr -->
-                                        </tbody><!-- end tbody -->
-                                    </table><!-- end table -->
-                                </div>
-                            </div>
-                        </div> <!-- .card-->
-                    </div> <!-- .col-->
-                </div> <!-- end row-->
-
             </div> <!-- end .h-100-->
 
         </div> <!-- end col -->
@@ -1544,5 +1578,54 @@
         // Ubah isi elemen sapaan
         document.getElementById("greeting-text").innerText = `${greeting}, ${userName}!`;
     });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var roomOccupancyOptions = {
+        series: [{{ $roomsWithTenants }}, {{ $roomsWithoutTenants }}],
+        chart: {
+            type: 'donut',
+            height: 170
+        },
+        labels: ['Terisi', 'Kosong'],
+        colors: ['#10b981', '#06b6d4'],
+        dataLabels: {
+            enabled: false
+        },
+        plotOptions: {
+            pie: {
+                donut: {
+                    size: '70%',
+                    labels: {
+                        show: true,
+                        total: {
+                            show: true,
+                            label: 'Total',
+                            fontSize: '12px',
+                            color: 'rgb(255, 255, 255)',
+                            formatter: function () {
+                                return '{{ $totalRooms }}'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        legend: {
+            show: true,
+            position: 'bottom',
+            labels: {
+                colors: ['rgb(255, 255, 255)']
+            }
+        },
+        stroke: {
+            width: 0
+        }
+    };
+
+    var roomChart = new ApexCharts(document.querySelector("#room-occupancy-chart"), roomOccupancyOptions);
+    roomChart.render();
+});
 </script>
 @endsection

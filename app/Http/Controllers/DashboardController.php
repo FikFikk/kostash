@@ -88,6 +88,19 @@ class DashboardController extends Controller
             ? (($tenantsThisMonth - $tenantsLastMonth) / $tenantsLastMonth) * 100
             : ($tenantsThisMonth > 0 ? 100 : 0);
 
+        // Total revenue bulan ini
+        $totalRevenueThisMonth = $meters->whereBetween('created_at', [$startOfThisMonth, now()])
+            ->sum('total_bill');
+
+        // Total revenue bulan lalu
+        $totalRevenueLastMonth = $meters->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])
+            ->sum('total_bill');
+
+        // Growth revenue dalam persentase
+        $revenueGrowthPercent = $totalRevenueLastMonth > 0
+            ? (($totalRevenueThisMonth - $totalRevenueLastMonth) / $totalRevenueLastMonth) * 100
+            : ($totalRevenueThisMonth > 0 ? 100 : 0);
+
         // Data untuk Chart - Monthly Revenue
         $monthlyRevenue = $bills->where('status', 'paid')
             ->groupBy(function($bill) {
@@ -160,7 +173,7 @@ class DashboardController extends Controller
             'bills', 'galleries', 'globalSettings', 'meters', 'rooms', 'users',
             
             // Revenue Statistics
-            'totalRevenue', 'totalPaidBills', 'totalUnpaidBills',
+            'totalRevenue', 'totalPaidBills', 'totalUnpaidBills', 'revenueGrowthPercent',
             'averageRoomCharge', 'averageWaterCharge', 'averageElectricCharge', 'averageTotalAmount',
             
             // Bill Statistics

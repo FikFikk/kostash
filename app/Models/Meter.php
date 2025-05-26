@@ -18,6 +18,7 @@ class Meter extends Model
         'total_electric',
         'total_bill',
         'period',
+        'user_id',
     ];
 
     protected $dates = ['period'];

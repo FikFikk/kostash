@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Meter;
 use App\Models\Room;
+use App\Models\User;
 use App\Models\GlobalSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -50,6 +51,10 @@ class MeterController extends Controller
 
         $period = $this->parsePeriod($validated['period']);
 
+        $user = User::where('room_id', $validated['room_id'])
+            ->where('role', 'tenants')
+            ->first();
+
         $exists = Meter::where('room_id', $validated['room_id'])
             ->where('period', $period)
             ->exists();
@@ -70,7 +75,7 @@ class MeterController extends Controller
             $global
         );
 
-        Meter::create(array_merge($validated, $billData, ['period' => $period]));
+        Meter::create(array_merge($validated, $billData, ['period' => $period, 'user_id' => $user?->id]));
 
         return redirect()->route('dashboard.meter.index')->with('success', 'Meter added successfully.');
     }

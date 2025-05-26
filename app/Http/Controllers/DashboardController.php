@@ -19,7 +19,7 @@ class DashboardController extends Controller
         $galleries = Gallery::all();
         $globalSettings = GlobalSetting::all();
         $meters = Meter::all();
-        $rooms = Room::all();
+        $rooms = Room::orderBy('name')->get();
         $users = User::all();
 
         // Statistik Revenue (dari tabel bills)

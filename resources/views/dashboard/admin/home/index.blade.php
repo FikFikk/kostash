@@ -128,7 +128,7 @@
                                                 class="counter-value" data-target="{{ $totalGalleryItems }}">0</span> 
                                                 <small class="text-muted">photo</small>
                                             </h4>
-                                        <a href="" class="text-decoration-underline">View all photo</a>
+                                        <a href="{{ route('dashboard.gallery.index') }}" class="text-decoration-underline">View all photo</a>
                                     </div>
                                     <div class="avatar-sm flex-shrink-0">
                                         <span class="avatar-title bg-soft-info rounded fs-3">
@@ -164,7 +164,7 @@
                                                 class="counter-value" data-target="{{ $totalTenants }}">0</span> 
                                                 <small class="text-muted"> pengguna</small>
                                         </h4>
-                                        <a href="" class="text-decoration-underline">See details</a>
+                                        <a href="{{ route('dashboard.user.index') }}" class="text-decoration-underline">See details</a>
                                     </div>
                                     <div class="avatar-sm flex-shrink-0">
                                         <span class="avatar-title bg-soft-warning rounded fs-3">
@@ -293,162 +293,60 @@
                                         class="table table-borderless table-centered align-middle table-nowrap mb-2 mt-2">
                                         <thead class="text-muted table-light mt-1">
                                             <tr>
-                                                <th scope="col">Order ID</th>
-                                                <th scope="col">Customer</th>
-                                                <th scope="col">Product</th>
-                                                <th scope="col">Amount</th>
-                                                <th scope="col">Vendor</th>
+                                                <th scope="col">Nama</th>
+                                                <th scope="col">Image</th>
+                                                <th scope="col">Lebar</th>
+                                                <th scope="col">Panjang</th>
+                                                <th scope="col">Deskripsi</th>
                                                 <th scope="col">Status</th>
-                                                <th scope="col">Rating</th>
+                                                <th scope="col">Fasilitas</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach($rooms as $room)
                                             <tr>
                                                 <td>
-                                                    <a href="apps-ecommerce-order-details.html"
-                                                        class="fw-medium link-primary">#VZ2112</a>
+                                                    <a href=""
+                                                        class="fw-medium link-primary">{{ $room->name }}</a>
                                                 </td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <div class="flex-shrink-0 me-2">
-                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-1.jpg') }}"
+                                                            <img src="{{ asset('storage/' . $room->image) }}"
                                                                 alt=""
                                                                 class="avatar-xs rounded-circle" />
                                                         </div>
-                                                        <div class="flex-grow-1">Alex Smith</div>
+                                                        <div class="flex-grow-1"></div>
                                                     </div>
                                                 </td>
-                                                <td>Clothes</td>
+                                                <td>{{ $room->length }}</td>
                                                 <td>
-                                                    <span class="text-success">$109.00</span>
+                                                    {{ $room->width }}  
                                                 </td>
-                                                <td>Zoetic Fashion</td>
+                                                <td>{{ $room->description }}</td>
                                                 <td>
-                                                    <span class="badge badge-soft-success">Paid</span>
+                                                    <span class="badge badge-soft-success">{{ $room->status }}</span>
                                                 </td>
+                                                @php
+                                                    $facilities = collect(json_decode($room->facilities ?? '[]'))
+                                                        ->flatMap(fn($f) => explode(',', $f))
+                                                        ->map(fn($f) => trim($f))
+                                                        ->filter()
+                                                        ->values();
+                                                @endphp
+
                                                 <td>
-                                                    <h5 class="fs-14 fw-medium mb-0">5.0<span
-                                                            class="text-muted fs-11 ms-1">(61
-                                                            votes)</span></h5>
+                                                    <button 
+                                                        type="button"
+                                                        class="btn btn-soft-info btn-sm"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top"
+                                                        title="{{ $facilities->join(', ') }}">
+                                                        {{ $facilities->count() }} Fasilitas
+                                                    </button>
                                                 </td>
-                                            </tr><!-- end tr -->
-                                            <tr>
-                                                <td>
-                                                    <a href="apps-ecommerce-order-details.html"
-                                                        class="fw-medium link-primary">#VZ2111</a>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="flex-shrink-0 me-2">
-                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-2.jpg') }}"
-                                                                alt=""
-                                                                class="avatar-xs rounded-circle" />
-                                                        </div>
-                                                        <div class="flex-grow-1">Jansh Brown</div>
-                                                    </div>
-                                                </td>
-                                                <td>Kitchen Storage</td>
-                                                <td>
-                                                    <span class="text-success">$149.00</span>
-                                                </td>
-                                                <td>Micro Design</td>
-                                                <td>
-                                                    <span
-                                                        class="badge badge-soft-warning">Pending</span>
-                                                </td>
-                                                <td>
-                                                    <h5 class="fs-14 fw-medium mb-0">4.5<span
-                                                            class="text-muted fs-11 ms-1">(61
-                                                            votes)</span></h5>
-                                                </td>
-                                            </tr><!-- end tr -->
-                                            <tr>
-                                                <td>
-                                                    <a href="apps-ecommerce-order-details.html"
-                                                        class="fw-medium link-primary">#VZ2109</a>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="flex-shrink-0 me-2">
-                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-3.jpg') }}"
-                                                                alt=""
-                                                                class="avatar-xs rounded-circle" />
-                                                        </div>
-                                                        <div class="flex-grow-1">Ayaan Bowen</div>
-                                                    </div>
-                                                </td>
-                                                <td>Bike Accessories</td>
-                                                <td>
-                                                    <span class="text-success">$215.00</span>
-                                                </td>
-                                                <td>Nesta Technologies</td>
-                                                <td>
-                                                    <span class="badge badge-soft-success">Paid</span>
-                                                </td>
-                                                <td>
-                                                    <h5 class="fs-14 fw-medium mb-0">4.9<span
-                                                            class="text-muted fs-11 ms-1">(89
-                                                            votes)</span></h5>
-                                                </td>
-                                            </tr><!-- end tr -->
-                                            <tr>
-                                                <td>
-                                                    <a href="apps-ecommerce-order-details.html"
-                                                        class="fw-medium link-primary">#VZ2108</a>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="flex-shrink-0 me-2">
-                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-4.jpg') }}"
-                                                                alt=""
-                                                                class="avatar-xs rounded-circle" />
-                                                        </div>
-                                                        <div class="flex-grow-1">Prezy Mark</div>
-                                                    </div>
-                                                </td>
-                                                <td>Furniture</td>
-                                                <td>
-                                                    <span class="text-success">$199.00</span>
-                                                </td>
-                                                <td>Syntyce Solutions</td>
-                                                <td>
-                                                    <span class="badge badge-soft-danger">Unpaid</span>
-                                                </td>
-                                                <td>
-                                                    <h5 class="fs-14 fw-medium mb-0">4.3<span
-                                                            class="text-muted fs-11 ms-1">(47
-                                                            votes)</span></h5>
-                                                </td>
-                                            </tr><!-- end tr -->
-                                            <tr>
-                                                <td>
-                                                    <a href="apps-ecommerce-order-details.html"
-                                                        class="fw-medium link-primary">#VZ2107</a>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="flex-shrink-0 me-2">
-                                                            <img src="{{ asset('assets/dashboard/images/users/avatar-6.jpg') }}"
-                                                                alt=""
-                                                                class="avatar-xs rounded-circle" />
-                                                        </div>
-                                                        <div class="flex-grow-1">Vihan Hudda</div>
-                                                    </div>
-                                                </td>
-                                                <td>Bags and Wallets</td>
-                                                <td>
-                                                    <span class="text-success">$330.00</span>
-                                                </td>
-                                                <td>iTest Factory</td>
-                                                <td>
-                                                    <span class="badge badge-soft-success">Paid</span>
-                                                </td>
-                                                <td>
-                                                    <h5 class="fs-14 fw-medium mb-0">4.7<span
-                                                            class="text-muted fs-11 ms-1">(161
-                                                            votes)</span></h5>
-                                                </td>
-                                            </tr><!-- end tr -->
+                                            </tr>
+                                            @endforeach
                                         </tbody><!-- end tbody -->
                                     </table><!-- end table -->
                                 </div>
@@ -1586,7 +1484,7 @@ document.addEventListener('DOMContentLoaded', function() {
         series: [{{ $roomsWithTenants }}, {{ $roomsWithoutTenants }}],
         chart: {
             type: 'donut',
-            height: 170
+            height: 220
         },
         labels: ['Terisi', 'Kosong'],
         colors: ['#10b981', '#06b6d4'],
@@ -1627,5 +1525,14 @@ document.addEventListener('DOMContentLoaded', function() {
     var roomChart = new ApexCharts(document.querySelector("#room-occupancy-chart"), roomOccupancyOptions);
     roomChart.render();
 });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
 </script>
 @endsection

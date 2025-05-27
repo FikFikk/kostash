@@ -9,6 +9,7 @@ use App\Models\Meter;
 use App\Models\Room;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -138,6 +139,54 @@ class DashboardController extends Controller
         // Top 5 highest bills
         $topBills = $bills->sortByDesc('total_amount')->take(5);
 
+        $topTenants = Meter::select([
+                'meters.user_id',
+                'meters.room_id',
+                DB::raw('SUM(meters.total_water) as total_water'),
+                DB::raw('SUM(meters.total_electric) as total_electric'),
+                DB::raw('SUM(meters.total_bill) as total_amount'),
+                DB::raw('MAX(meters.period) as period'),
+                DB::raw('COUNT(*) as meter_reading_count'),
+                // Hitung charge dari konsumsi
+                DB::raw('SUM(meters.total_water) * 5000 as water_charge'),
+                DB::raw('SUM(meters.total_electric) * 1500 as electric_charge')
+            ])
+            ->with(['user', 'room'])
+            ->whereNotNull('meters.user_id')
+            ->whereNotNull('meters.total_bill')
+            ->where('meters.total_bill', '>', 0) // Pastikan ada tagihan
+            ->whereHas('user', function($query) {
+                $query->where('role', 'tenants');
+            })
+            ->groupBy('meters.user_id', 'meters.room_id')
+            ->orderBy('total_amount', 'desc')
+            ->take(5) // Ambil 10 data untuk lebih banyak pilihan
+            ->get();
+
+        // Hitung percentage change untuk setiap tenant
+        foreach($topTenants as $index => $tenant) {
+            // Ambil data periode sebelumnya
+            $previousMeter = Meter::where('user_id', $tenant->user_id)
+                ->where('room_id', $tenant->room_id)
+                ->where('period', '<', $tenant->period)
+                ->orderBy('period', 'desc')
+                ->first();
+            
+            if($previousMeter && $previousMeter->total_bill > 0) {
+                $currentTotal = $tenant->total_amount;
+                $previousTotal = $previousMeter->total_bill;
+                
+                $tenant->percentage_change = round((($currentTotal - $previousTotal) / $previousTotal) * 100, 1);
+            } else {
+                $tenant->percentage_change = null;
+            }
+            
+            // Pastikan periode dalam format yang benar
+            if(!$tenant->period) {
+                $tenant->period = now()->format('Y-m-d');
+            }
+        }
+
         // Monthly usage trends
         $monthlyWaterUsage = $meters->groupBy(function($meter) {
                 return date('Y-m', strtotime($meter->created_at));
@@ -177,7 +226,7 @@ class DashboardController extends Controller
             'averageRoomCharge', 'averageWaterCharge', 'averageElectricCharge', 'averageTotalAmount',
             
             // Bill Statistics
-            'totalBills', 'totalPaidBillsCount', 'totalUnpaidBillsCount',
+            'totalBills', 'totalPaidBillsCount', 'totalUnpaidBillsCount', 'topTenants',
             
             // User Statistics
             'totalUsers', 'totalAdmins', 'totalTenants', 'totalActiveUsers', 'totalInactiveUsers', 'growthPercent',

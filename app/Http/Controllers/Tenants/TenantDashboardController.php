@@ -64,6 +64,9 @@ class TenantDashboardController extends Controller
         $user = auth()->user();
         $room = $user->room;
 
+        $userAgent = $request->header('User-Agent');
+        $isMobile = preg_match('/Mobile|Android|iPhone|iPad|iPod/i', $userAgent);
+
         $month = (int) $request->input('month', now()->month);
         $year = (int) $request->input('year', now()->year);
 
@@ -93,10 +96,16 @@ class TenantDashboardController extends Controller
             'totalBill' => $totalBill,
         ];
 
-    $pdf = Pdf::loadView('dashboard.tenants.pdf.export', $data)
-        ->setPaper([0, 0, 842, 700], 'portrait'); // width: A3 = 842pt, height: custom (default A3: 1190pt)
+        $pdf = Pdf::loadView('dashboard.tenants.pdf.export', $data)
+            ->setPaper([0, 0, 842, 700], 'portrait'); // width: A3 = 842pt, height: custom (default A3: 1190pt)
 
-    return $pdf->stream('tagihan_kamar_'.$room->name.'_'.$month.'_'.$year.'.pdf');
+        $filename = 'tagihan_kamar_'.$room->name.'_'.$month.'_'.$year.'.pdf';
+
+        if ($isMobile) {
+            return $pdf->download($filename); // Auto download on mobile
+        } else {
+            return $pdf->stream($filename); // Stream on desktop
+        }
     }
 
     /**

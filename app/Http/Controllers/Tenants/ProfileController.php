@@ -13,64 +13,33 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        return view('dashboard.tenants.profile.index', compact('user'));
+        return view('dashboard.tenants.profile.index', [
+            'user' => Auth::user(),
+        ]);
     }
 
     public function edit()
     {
-        $user = Auth::user();
-        return view('dashboard.tenants.profile.edit', compact('user'));
+        return view('dashboard.tenants.profile.edit', [
+            'user' => Auth::user(),
+        ]);
     }
 
     public function update(Request $request)
     {
-        logger()->info('Masuk ke fungsi update', $request->all());
         $user = Auth::user();
-        
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('users')->ignore($user->id),
-            ],
-            'phone' => [
-                'nullable',
-                'string',
-                Rule::unique('users')->ignore($user->id),
-            ],
-            'nik' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:500',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
 
-        $data = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'nik' => $request->nik,
-            'address' => $request->address,
-        ];
-
-        logger()->info('Validasi berhasil');
+        $data = $this->validatedProfileData($request, $user);
 
         if ($request->hasFile('photo')) {
-            // Hapus foto lama jika ada
-            if ($user->photo && Storage::disk('public')->exists('uploads/profile/' . $user->photo)) {
-                Storage::disk('public')->delete('uploads/profile/' . $user->photo);
-            }
-
-            $file = $request->file('photo');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('uploads/profile', $filename, 'public');
-
-            $data['photo'] = $filename;
+            $data['photo'] = $this->handlePhotoUpload($request, $user);
         }
 
         $user->update($data);
 
-        return redirect()->route('tenant.profile.index')->with('success', 'Profil berhasil diperbarui');
+        return redirect()
+            ->route('tenant.profile.index')
+            ->with('success', 'Profil berhasil diperbarui');
     }
 
     public function changePasswordForm()
@@ -81,29 +50,68 @@ class ProfileController extends Controller
     public function changePassword(Request $request)
     {
         $user = Auth::user();
-        
-        // Cek apakah user login melalui Google OAuth
+
         if (!is_null($user->provider_id)) {
             return back()->withErrors([
-                'current_password' => 'Anda tidak dapat mengubah password karena login menggunakan akun Google. Password dikelola oleh Google.'
+                'current_password' => 'Akun Anda terhubung dengan Google, tidak dapat mengubah password.'
             ]);
         }
-        
+
         $request->validate([
             'current_password' => 'required',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Verifikasi password saat ini (hanya untuk user yang bukan OAuth)
         if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'Password saat ini tidak benar']);
+            return back()->withErrors([
+                'current_password' => 'Password saat ini salah.'
+            ]);
         }
 
-        // Update password
         $user->update([
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('tenant.profile.index')->with('success', 'Password berhasil diubah');
+        return redirect()
+            ->route('tenant.profile.index')
+            ->with('success', 'Password berhasil diubah');
+    }
+
+    // Private helpers
+
+    private function validatedProfileData(Request $request, $user)
+    {
+        return $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => [
+                'required', 'email',
+                Rule::unique('users')->ignore($user->id),
+            ],
+            'phone' => [
+                'nullable', 'string',
+                Rule::unique('users')->ignore($user->id),
+            ],
+            'nik' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+    }
+
+    private function handlePhotoUpload(Request $request, $user)
+    {
+        $file = $request->file('photo');
+
+        if (!$file->isValid()) {
+            return null;
+        }
+
+        if ($user->photo && Storage::disk('public')->exists('uploads/profile/' . $user->photo)) {
+            Storage::disk('public')->delete('uploads/profile/' . $user->photo);
+        }
+
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->storeAs('uploads/profile', $filename, 'public');
+
+        return $filename;
     }
 }

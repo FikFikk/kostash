@@ -14,6 +14,7 @@ use App\Http\Controllers\{
 
 use App\Http\Controllers\Tenants\TenantDashboardController;
 use App\Http\Controllers\Tenants\ProfileController;
+use App\Http\Controllers\Tenants\PaymentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
 
@@ -114,6 +115,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('dashboard')->name('dashboard.
 Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->group(function () {
     Route::get('/', [TenantDashboardController::class, 'index'])->name('home');
     Route::get('/export', [TenantDashboardController::class, 'exportInvoice'])->name('export');
+    Route::get('/payment/token', [PaymentController::class, 'getSnapToken'])->name('getSnapToken');
 
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::controller(ProfileController::class)->group(function () {

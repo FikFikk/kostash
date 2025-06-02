@@ -14,11 +14,17 @@ return new class extends Migration
         Schema::create('meters', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('room_id')->constrained('rooms')->cascadeOnDelete();
+            $table->foreignUuid('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->integer('water_meter_start')->nullable();
             $table->integer('water_meter_end')->nullable();
             $table->integer('electric_meter_start')->nullable();
             $table->integer('electric_meter_end')->nullable();
+            $table->integer('total_water')->nullable();
+            $table->integer('total_electric')->nullable();
+            $table->integer('total_bill')->nullable();
             $table->date('period'); // e.g., 2025-04-01 for April
+            $table->enum('payment_status', ['unpaid', 'paid', 'partial'])->default('unpaid');
+            $table->timestamp('paid_at')->nullable();
             $table->timestamps();
         });
     }

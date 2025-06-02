@@ -17,8 +17,11 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         $this->call([
-            UserSeeder::class,
             RoomSeeder::class,
+            UserSeeder::class,
+            GlobalSettingSeeder::class, 
+            MeterSeeder::class,     
+            GallerySeeder::class,
             ]
         );
 

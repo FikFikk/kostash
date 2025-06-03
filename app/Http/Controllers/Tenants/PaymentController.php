@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Midtrans\Snap;
 use Midtrans\Config;
+use App\Models\Transaction;
 use App\Models\Meter;
 use App\Models\GlobalSetting;
 
@@ -28,6 +29,22 @@ class PaymentController extends Controller
                 return response()->json(['error' => 'Data meter tidak ditemukan'], 404);
             }
 
+            // Cek apakah sudah ada transaksi yang pending atau success untuk meter ini
+            $existingTransaction = Transaction::where('meter_id', $meter->id)
+                ->whereIn('status', ['pending', 'success'])
+                ->first();
+
+            if ($existingTransaction) {
+                if ($existingTransaction->status === 'success') {
+                    return response()->json(['error' => 'Tagihan untuk periode ini sudah dibayar'], 400);
+                }
+                
+                // Jika ada transaksi pending, return snap token yang sudah ada
+                if ($existingTransaction->snap_token) {
+                    return response()->json(['token' => $existingTransaction->snap_token]);
+                }
+            }
+
             $global = GlobalSetting::first();
 
             if (!$global) {
@@ -40,6 +57,9 @@ class PaymentController extends Controller
                         ($electricUsage * $global->electric_price) +
                         $global->monthly_room_price;
 
+            // Generate unique order ID
+            $orderId = 'INV-' . now()->format('ymd') . '-' . substr(md5($meter->id), 0, 6);
+
             // Konfigurasi Midtrans
             \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
             \Midtrans\Config::$isProduction = false;
@@ -48,7 +68,7 @@ class PaymentController extends Controller
 
             // Data transaksi
             $transaction_details = [
-                'order_id' => uniqid('INV-'),
+                'order_id' => $orderId,
                 'gross_amount' => $totalBill,
             ];
 
@@ -64,7 +84,34 @@ class PaymentController extends Controller
 
             $snapToken = \Midtrans\Snap::getSnapToken($params);
 
-            return response()->json(['token' => $snapToken]);
+            // Create or update transaction record
+            if ($existingTransaction && $existingTransaction->status === 'pending') {
+                // Update existing pending transaction
+                $existingTransaction->update([
+                    'order_id' => $orderId,
+                    'amount' => $totalBill,
+                    'snap_token' => $snapToken,
+                    'status' => 'pending'
+                ]);
+                $transaction = $existingTransaction;
+            } else {
+                // Create new transaction record
+                $transaction = Transaction::create([
+                    'order_id' => $orderId,
+                    'user_id' => $user->id,
+                    'meter_id' => $meter->id,
+                    'amount' => $totalBill,
+                    'status' => 'pending',
+                    'snap_token' => $snapToken,
+                ]);
+            }
+
+            return response()->json([
+                'token' => $snapToken,
+                'transaction_id' => $transaction->id,
+                'amount' => $totalBill
+            ]);
+
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

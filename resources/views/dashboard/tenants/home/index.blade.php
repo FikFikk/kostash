@@ -461,38 +461,73 @@
     document.getElementById('pay-button').addEventListener('click', function () {
         const month = document.getElementById('month').value;
         const year = document.getElementById('year').value;
+        
+        // Disable button to prevent double click
+        const payButton = this;
+        payButton.disabled = true;
+        payButton.textContent = 'Loading...';
 
         fetch(`{{ route('tenant.getSnapToken') }}?month=${month}&year=${year}`, {
             headers: {
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
             }
         })
-        .then(res => res.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
-            if (!data.token) {
-                alert("Token pembayaran tidak ditemukan!");
-                console.error("Snap token error:", data);
+            // Re-enable button
+            payButton.disabled = false;
+            payButton.textContent = 'Bayar Sekarang';
+            
+            if (data.error) {
+                alert(data.error);
                 return;
             }
 
+            // Langsung gunakan token yang baru di-generate
             snap.pay(data.token, {
-                onSuccess: function(result) {
-                    alert("Pembayaran berhasil!");
+                onSuccess: function(result){
+                    console.log("Pembayaran sukses:", result);
+                    alert("Pembayaran berhasil! Terima kasih.");
                     location.reload();
                 },
-                onPending: function(result) {
-                    alert("Menunggu pembayaran...");
+                onPending: function(result){
+                    console.log("Menunggu pembayaran:", result);
+                    alert("Pembayaran masih pending. Silakan selesaikan pembayaran.");
+                    location.reload();
                 },
-                onError: function(result) {
-                    alert("Pembayaran gagal!");
-                    console.log(result);
+                onError: function(result){
+                    console.error("Terjadi kesalahan pembayaran:", result);
+                    
+                    // Jika error karena token expired, coba generate ulang
+                    if (result.status_code === '400' || result.status_message.includes('expired')) {
+                        alert("Token pembayaran sudah expired. Silakan coba lagi.");
+                    } else {
+                        alert("Terjadi kesalahan saat pembayaran. Silakan coba lagi.");
+                    }
+                },
+                onClose: function(){
+                    console.log("Payment popup closed");
+                    // Re-enable button jika user menutup popup
+                    payButton.disabled = false;
+                    payButton.textContent = 'Bayar Sekarang';
                 }
             });
         })
         .catch(error => {
-            console.error('Gagal fetch token:', error);
-            alert("Gagal mendapatkan token pembayaran.");
+            // Re-enable button
+            payButton.disabled = false;
+            payButton.textContent = 'Bayar Sekarang';
+            
+            console.error("Gagal fetch Snap Token:", error);
+            alert("Terjadi kesalahan pada server. Silakan coba lagi.");
         });
     });
 </script>
+
 @endsection

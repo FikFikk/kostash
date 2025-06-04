@@ -14,6 +14,7 @@
         <meta name="description" content="KostASH" />
         <meta name="kaywords" content="KostASH" />
         <meta name="author" content="KostASH.id" />
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <!-- App favicon -->
         <link rel="shortcut icon" href="{{ asset('assets/images/k-logo.png') }}">
         

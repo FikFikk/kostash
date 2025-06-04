@@ -29,21 +29,19 @@ class PaymentController extends Controller
                 return response()->json(['error' => 'Data meter tidak ditemukan'], 404);
             }
 
-            // Cek apakah sudah ada transaksi yang pending atau success untuk meter ini
-            $existingTransaction = Transaction::where('meter_id', $meter->id)
-                ->whereIn('status', ['pending', 'success'])
+            // Cek apakah sudah ada transaksi yang success
+            $successTransaction = Transaction::where('meter_id', $meter->id)
+                ->where('status', 'success')
                 ->first();
 
-            if ($existingTransaction) {
-                if ($existingTransaction->status === 'success') {
-                    return response()->json(['error' => 'Tagihan untuk periode ini sudah dibayar'], 400);
-                }
-                
-                // Jika ada transaksi pending, return snap token yang sudah ada
-                if ($existingTransaction->snap_token) {
-                    return response()->json(['token' => $existingTransaction->snap_token]);
-                }
+            if ($successTransaction) {
+                return response()->json(['error' => 'Tagihan untuk periode ini sudah dibayar'], 400);
             }
+
+            // Cari transaksi pending yang masih ada
+            $existingTransaction = Transaction::where('meter_id', $meter->id)
+                ->where('status', 'pending')
+                ->first();
 
             $global = GlobalSetting::first();
 
@@ -58,7 +56,7 @@ class PaymentController extends Controller
                         $global->monthly_room_price;
 
             // Generate unique order ID
-            $orderId = 'INV-' . now()->format('ymd') . '-' . substr(md5($meter->id), 0, 6);
+            $orderId = 'INV-' . now()->format('ymd') . '-' . substr(md5($meter->id . time()), 0, 6);
 
             // Konfigurasi Midtrans
             \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
@@ -82,16 +80,18 @@ class PaymentController extends Controller
                 'customer_details' => $customer_details,
             ];
 
+            // Selalu generate snap token baru
             $snapToken = \Midtrans\Snap::getSnapToken($params);
 
-            // Create or update transaction record
-            if ($existingTransaction && $existingTransaction->status === 'pending') {
-                // Update existing pending transaction
+            // Update atau create transaction record
+            if ($existingTransaction) {
+                // Jika ada transaksi pending, update dengan token baru
                 $existingTransaction->update([
                     'order_id' => $orderId,
                     'amount' => $totalBill,
                     'snap_token' => $snapToken,
-                    'status' => 'pending'
+                    'status' => 'pending',
+                    'updated_at' => now()
                 ]);
                 $transaction = $existingTransaction;
             } else {

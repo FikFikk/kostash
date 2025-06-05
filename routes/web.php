@@ -9,6 +9,7 @@ use App\Http\Controllers\{
     PublicController,
     RoomController,
     SocialAuthController,
+    TransactionController,
     UserController,
 };
 
@@ -93,6 +94,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('dashboard')->name('dashboard.
             Route::get('/edit/{id}', 'edit')->name('edit');
             Route::put('/update/{id}', 'update')->name('update');
             Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+        });
+    });
+
+    Route::prefix('transaction')->name('transaction.')->group(function () {
+        Route::controller(TransactionController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
         });
     });
 

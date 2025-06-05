@@ -38,11 +38,11 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button"
-                        aria-expanded="false" aria-controls="sidebarAuth">
-                        <i class="bx bxs-data"></i> <span data-key="t-authentication">Master Data</span>
+                    <a class="nav-link menu-link" href="#sidebarMaster" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarMaster">
+                        <i class="bx bxs-data"></i> <span data-key="t-master">Master Data</span>
                     </a>
-                    <div class="collapse menu-dropdown" id="sidebarAuth">
+                    <div class="collapse menu-dropdown" id="sidebarMaster">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{ route('dashboard.room.index') }}" class="nav-link" data-key="t-room"> Room </a>
@@ -59,7 +59,13 @@
 
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="{{ route('dashboard.meter.index') }}">
-                        <i class="ri-window-2-line"></i> <span data-key="t-meter">Meter</span>
+                        <i class="ri-water-flash-line"></i> <span data-key="t-meter">Meter</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('dashboard.transaction.index') }}">
+                        <i class="ri-bill-line"></i> <span data-key="t-meter">Transaction</span>
                     </a>
                 </li>
 

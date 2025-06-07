@@ -98,10 +98,14 @@
                     <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         <span class="d-flex align-items-center">
-                            <img class="rounded-circle header-profile-user"
-                                src="{{ asset(auth()->user()->photo ?? 'assets/dashboard/images/users/avatar-1.jpg') }}"
-                                onerror="this.onerror=null;this.src='{{ asset('assets/dashboard/images/users/avatar-1.jpg') }}';"
-                                alt="User Avatar">
+                            @if(auth()->user()->photo)
+                                <img src="{{ asset('storage/uploads/profile/' . auth()->user()->photo) }}" 
+                                    alt="Profile Picture" 
+                                    class="rounded-circle header-profile-user" style='object-fit: cover;'>
+                            @else
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=667eea&color=fff&size=120&font-size=0.4"
+                                    alt="Avatar" class="rounded-circle header-profile-user">
+                            @endif
                             <span class="text-start ms-xl-2">
                                 <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ auth()->user()->name }}</span>
                                 <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">{{ ucfirst(auth()->user()->role) }}</span>
@@ -109,16 +113,23 @@
                         </span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end mt-5">
-                        <h6 class="dropdown-header">Selamat datang, {{ auth()->user()->name ?? 'Tuan' }}!</h6>
+                        <h6 class="dropdown-header">Selamat datang, {{ auth()->user()->name }}!</h6>
 
                         {{-- (Optional) Tambahan menu profile atau lainnya di sini --}}
-                        <a class="dropdown-item" href=""><i
+                        <a class="dropdown-item" href="{{ route('tenant.home') }}"><i
+                            class="mdi mdi-view-dashboard-outline text-muted fs-16 align-middle me-1"></i> <span
+                            class="align-middle">Dashboard</span></a>
+                        <a class="dropdown-item" href="{{ route('tenant.profile.index') }}"><i
                             class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span
                             class="align-middle">Profile</span></a>
                         <a class="dropdown-item" href=""><i
                             class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span
                             class="align-middle">Help</span></a>
                         <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ route('tenant.profile.change-password') }}">
+                            <i class="mdi mdi-key text-muted fs-16 align-middle me-1"></i>
+                            <span class="align-middle">Change Password</span>
+                        </a>
                         <a class="dropdown-item" href="{{ route('auth.logout') }}">
                             <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
                             <span class="align-middle" data-key="t-logout">Logout</span>

@@ -32,8 +32,14 @@
                 <li class="menu-title"><span data-key="t-menu">Menu</span></li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('dashboard.home') }}">
+                    <a class="nav-link menu-link" href="{{ route('tenant.home') }}">
                         <i class="ri-dashboard-2-line"></i> <span data-key="t-widgets">Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('tenant.history.index') }}">
+                        <i class="ri-bank-card-line"></i> <span data-key="t-widgets">Payment History</span>
                     </a>
                 </li>
 

@@ -13,9 +13,10 @@ use App\Http\Controllers\{
     UserController,
 };
 
-use App\Http\Controllers\Tenants\TenantDashboardController;
-use App\Http\Controllers\Tenants\ProfileController;
 use App\Http\Controllers\Tenants\PaymentController;
+use App\Http\Controllers\Tenants\PaymentHistoryController;
+use App\Http\Controllers\Tenants\ProfileController;
+use App\Http\Controllers\Tenants\TenantDashboardController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
 
@@ -131,6 +132,12 @@ Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->
             Route::put('/update', 'update')->name('update');
             Route::get('/change-password', 'changePasswordForm')->name('change-password');
             Route::post('/change-password', 'changePassword')->name('change-password');
+        });
+    });
+
+    Route::prefix('history')->name('history.')->group(function () {
+        Route::controller(PaymentHistoryController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
         });
     });
 

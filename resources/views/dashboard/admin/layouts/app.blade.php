@@ -14,6 +14,9 @@
         <meta name="description" content="KostASH" />
         <meta name="kaywords" content="KostASH" />
         <meta name="author" content="KostASH.id" />
+                
+        <script src="{{ asset('assets/js/dark-mode.js') }}"></script>
+
         <!-- App favicon -->
         <link rel="shortcut icon" href="{{ asset('assets/images/k-logo.png') }}">
         

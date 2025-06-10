@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg">
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-bs-theme="light">
 
     <head>
         <meta charset="utf-8" />
@@ -15,6 +15,9 @@
         <meta name="kaywords" content="KostASH" />
         <meta name="author" content="KostASH.id" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        
+        <script src="{{ asset('assets/js/dark-mode.js') }}"></script>
+
         <!-- App favicon -->
         <link rel="shortcut icon" href="{{ asset('assets/images/k-logo.png') }}">
         
@@ -30,7 +33,6 @@
 
         <link href="{{ asset('assets/dashboard/libs/choices.js/public/assets/styles/choices.min.css') }}" rel="stylesheet" />
 
-        
         <!-- Layout config Js -->
         <script src="{{ asset('assets/dashboard/js/layout.js') }}"></script>
         <!-- Bootstrap Css -->

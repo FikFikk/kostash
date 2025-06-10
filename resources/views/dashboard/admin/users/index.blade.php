@@ -31,7 +31,7 @@
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->room ? $user->room->name : '-' }}</td>
-                            <td>{{ $user->created_at->format('Y-m-d') }}</td>
+                            <td>{{ $user->created_at ? $user->created_at->format('Y-m-d') : '-' }}</td>
                             <td>
                                 <a href="{{ route('dashboard.user.show', $user->id) }}" class="btn btn-info btn-sm">Detail</a>
                                 <a href="{{ route('dashboard.user.edit', $user->id) }}" class="btn btn-warning btn-sm">Edit</a>

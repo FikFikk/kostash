@@ -129,7 +129,7 @@
                 <!-- end table responsive -->
 
                 <div class="d-flex justify-content-end mt-3">
-                    {{ $rooms->links('admin.dashboard.layouts.pagination') }}
+                    {{ $rooms->links('dashboard.admin.layouts.pagination') }}
                 </div>
 
                 

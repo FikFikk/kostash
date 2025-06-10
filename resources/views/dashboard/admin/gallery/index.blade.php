@@ -55,7 +55,7 @@
             </div>
 
             <div class="d-flex justify-content-center mt-3">
-                {{ $galleries->links('admin.dashboard.layouts.pagination') }}
+                {{ $galleries->links('dashboard.admin.layouts.pagination') }}
             </div>
         </div>
     </div>

@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\GlobalSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Traits\NotificationTrait;
 
 class GlobalSettingController extends Controller
 {
+    use NotificationTrait;
+
     public function index()
     {
         $global = $this->getSetting();
@@ -23,11 +27,15 @@ class GlobalSettingController extends Controller
     {
         $validated = $this->validateSettings($request);
 
-        $this->getSetting()->update($validated);
+        try {
+            $this->getSetting()->update($validated);
+    
+            return $this->redirectToWithSuccess('dashboard.global.index', 'Global settings berhasil diperbarui!');
 
-        return redirect()
-            ->route('dashboard.global.index')
-            ->with('success', 'Global settings updated successfully.');
+        } catch (\Exception $e) {
+
+            return $this->redirectWithError('Terjadi kesalahan saat memperbarui data: ' . $e->getMessage());
+        }
     }
 
     // DRY Helper Methods

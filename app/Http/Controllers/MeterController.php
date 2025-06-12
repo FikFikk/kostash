@@ -77,7 +77,7 @@ class MeterController extends Controller
 
         Meter::create(array_merge($validated, $billData, ['period' => $period, 'user_id' => $user?->id]));
 
-        return redirect()->route('dashboard.meter.index')->with('success', 'Meter added successfully.');
+        return redirect()->route('dashboard.meter.index')->with('success', 'Meter berhasil ditambahkan.');
     }
 
     public function edit($id)
@@ -106,13 +106,13 @@ class MeterController extends Controller
 
         $meter->update(array_merge($validated, $billData, ['period' => $period]));
 
-        return redirect()->route('dashboard.meter.index')->with('success', 'Meter updated successfully.');
+        return redirect()->route('dashboard.meter.index')->with('success', 'Meter berhasil diperbarui.');
     }
 
     public function destroy(Meter $meter)
     {
         $meter->delete();
-        return redirect()->route('dashboard.meter.index')->with('success', 'Meter deleted successfully.');
+        return redirect()->route('dashboard.meter.index')->with('success', 'Meter berhasil dihapus.');
     }
 
     // --- PRIVATE HELPERS ---

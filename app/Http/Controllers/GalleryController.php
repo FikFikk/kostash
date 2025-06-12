@@ -28,7 +28,7 @@ class GalleryController extends Controller
         Gallery::create($data);
 
         return redirect()->route('dashboard.gallery.index')
-            ->with('success', 'Gambar berhasil diunggah.');
+            ->with('success', 'Gambar berhasil ditambahkan.');
     }
 
     public function edit(Gallery $gallery)

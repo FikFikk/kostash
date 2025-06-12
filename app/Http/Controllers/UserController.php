@@ -44,7 +44,7 @@ class UserController extends Controller
 
         User::create($validated);
 
-        return redirect()->route('dashboard.user.index')->with('success', 'User created successfully.');
+        return redirect()->route('dashboard.user.index')->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
     public function edit($id)
@@ -68,7 +68,7 @@ class UserController extends Controller
 
         $user->update($validated);
 
-        return redirect()->route('dashboard.user.index')->with('success', 'User updated successfully.');
+        return redirect()->route('dashboard.user.index')->with('success', 'Pengguna berhasil diperbarui.');
     }
 
     public function show($id)
@@ -89,7 +89,7 @@ class UserController extends Controller
 
         $user->delete();
 
-        return redirect()->route('dashboard.user.index')->with('success', 'User deleted successfully.');
+        return redirect()->route('dashboard.user.index')->with('success', 'Pengguna berhasil dihapus.');
     }
 
     // --- PRIVATE FUNCTIONS ---

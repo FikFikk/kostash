@@ -28,29 +28,25 @@ class SocialAuthController extends Controller
 
     public function handleProviderCallback($provider)
     {
-        try {
-            $socialUser = Socialite::driver($provider)->stateless()->user();
+        $socialUser = Socialite::driver($provider)->stateless()->user();
 
-            $user = User::updateOrCreate(
-                ['provider_id' => $socialUser->id],
-                [
-                    'name' => $socialUser->name,
-                    'email' => $socialUser->email,
-                    'provider_id' => $socialUser->id,
-                    'provider_token' => $socialUser->token,
-                    'password' => Hash::make(Str::random(40)),
-                ]
-            );
+        $user = User::updateOrCreate(
+            ['provider_id' => $socialUser->id],
+            [
+                'name' => $socialUser->name,
+                'email' => $socialUser->email,
+                'provider_id' => $socialUser->id,
+                'provider_token' => $socialUser->token,
+                'password' => Hash::make(Str::random(40)),
+            ]
+        );
 
-            Auth::login($user);
+        Auth::login($user);
+        session()->regenerate();
 
-            return response()->view('auth.social-success', [
-                'redirectTo' => $user->role === 'admin' ? route('dashboard.home') : route('tenant.home')
-            ]);
-        } catch (\Exception $e) {
-            \Log::error("{$provider} login error: " . $e->getMessage());
-
-            return redirect()->route('auth.login')->with('error', "Gagal login menggunakan {$provider}. Silakan coba lagi.");
-        }
+        return response()->view('auth.social-success', [
+            'redirectTo' => $user->role === 'admin' ? route('dashboard.home') : route('tenant.home'),
+            'message' => 'Successfully logged in with ' . ucfirst($provider) . '.',
+        ]);
     }
 }

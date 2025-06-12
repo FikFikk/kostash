@@ -31,7 +31,7 @@ class RoomController extends Controller
 
         Room::create($validated);
 
-        return redirect()->route('room.home')->with('success', 'Room created successfully.');
+        return redirect()->route('dsahboard.room.index')->with('success', 'Room berhasil ditambahkan.');
     }
 
     public function edit($id)
@@ -55,7 +55,7 @@ class RoomController extends Controller
 
         $room->update($validated);
 
-        return redirect()->route('room.home')->with('success', 'Room updated successfully.');
+        return redirect()->route('dashboard.room.index')->with('success', 'Room berhasil diperbarui.');
     }
 
     public function destroy(Room $room)
@@ -63,7 +63,7 @@ class RoomController extends Controller
         $this->deleteOldImage($room->image);
         $room->delete();
 
-        return redirect()->route('room.home')->with('success', 'Room deleted successfully.');
+        return redirect()->route('dashboard.room.index')->with('success', 'Room berhasil dihapus.');
     }
 
     // -----------------------
@@ -86,8 +86,8 @@ class RoomController extends Controller
             'status'      => 'required|in:available,occupied',
             'facilities'  => 'nullable|array',
         ], [
-            'image.max' => 'Ukuran gambar maksimal 2MB.',
-            'image.image' => 'File yang diunggah harus berupa gambar (jpg, png, dll).',
+            'image.max' => 'The image size must not exceed 2MB.',
+            'image.image' => 'The uploaded file must be an image (jpg, png, etc.).',
         ]);
     }
 

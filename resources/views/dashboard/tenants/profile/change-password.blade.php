@@ -9,19 +9,6 @@
         </a>
     </div>
 
-    @if ($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
-            <i class="mdi mdi-alert-circle-outline me-2"></i>
-            <strong>Ada kesalahan!</strong>
-            <ul class="mb-0 mt-2">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
     @if(!is_null(auth()->user()->provider_id))
         <!-- Google OAuth User Info Card -->
         <div class="card shadow-lg border-0 mb-4 google-oauth-card">

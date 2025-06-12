@@ -20,44 +20,43 @@ class AuthController extends Controller
 
     public function login_process(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email|min:6',
-            'password' => 'required|min:6',
+            'password' => 'required|string|min:6',
         ]);
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-        
+
             $user = Auth::user();
-            
-            if ($user->role === 'admin') {
-                return redirect()->intended(route('dashboard.home'));
-            } else {
-                return redirect()->intended(route('tenant.home'));
-            }
+
+            return $user->role === 'admin'
+                ? redirect()->intended(route('dashboard.home'))->with('success', 'Berhasil masuk sebagai admin.')
+                : redirect()->intended(route('tenant.home'))->with('success', 'Login berhasil. Selamat datang kembali!');
         }
 
-        return redirect(route('auth.login'))->withInput()->with('error', 'Email atau password salah!');
+        return back()->withInput()->with('error', 'Email atau kata sandi salah.');
     }
 
     public function register_process(Request $request)
     {
-        // dd($request->all());
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6', // |confirmed Pastikan ada kolom password_confirmation di form jika menggunakan 'confirmed'
+            'password' => 'required|string|min:6', // |confirmed if using password confirmation
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
         ]);
 
-        return redirect()->route('auth.login')->with('success', 'Registration successful! You can now log in.');
+        Auth::login($user);
+
+        return redirect()
+            ->route('tenant.home')
+            ->with('success', 'Selamat datang! Akun Anda berhasil dibuat dan Anda telah masuk secara otomatis.');
     }
 
     public function logout_view()

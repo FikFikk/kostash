@@ -37,9 +37,7 @@ class ProfileController extends Controller
 
         $user->update($data);
 
-        return redirect()
-            ->route('tenant.profile.index')
-            ->with('success', 'Profil berhasil diperbarui');
+        return redirect()->route('tenant.profile.index')->with('success', 'Profil berhasil diperbarui.');
     }
 
     public function changePasswordForm()
@@ -53,7 +51,7 @@ class ProfileController extends Controller
 
         if (!is_null($user->provider_id)) {
             return back()->withErrors([
-                'current_password' => 'Akun Anda terhubung dengan Google, tidak dapat mengubah password.'
+                'current_password' => 'Akun Anda terhubung dengan Google, sehingga tidak dapat mengubah kata sandi.',
             ]);
         }
 
@@ -64,7 +62,7 @@ class ProfileController extends Controller
 
         if (!Hash::check($request->current_password, $user->password)) {
             return back()->withErrors([
-                'current_password' => 'Password saat ini salah.'
+                'current_password' => 'Kata sandi saat ini tidak sesuai.',
             ]);
         }
 
@@ -72,9 +70,7 @@ class ProfileController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()
-            ->route('tenant.profile.index')
-            ->with('success', 'Password berhasil diubah');
+        return redirect()->route('tenant.profile.index')->with('success', 'Kata sandi berhasil diperbarui.');
     }
 
     // Private helpers

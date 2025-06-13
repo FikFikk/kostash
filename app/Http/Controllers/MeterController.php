@@ -11,19 +11,30 @@ use Illuminate\Support\Facades\DB;
 
 class MeterController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $rooms = Room::orderBy('name')->get();
         $roomMeters = [];
+        
+        // Get selected year from request, default to current year
+        $selectedYear = $request->get('year', now()->year);
+        
+        // Get available years from meter data
+        $availableYears = Meter::selectRaw('YEAR(period) as year')
+            ->distinct()
+            ->orderByDesc('year')
+            ->pluck('year')
+            ->toArray();
 
         foreach ($rooms as $room) {
             $roomMeters[$room->id] = Meter::with('room')
                 ->where('room_id', $room->id)
+                ->whereYear('period', $selectedYear)
                 ->orderByDesc('period')
-                ->paginate(5, ['*'], 'page_' . $room->id);
+                ->get();
         }
 
-        return view('dashboard.admin.meters.index', compact('rooms', 'roomMeters'));
+        return view('dashboard.admin.meters.index', compact('rooms', 'roomMeters', 'availableYears', 'selectedYear'));
     }
 
     public function create()

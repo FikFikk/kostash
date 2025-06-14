@@ -20,6 +20,28 @@
         <link href="{{ asset('assets/dashboard/css/app.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- custom Css-->
         <link href="{{ asset('assets/dashboard/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
+        <style>
+            .notification-container {
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                z-index: 1055;
+                max-width: 400px;
+            }
+            
+            .notification-container .alert {
+                margin-bottom: 10px;
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            }
+            
+            @media (max-width: 768px) {
+                .notification-container {
+                    left: 20px;
+                    right: 20px;
+                    max-width: none;
+                }
+            }
+        </style>
         @stack('styles')
     </head>
     <body>
@@ -36,6 +58,9 @@
                 </div>
             </div>
             <!-- auth-page content -->
+            <div class="notification-container">
+                @include('dashboard.components.notifications')
+            </div>
             @yield('content')
             <!-- end auth page content -->
             <!-- footer -->
@@ -65,6 +90,19 @@
         <script src="{{ asset('assets/dashboard/libs/particles.js/particles.js') }}"></script>
         <!-- particles app js -->
         <script src="{{ asset('assets/dashboard/js/pages/particles.app.js') }}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const alerts = document.querySelectorAll('.notification-container .alert');
+                alerts.forEach(function(alert) {
+                    setTimeout(function() {
+                        if (alert && alert.parentNode) {
+                            const bsAlert = new bootstrap.Alert(alert);
+                            bsAlert.close();
+                        }
+                    }, 5000); // 5 seconds
+                });
+            });
+        </script>
         @stack('scripts')
     </body>
 </html>

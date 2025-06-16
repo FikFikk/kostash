@@ -38,6 +38,12 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('tenant.report.index') }}">
+                        <i class="ri-file-paper-2-line"></i> <span data-key="t-widgets">Report</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link menu-link" href="{{ route('tenant.history.index') }}">
                         <i class="ri-bank-card-line"></i> <span data-key="t-widgets">Payment History</span>
                     </a>

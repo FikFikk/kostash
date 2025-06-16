@@ -7,6 +7,7 @@ use App\Http\Controllers\{
     GlobalSettingController,
     MeterController,
     PublicController,
+    ReportController,
     RoomController,
     SocialAuthController,
     TransactionController,
@@ -132,6 +133,15 @@ Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->
             Route::put('/update', 'update')->name('update');
             Route::get('/change-password', 'changePasswordForm')->name('change-password');
             Route::post('/change-password', 'changePassword')->name('change-password');
+        });
+    });
+
+    Route::prefix('report')->name('report.')->group(function () {
+        Route::controller(ReportController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/show/{report}', 'show')->name('show');
         });
     });
 

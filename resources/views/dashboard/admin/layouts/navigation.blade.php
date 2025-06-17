@@ -64,6 +64,12 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('dashboard.report.index') }}">
+                        <i class="ri-file-paper-2-line"></i> <span data-key="t-report">Report</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link menu-link" href="{{ route('dashboard.transaction.index') }}">
                         <i class="ri-bill-line"></i> <span data-key="t-meter">Transaction</span>
                     </a>

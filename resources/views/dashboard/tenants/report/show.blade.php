@@ -101,7 +101,16 @@
                     </ul>
                 </div>
             </div>
-             <a href="{{ route('tenant.report.index') }}" class="btn btn-light w-100"><i class="ri-arrow-left-s-line me-1"></i> Kembali ke Daftar</a>
+                <a href="{{ route('tenant.report.index') }}" class="btn btn-light w-100"><i class="ri-arrow-left-s-line me-1"></i> Kembali ke Daftar</a>
+                @if($report->status === 'pending')
+                    <form action="{{ route('tenant.report.destroy', $report->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan laporan ini?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">
+                            <i class="ri-delete-bin-line me-1"></i> Batalkan Laporan
+                        </button>
+                    </form>
+                @endif
         </div>
     </div>
 </div>

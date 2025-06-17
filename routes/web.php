@@ -8,6 +8,7 @@ use App\Http\Controllers\{
     MeterController,
     PublicController,
     ReportController,
+    ReportResponseController,
     RoomController,
     SocialAuthController,
     TransactionController,
@@ -99,6 +100,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('dashboard')->name('dashboard.
         });
     });
 
+    Route::prefix('report')->name('report.')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->name('index');
+        Route::get('/show/{report}', [ReportController::class, 'show'])->name('show');
+        Route::put('/update-status/{report}', [ReportController::class, 'updateStatus'])->name('updateStatus');
+        Route::delete('/destroy/{report}', [ReportController::class, 'destroy'])->name('destroy');
+
+        Route::post('/response/{report}', [ReportResponseController::class, 'store'])->name('response.store');
+    });
+
     Route::prefix('transaction')->name('transaction.')->group(function () {
         Route::controller(TransactionController::class)->group(function () {
             Route::get('/', 'index')->name('index');
@@ -142,6 +152,7 @@ Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->
             Route::get('/create', 'create')->name('create');
             Route::post('/store', 'store')->name('store');
             Route::get('/show/{report}', 'show')->name('show');
+            Route::delete('/destroy/{report}', 'destroy')->name('destroy');
         });
     });
 

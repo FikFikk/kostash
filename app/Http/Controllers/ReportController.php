@@ -7,6 +7,9 @@ use App\Models\ReportResponse;
 use App\Models\ReportStatusHistory;
 use App\Models\Room;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreReportRequest;
+use App\Http\Requests\StoreReportResponseRequest;
+use App\Http\Requests\UpdateReportStatusRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -18,12 +21,11 @@ class ReportController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Report::with(['user', 'room', 'responses'])
-            ->orderBy('reported_at', 'desc');
+        $query = Report::with(['user', 'room'])->latest('reported_at');
+        $user = Auth::user();
 
-        // Filter untuk admin
-        if (Auth::user()->role === 'admin') {
-            // Admin bisa lihat semua laporan
+        if ($user->role === 'admin') {
+            // Logika filter untuk admin
             if ($request->filled('status')) {
                 $query->where('status', $request->status);
             }
@@ -33,70 +35,52 @@ class ReportController extends Controller
             if ($request->filled('priority')) {
                 $query->where('priority', $request->priority);
             }
-        } else {
-            // Tenant hanya bisa lihat laporan sendiri
-            $query->where('user_id', Auth::id());
+
+            $reports = $query->paginate(10);
+            
+            // Mengirim data untuk dropdown filter di view admin
+            $categories = $this->getCategoryOptions();
+            $priorities = $this->getPriorityOptions();
+
+            return view('dashboard.admin.report.index', compact('reports', 'categories', 'priorities'));
         }
 
+        // Logika default untuk Tenant
+        $query->where('user_id', $user->id);
         $reports = $query->paginate(10);
-        
         return view('dashboard.tenants.report.index', compact('reports'));
     }
 
     /**
-     * Show the form for creating a new report
+     * Menampilkan form pembuatan laporan (Hanya untuk Tenant).
      */
     public function create()
     {
         if (auth()->user()->role !== 'tenants') {
-            abort(403, 'Akses ditolak. Hanya penyewa yang dapat membuat laporan.');
+            abort(403, 'Akses ditolak.');
         }
 
         $user = auth()->user();
-
         if (is_null($user->room_id)) {
-            return redirect()->back()
-                ->with('error', 'Anda harus terdaftar di sebuah kamar untuk dapat membuat laporan.');
+            return redirect()->back()->with('error', 'Anda harus terdaftar di sebuah kamar untuk dapat membuat laporan.');
         }
 
         $room = Room::findOrFail($user->room_id);
+        
+        $categories = $this->getCategoryOptions();
+        $priorities = $this->getPriorityOptions();
 
-        $categories = [
-            'electrical' => 'Listrik',
-            'water'      => 'Air',
-            'facility'   => 'Fasilitas',
-            'cleaning'   => 'Kebersihan',
-            'security'   => 'Keamanan',
-            'other'      => 'Lainnya'
-        ];
-        $priorities = [
-            'low'    => 'Rendah',
-            'medium' => 'Sedang',
-            'high'   => 'Tinggi',
-            'urgent' => 'Mendesak'
-        ];
         return view('dashboard.tenants.report.create', compact('room', 'categories', 'priorities'));
     }
 
     /**
-     * Store a newly created report
+     * Menyimpan laporan baru menggunakan Form Request.
      */
-    public function store(Request $request)
+    public function store(StoreReportRequest $request)
     {
-        $request->validate([
-            'room_id' => 'required|exists:rooms,id',
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'category' => 'required|in:electrical,water,facility,cleaning,security,other',
-            'priority' => 'required|in:low,medium,high,urgent',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
-        ]);
-
-        DB::beginTransaction();
-        try {
+        // Otorisasi & Validasi kini ditangani oleh StoreReportRequest.
+        DB::transaction(function () use ($request) {
             $imagePaths = [];
-            
-            // Handle file uploads
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
                     $path = $image->store('uploads/reports', 'public');
@@ -104,135 +88,90 @@ class ReportController extends Controller
                 }
             }
 
-            // Create report
-            $report = Report::create([
+            // Observer 'created' akan berjalan setelah ini untuk mencatat histori.
+            Report::create(array_merge($request->validated(), [
                 'user_id' => Auth::id(),
-                'room_id' => $request->room_id,
-                'title' => $request->title,
-                'description' => $request->description,
-                'category' => $request->category,
-                'priority' => $request->priority,
                 'status' => 'pending',
                 'images' => $imagePaths,
                 'reported_at' => now()
-            ]);
+            ]));
+        });
 
-            DB::commit();
-            
-            return redirect()->route('tenant.report.index')
-                ->with('success', 'Laporan berhasil dibuat');
-                
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->withErrors(['error' => 'Gagal membuat laporan: ' . $e->getMessage()]);
-        }
+        return redirect()->route('tenant.report.index')->with('success', 'Laporan berhasil dibuat');
     }
 
     /**
-     * Display the specified report
+     * Menampilkan detail laporan dengan view yang sesuai untuk Admin atau Tenant.
      */
     public function show(Report $report)
     {
-
         $user = Auth::user();
+        $report->load(['user', 'room', 'responses.admin', 'statusHistory.changedBy']);
 
+        if ($user->role === 'admin') {
+            // Mengarahkan ke view admin
+            return view('dashboard.admin.report.show', compact('report'));
+        }
+        
+        // Logika untuk tenant
         if ($user->role === 'tenants') {
             if ($report->user_id !== $user->id) {
                 abort(403, 'Unauthorized.');
             }
+            // Mengarahkan ke view tenant
+            return view('dashboard.tenants.report.show', compact('report'));
         }
 
-        $report->load(['user', 'room', 'responses.admin', 'statusHistory.changedBy']);
-        return view('dashboard.tenants.report.show', compact('report'));
+        return abort(403);
     }
 
     /**
-     * Update report status (Admin only)
+     * Update status laporan (Hanya Admin) menggunakan Form Request.
      */
-    public function updateStatus(Request $request, Report $report)
+    public function updateStatus(UpdateReportStatusRequest $request, Report $report)
     {
-        // Hanya admin yang bisa update status
-        if (Auth::user()->role !== 'admin') {
-            abort(403, 'Unauthorized');
-        }
-
-        $request->validate([
-            'status' => 'required|in:pending,in_progress,completed,rejected',
-            'reason' => 'nullable|string|max:500'
-        ]);
-
-        DB::beginTransaction();
-        try {
-            $oldStatus = $report->status;
-            
-            // Update status
-            $report->update([
-                'status' => $request->status
-            ]);
-
-            // Create status history
-            ReportStatusHistory::create([
-                'report_id' => $report->id,
-                'old_status' => $oldStatus,
-                'new_status' => $request->status,
-                'changed_by' => Auth::id(),
-                'reason' => $request->reason
-            ]);
-
-            DB::commit();
-            
-            return back()->with('success', 'Status laporan berhasil diperbarui');
-            
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->withErrors(['error' => 'Gagal memperbarui status: ' . $e->getMessage()]);
-        }
+        // Otorisasi & Validasi ditangani oleh UpdateReportStatusRequest.
+        // Observer 'updating' akan berjalan setelah ini untuk mencatat histori.
+        $report->update($request->validated());
+        return back()->with('success', 'Status laporan berhasil diperbarui');
     }
 
     /**
-     * Delete report
+     * Menghapus laporan (Admin & Tenant).
      */
     public function destroy(Report $report)
     {
-        // Authorization check
-        if (Auth::user()->role === 'tenants' && $report->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized');
-        }
+        $user = Auth::user();
 
-        // Hanya bisa hapus jika status masih pending
+        // Aturan: Hanya bisa hapus jika status 'pending'
         if ($report->status !== 'pending') {
-            return back()->withErrors(['error' => 'Laporan yang sudah diproses tidak dapat dihapus']);
+             return back()->withErrors(['error' => 'Laporan yang sudah diproses tidak dapat dihapus.']);
         }
-
-        DB::beginTransaction();
-        try {
-            // Delete images
+        
+        // Aturan: Tenant hanya bisa hapus miliknya sendiri
+        if ($user->role === 'tenants' && $report->user_id !== $user->id) {
+             return back()->withErrors(['error' => 'Anda tidak memiliki izin untuk menghapus laporan ini.']);
+        }
+        
+        DB::transaction(function () use ($report) {
             if (!empty($report->images)) {
-                foreach ($report->images as $imagePath) {
-                    Storage::disk('public')->delete($imagePath);
-                }
+                Storage::disk('public')->delete($report->images);
             }
-
             $report->delete();
-            
-            DB::commit();
-            
-            return redirect()->route('tenant.report.index')
-                ->with('success', 'Laporan berhasil dihapus');
-                
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->withErrors(['error' => 'Gagal menghapus laporan: ' . $e->getMessage()]);
-        }
-    }
+        });
 
+        // Arahkan kembali sesuai role
+        $routeName = $user->role === 'admin' ? 'dashboard.report.index' : 'tenant.report.index';
+        return redirect()->route($routeName)->with('success', 'Laporan berhasil dihapus');
+    }
+    
     /**
-     * Get reports statistics (Admin only)
+     * Menampilkan halaman statistik (Hanya Admin).
      */
     public function statistics()
     {
         if (Auth::user()->role !== 'admin') {
-            abort(403, 'Unauthorized');
+            abort(403);
         }
 
         $stats = [
@@ -242,14 +181,40 @@ class ReportController extends Controller
             'completed_reports' => Report::where('status', 'completed')->count(),
             'rejected_reports' => Report::where('status', 'rejected')->count(),
             'reports_by_category' => Report::selectRaw('category, COUNT(*) as count')
-                ->groupBy('category')
-                ->pluck('count', 'category'),
+                                           ->groupBy('category')
+                                           ->pluck('count', 'category'),
             'recent_reports' => Report::with(['user', 'room'])
-                ->orderBy('reported_at', 'desc')
-                ->limit(5)
-                ->get()
+                                       ->latest('reported_at')
+                                       ->limit(5)
+                                       ->get()
         ];
+        
+        $categories = $this->getCategoryOptions();
 
-        return view('dashboard.tenants.report.statistics', compact('stats'));
+        // Mengarahkan ke view statistik admin yang benar
+        return view('dashboard.admin.report.statistics', compact('stats', 'categories'));
+    }
+
+    // Helper functions untuk menghindari duplikasi kode
+    private function getCategoryOptions(): array
+    {
+        return [
+            'electrical' => 'Listrik',
+            'water'      => 'Air',
+            'facility'   => 'Fasilitas',
+            'cleaning'   => 'Kebersihan',
+            'security'   => 'Keamanan',
+            'other'      => 'Lainnya'
+        ];
+    }
+
+    private function getPriorityOptions(): array
+    {
+        return [
+            'low'    => 'Rendah',
+            'medium' => 'Sedang',
+            'high'   => 'Tinggi',
+            'urgent' => 'Mendesak'
+        ];
     }
 }

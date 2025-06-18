@@ -64,9 +64,20 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('dashboard.report.index') }}">
-                        <i class="ri-file-paper-2-line"></i> <span data-key="t-report">Report</span>
+                    <a class="nav-link menu-link" href="#sidebarReport" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarReport">
+                        <i class="ri-file-paper-2-line"></i> <span data-key="t-master">Report</span>
                     </a>
+                    <div class="collapse menu-dropdown" id="sidebarReport">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ route('dashboard.report.index') }}" class="nav-link" data-key="t-room"> Report List </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('dashboard.report.statistics') }}" class="nav-link" data-key="t-room"> Statistics </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
 
                 <li class="nav-item">

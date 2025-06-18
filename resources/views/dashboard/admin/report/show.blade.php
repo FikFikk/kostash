@@ -92,7 +92,7 @@
                         <!-- Dropdown untuk Mengubah Status -->
                         <div class="mb-3">
                             <label for="status" class="form-label">Ubah Status Ke</label>
-                            <select name="status" id="status" class="form-select">
+                            <select name="status" id="" class="form-select">
                                 <option value="pending" {{ $report->status == 'pending' ? 'selected' : '' }}>Menunggu</option>
                                 <option value="in_progress" {{ $report->status == 'in_progress' ? 'selected' : '' }}>Sedang Diproses</option>
                                 <option value="completed" {{ $report->status == 'completed' ? 'selected' : '' }}>Selesai</option>

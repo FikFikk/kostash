@@ -21,7 +21,7 @@
                         </div>
                         <div class="avatar-sm flex-shrink-0">
                             <span class="avatar-title bg-primary-subtle rounded fs-3">
-                                <i class="ri-file-text-line text-primary"></i>
+                                <i class="ri-file-text-line text-white"></i>
                             </span>
                         </div>
                     </div>
@@ -43,7 +43,7 @@
                         </div>
                         <div class="avatar-sm flex-shrink-0">
                             <span class="avatar-title bg-warning-subtle rounded fs-3">
-                                <i class="ri-time-line text-warning"></i>
+                                <i class="ri-time-line text-white"></i>
                             </span>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                         </div>
                         <div class="avatar-sm flex-shrink-0">
                             <span class="avatar-title bg-info-subtle rounded fs-3">
-                                <i class="ri-loader-2-line text-info"></i>
+                                <i class="ri-loader-2-line text-white"></i>
                             </span>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                         </div>
                         <div class="avatar-sm flex-shrink-0">
                             <span class="avatar-title bg-success-subtle rounded fs-3">
-                                <i class="ri-checkbox-circle-line text-success"></i>
+                                <i class="ri-checkbox-circle-line text-white"></i>
                             </span>
                         </div>
                     </div>
@@ -117,7 +117,8 @@
                             <tbody>
                                 @foreach($stats['recent_reports'] as $report)
                                 <tr>
-                                    <td><a href="{{ route('dashboard.report.show', $report->id) }}">{{ Str::limit($report->title, 35) }}</a></td>
+                                    {{-- PERBAIKAN: Menggunakan namespace lengkap untuk Str --}}
+                                    <td><a href="{{ route('dashboard.report.show', $report->id) }}">{{ \Illuminate\Support\Str::limit($report->title, 35) }}</a></td>
                                     <td>{{ $report->user->name ?? 'N/A' }}</td>
                                     <td><span class="badge bg-{{ $report->status_color }}">{{ $report->status_label }}</span></td>
                                     <td>{{ $report->reported_at ? $report->reported_at->diffForHumans() : '-' }}</td>

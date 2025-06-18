@@ -103,6 +103,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('dashboard')->name('dashboard.
     Route::prefix('report')->name('report.')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->name('index');
         Route::get('/show/{report}', [ReportController::class, 'show'])->name('show');
+        Route::get('/statistics', [ReportController::class, 'statistics'])->name('statistics');
         Route::put('/update-status/{report}', [ReportController::class, 'updateStatus'])->name('updateStatus');
         Route::delete('/destroy/{report}', [ReportController::class, 'destroy'])->name('destroy');
 

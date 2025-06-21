@@ -15,6 +15,9 @@ class UserController extends Controller
     {
         $search = $request->input('search');
 
+        $totalUsers = User::count();
+        $totalTenants = User::where('role', 'tenants')->count();
+        $totalAdmin = User::where('role', 'admin')->count();
         $users = User::query()
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -26,7 +29,7 @@ class UserController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('dashboard.admin.users.index', compact('users', 'search'));
+        return view('dashboard.admin.users.index', compact('users', 'search', 'totalTenants', 'totalAdmin', 'totalUsers'));
     }
 
     public function create()

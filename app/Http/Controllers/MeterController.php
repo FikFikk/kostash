@@ -120,8 +120,9 @@ class MeterController extends Controller
         return redirect()->route('dashboard.meter.index')->with('success', 'Meter berhasil diperbarui.');
     }
 
-    public function destroy(Meter $meter)
+    public function destroy($id)
     {
+        $meter = Meter::findOrFail($id);
         $meter->delete();
         return redirect()->route('dashboard.meter.index')->with('success', 'Meter berhasil dihapus.');
     }

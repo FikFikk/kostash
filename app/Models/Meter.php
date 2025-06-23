@@ -32,4 +32,21 @@ class Meter extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getFormattedPeriodAttribute()
+    {
+        return Carbon::parse($this->period)->format('F Y');
+    }
+
+    // Accessor for water usage
+    public function getWaterUsageAttribute()
+    {
+        return $this->total_water ?? ($this->water_meter_end - $this->water_meter_start);
+    }
+
+    // Accessor for electric usage
+    public function getElectricUsageAttribute()
+    {
+        return $this->total_electric ?? ($this->electric_meter_end - $this->electric_meter_start);
+    }
 }

@@ -32,4 +32,18 @@ class Room extends Model
     {
         return $this->hasMany(Meter::class);
     }
+
+    public function getTotalWaterUsage($year)
+    {
+        return $this->metersForYear($year)->get()->sum(function ($meter) {
+            return $meter->total_water ?? ($meter->water_meter_end - $meter->water_meter_start);
+        });
+    }
+
+    public function getTotalElectricUsage($year)
+    {
+        return $this->metersForYear($year)->get()->sum(function ($meter) {
+            return $meter->total_electric ?? ($meter->electric_meter_end - $meter->electric_meter_start);
+        });
+    }
 }

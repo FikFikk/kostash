@@ -6,6 +6,7 @@ use App\Models\Meter;
 use App\Models\Room;
 use App\Models\User;
 use App\Models\GlobalSetting;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,28 +14,58 @@ class MeterController extends Controller
 {
     public function index(Request $request)
     {
-        $rooms = Room::orderBy('name')->get();
-        $roomMeters = [];
-        
-        // Get selected year from request, default to current year
         $selectedYear = $request->get('year', now()->year);
-        
-        // Get available years from meter data
+
         $availableYears = Meter::selectRaw('YEAR(period) as year')
             ->distinct()
-            ->orderByDesc('year')
+            ->orderBy('year', 'desc')
             ->pluck('year')
             ->toArray();
 
-        foreach ($rooms as $room) {
-            $roomMeters[$room->id] = Meter::with('room')
-                ->where('room_id', $room->id)
-                ->whereYear('period', $selectedYear)
-                ->orderByDesc('period')
-                ->get();
+        if (!in_array(now()->year, $availableYears)) {
+            $availableYears[] = now()->year;
+            rsort($availableYears);
+        } else {
+            usort($availableYears, function($a, $b) { return $b - $a; });
         }
 
-        return view('dashboard.admin.meters.index', compact('rooms', 'roomMeters', 'availableYears', 'selectedYear'));
+        $rooms = Room::orderBy('name')->get();
+
+        $roomMeters = [];
+        $meterReadingsForStats = collect();
+
+        foreach ($rooms as $room) {
+            $readingsForRoom = Meter::with('room')
+                ->where('room_id', $room->id)
+                ->whereYear('period', $selectedYear)
+                ->orderBy('period', 'desc')
+                ->get()
+                ->map(function ($reading) {
+                    $reading->month = Carbon::parse($reading->period)->month;
+                    $reading->total_water = $reading->total_water ?? ($reading->water_meter_end - $reading->water_meter_start);
+                    $reading->total_electric = $reading->total_electric ?? ($reading->electric_meter_end - $reading->electric_meter_start);
+                    return $reading;
+                });
+
+            $roomMeters[$room->id] = $readingsForRoom;
+            $meterReadingsForStats = $meterReadingsForStats->concat($readingsForRoom);
+        }
+
+        $yearlyStats = [
+            'total_water' => $meterReadingsForStats->sum('total_water'),
+            'total_electric' => $meterReadingsForStats->sum('total_electric'),
+        ];
+
+        $totalReadings = $meterReadingsForStats->count();
+
+        return view('dashboard.admin.meters.index', compact(
+            'rooms',
+            'roomMeters',
+            'availableYears',
+            'selectedYear',
+            'yearlyStats',
+            'totalReadings'
+        ));
     }
 
     public function create()
@@ -127,6 +158,39 @@ class MeterController extends Controller
         return redirect()->route('dashboard.meter.index')->with('success', 'Meter berhasil dihapus.');
     }
 
+    public function getMeterDetails($id)
+    {
+        $meter = Meter::with('room')->findOrFail($id);
+
+        $meter->total_water = $meter->total_water ?? ($meter->water_meter_end - $meter->water_meter_start);
+        $meter->total_electric = $meter->total_electric ?? ($meter->electric_meter_end - $meter->electric_meter_start);
+
+        $html = view('dashboard.admin.meters.partials.detail', compact('meter'))->render();
+
+        return response()->json(['html' => $html]);
+    }
+
+    public function getRoomDetails($roomId, Request $request)
+    {
+        $year = $request->get('year', now()->year);
+
+        $room = Room::findOrFail($roomId);
+
+        $readings = Meter::where('room_id', $roomId)
+            ->whereYear('period', $year)
+            ->orderBy('period', 'desc')
+            ->get()
+            ->map(function ($reading) {
+                $reading->total_water = $reading->total_water ?? ($reading->water_meter_end - $reading->water_meter_start);
+                $reading->total_electric = $reading->total_electric ?? ($reading->electric_meter_end - $reading->electric_meter_start);
+                return $reading;
+            });
+
+        $html = view('dashboard.admin.meters.partials.room-details', compact('room', 'readings', 'year'))->render();
+
+        return response()->json(['html' => $html]);
+    }
+
     // --- PRIVATE HELPERS ---
 
     private function validateMeter(Request $request): array
@@ -155,7 +219,6 @@ class MeterController extends Controller
 
     private function parsePeriod(string $date): string
     {
-        // format YYYY-MM to YYYY-MM-07 (default tanggal billing)
         return $date . '-07';
     }
 

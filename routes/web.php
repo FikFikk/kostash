@@ -97,8 +97,18 @@ Route::middleware(['auth', 'role:admin'])->prefix('dashboard')->name('dashboard.
             Route::get('/edit/{id}', 'edit')->name('edit');
             Route::put('/update/{id}', 'update')->name('update');
             Route::delete('/destroy/{id}', 'destroy')->name('destroy');
+
+            // Ini adalah rute AJAX yang BENAR dan SATU-SATUNYA
         });
     });
+
+    Route::get('meter/{id}/details', [MeterController::class, 'getMeterDetails'])
+        ->name('meter.details')
+        ->where('id', '[0-9a-f\-]{36}'); // UUID pattern for room IDs
+    
+    Route::get('meter/room/{roomId}/details', [MeterController::class, 'getRoomDetails'])
+        ->name('meter.room.details')
+        ->where('roomId', '[0-9a-f\-]{36}');
 
     Route::prefix('report')->name('report.')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->name('index');

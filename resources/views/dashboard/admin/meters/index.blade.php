@@ -266,14 +266,25 @@
                                                 <td class="small">{{ \Carbon\Carbon::parse($meter->period)->format('M Y') }}</td>
                                                 <td class="text-center small text-info">{{ $meter->total_water }}</td>
                                                 <td class="text-center small text-warning">{{ $meter->total_electric }}</td>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm">
-                                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="viewMeterDetail('{{ $meter->id }}')">
+                                                <td class="text-end">
+                                                    <div class="d-flex justify-content-end gap-1">
+                                                        <button type="button" class="btn btn-sm btn-outline-info"
+                                                                onclick="window.viewMeterDetail('{{ $meter->id }}')"
+                                                                title="View Individual Reading Details">
                                                             <i class="ri-eye-line"></i>
                                                         </button>
-                                                        <a href="{{ route('dashboard.meter.edit', $meter->id) }}" class="btn btn-outline-warning btn-sm">
+
+                                                        <a href="{{ route('dashboard.meter.edit', $meter->id) }}"
+                                                        class="btn btn-sm btn-outline-warning" title="Edit Reading">
                                                             <i class="ri-pencil-line"></i>
                                                         </a>
+                                                        <form action="{{ route('dashboard.meter.destroy', $meter->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pembacaan meter ini?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Reading">
+                                                                <i class="ri-delete-bin-line"></i>
+                                                            </button>
+                                                        </form>
                                                     </div>
                                                 </td>
                                             </tr>

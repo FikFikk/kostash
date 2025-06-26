@@ -1,82 +1,115 @@
 @extends('dashboard.tenants.layouts.app')
 
+@section('title', 'My Profile')
+
+@push('styles')
+{{-- Custom styles for a modern, consistent UI --}}
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --shadow-elegant: 0 10px 30px rgba(0, 0, 0, 0.08);
+        --radius-lg: 1rem;
+    }
+    .profile-header-card {
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-elegant);
+        background-color: var(--bs-card-bg);
+        border: 1px solid var(--bs-border-color-translucent);
+    }
+    .profile-header-banner {
+        height: 120px;
+        background: var(--gradient-primary);
+        border-top-left-radius: var(--radius-lg);
+        border-top-right-radius: var(--radius-lg);
+    }
+    .profile-avatar {
+        margin-top: -60px;
+        border: 5px solid var(--bs-card-bg);
+    }
+    .content-card {
+        border: none;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-elegant);
+        background-color: var(--bs-card-bg);
+    }
+    .info-list .list-group-item {
+        background-color: transparent;
+        border-color: var(--bs-border-color-translucent);
+        padding: 1rem 0;
+    }
+    .info-list .list-group-item:first-child {
+        border-top: none;
+    }
+    .info-list .list-group-item:last-child {
+        border-bottom: none;
+    }
+    .info-label {
+        font-weight: 600;
+        color: var(--bs-secondary-color);
+        width: 120px;
+        flex-shrink: 0;
+    }
+    .info-value {
+        font-weight: 500;
+    }
+    .text-gradient {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+</style>
+@endpush
+
 @section('content')
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="mb-0">Kelola Profil</h3>
-        <div>
-            <a href="{{ route('tenant.profile.edit') }}" class="btn btn-outline-secondary btn-elegant me-2">
-                <i class="mdi mdi-account-edit-outline me-1"></i> Edit Profil
-            </a>
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex align-items-lg-center flex-lg-row flex-column">
+                <div class="flex-grow-1">
+                    <h1 class="h3 fw-bold text-gradient mb-1"><i class="ri-user-settings-line me-2"></i>My Profile</h1>
+                    <p class="text-muted mb-0">View and manage your personal and tenancy information.</p>
+                </div>
+                 <div class="d-flex gap-2 mt-3 mt-lg-0">
+                    {{-- PERBAIKAN: Menambahkan tombol kembali ke dashboard --}}
+                    <a href="{{ route('tenant.home') }}" class="btn btn-soft-secondary btn-sm">
+                        <i class="ri-arrow-left-line me-1"></i> Back to Dashboard
+                    </a>
+                    <a href="{{ route('tenant.profile.change-password') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="ri-lock-password-line me-1"></i> Change Password
+                    </a>
+                    <a href="{{ route('tenant.profile.edit') }}" class="btn btn-primary btn-sm">
+                        <i class="ri-edit-line me-1"></i> Edit Profile
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- Card Profile dengan Desain Elegan -->
-    <div class="card shadow-lg border-0 mb-4 profile-card">
-        <div class="card-body p-4">
-            <div class="d-flex flex-column flex-md-row align-items-center">
-                <!-- Avatar Section -->
-                <div class="col-auto">
-                    <div class="avatar-container position-relative">
-                        @if($user->photo)
-                            <img src="{{ asset('storage/uploads/profile/' . $user->photo) }}" 
-                                 alt="Profile Picture" 
-                                 class="avatar-img rounded-circle shadow-sm">
-                        @else
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=667eea&color=fff&size=120&font-size=0.4"
-                                alt="Avatar" class="avatar-img rounded-circle shadow-sm">
-                        @endif
-                        <div class="avatar-border"></div>
-                    </div>
-                </div>
-                
-                <!-- Profile Info -->
-                <div class="col text-center text-md-start mt-3 mt-md-0">
-                    <div class="profile-info">
-                        <h4 class="profile-name mb-2">{{ $user->name }}</h4>
-                        <div class="profile-subtitle mb-3">
-                            <span class="badge bg-light text-dark px-3 py-2">
-                                {{ ucfirst($user->role) }}
-                            </span>
+
+    <!-- User Profile Header -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card profile-header-card mb-4">
+                <div class="profile-header-banner"></div>
+                <div class="card-body p-4">
+                    <div class="d-flex flex-column flex-md-row align-items-center">
+                        <!-- Avatar -->
+                        <div class="avatar-xl profile-avatar flex-shrink-0">
+                             @if($user->photo)
+                                <img src="{{ asset('storage/uploads/profile/' . $user->photo) }}" alt="Profile" class="img-fluid rounded-circle">
+                            @else
+                                <div class="avatar-title rounded-circle bg-primary-subtle text-primary fs-24">
+                                    {{ substr($user->name, 0, 1) }}
+                                </div>
+                            @endif
                         </div>
-                        
-                        <!-- Info Grid -->
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <div class="info-item">
-                                    <div class="info-icon">
-                                        <i class="mdi mdi-email-outline"></i>
-                                    </div>
-                                    <div class="info-content">
-                                        <div class="info-label">Email</div>
-                                        <div class="info-value">{{ $user->email }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <div class="info-item">
-                                    <div class="info-icon">
-                                        <i class="mdi mdi-calendar-start"></i>
-                                    </div>
-                                    <div class="info-content">
-                                        <div class="info-label">Tanggal Masuk</div>
-                                        <div class="info-value">
-                                            {{ $user->date_entry ? \Carbon\Carbon::parse($user->date_entry)->translatedFormat('d F Y') : '-' }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <div class="info-item">
-                                    <div class="info-icon">
-                                        <i class="mdi mdi-home-variant-outline"></i>
-                                    </div>
-                                    <div class="info-content">
-                                        <div class="info-label">Kamar</div>
-                                        <div class="info-value">{{ $user->room->name ?? '-' }}</div>
-                                    </div>
-                                </div>
+                        <!-- User Info -->
+                        <div class="flex-grow-1 ms-md-4 mt-3 mt-md-0 text-center text-md-start">
+                            <h4 class="mb-1">{{ $user->name }}</h4>
+                            <p class="text-muted mb-2">{{ $user->email }}</p>
+                            <div>
+                                <span class="badge fs-12 bg-success-subtle text-success">Active Tenant</span>
                             </div>
                         </div>
                     </div>
@@ -85,262 +118,74 @@
         </div>
     </div>
 
-    <!-- Detail Profile Card -->
-    <div class="card detail-card shadow-lg border-0 mb-4">
-        <div class="card-header bg-transparent border-0 pb-0">
-            <h5 class="card-title mb-0 fw-bold">
-                <i class="mdi mdi-account-details-outline me-2"></i>
-                Detail Informasi
-            </h5>
+    <!-- User Information Details -->
+    <div class="row">
+        <!-- Left Column: Personal Info -->
+        <div class="col-lg-7">
+            <div class="card content-card">
+                <div class="card-header bg-transparent p-4">
+                    <h5 class="card-title mb-0">Personal Information</h5>
+                </div>
+                <div class="card-body p-4">
+                    <ul class="list-group list-group-flush info-list">
+                        <li class="list-group-item d-flex">
+                            <span class="info-label">Full Name</span>
+                            <span class="info-value">{{ $user->name }}</span>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">{{ $user->email }}</span>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <span class="info-label">Phone</span>
+                            <span class="info-value">{{ $user->phone ?? '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <span class="info-label">NIK</span>
+                            <span class="info-value">{{ $user->nik ?? '-' }}</span>
+                        </li>
+                         <li class="list-group-item d-flex">
+                            <span class="info-label">Address</span>
+                            <span class="info-value">{{ $user->address ?? '-' }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="card-body pt-3">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="detail-item">
-                        <div class="detail-icon">
-                            <i class="mdi mdi-account-outline"></i>
-                        </div>
-                        <div class="detail-content">
-                            <div class="detail-label">Nama Lengkap</div>
-                            <div class="detail-value">{{ $user->name }}</div>
-                        </div>
-                    </div>
+        <!-- Right Column: Tenancy Info -->
+        <div class="col-lg-5">
+            <div class="card content-card">
+                <div class="card-header bg-transparent p-4">
+                    <h5 class="card-title mb-0">Tenancy Information</h5>
                 </div>
-                
-                <div class="col-md-6">
-                    <div class="detail-item">
-                        <div class="detail-icon">
-                            <i class="mdi mdi-phone-outline"></i>
-                        </div>
-                        <div class="detail-content">
-                            <div class="detail-label">No. Telepon</div>
-                            <div class="detail-value">{{ $user->phone ?? '-' }}</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="detail-item">
-                        <div class="detail-icon">
-                            <i class="mdi mdi-card-account-details-outline"></i>
-                        </div>
-                        <div class="detail-content">
-                            <div class="detail-label">NIK</div>
-                            <div class="detail-value">{{ $user->nik ?? '-' }}</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="detail-item">
-                        <div class="detail-icon">
-                            <i class="mdi mdi-shield-account-outline"></i>
-                        </div>
-                        <div class="detail-content">
-                            <div class="detail-label">Role</div>
-                            <div class="detail-value">
-                                <span class="badge bg-{{ $user->role == 'admin' ? 'primary' : 'success' }} px-3 py-2">
-                                    {{ ucfirst($user->role) }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-12">
-                    <div class="detail-item">
-                        <div class="detail-icon">
-                            <i class="mdi mdi-map-marker-outline"></i>
-                        </div>
-                        <div class="detail-content">
-                            <div class="detail-label">Alamat</div>
-                            <div class="detail-value">{{ $user->address ?? '-' }}</div>
-                        </div>
-                    </div>
+                 <div class="card-body p-4">
+                    <ul class="list-group list-group-flush info-list">
+                         <li class="list-group-item d-flex">
+                            <span class="info-label">Room</span>
+                            <span class="info-value">{{ $user->room->name ?? 'Not Assigned' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <span class="info-label">Entry Date</span>
+                            <span class="info-value">{{ $user->date_entry ? \Carbon\Carbon::parse($user->date_entry)->format('d F Y') : '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <span class="info-label">Member Since</span>
+                            <span class="info-value">{{ $user->created_at ? $user->created_at->format('d F Y') : '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <span class="info-label">Registration</span>
+                            <span class="info-value">
+                                @if(is_null($user->provider_id))
+                                    <i class="ri-mail-line me-1 text-muted"></i> Email & Password
+                                @else
+                                    <i class="ri-google-fill me-1 text-danger"></i> Registered via Google
+                                @endif
+                            </span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-/* Profile Card Styling */
-.profile-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-radius: 20px !important;
-    overflow: hidden;
-    position: relative;
-}
-
-.profile-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-}
-
-.profile-card .card-body {
-    position: relative;
-    z-index: 2;
-}
-
-.avatar-container {
-    margin-right: 1rem;
-}
-
-.avatar-img {
-    width: 100px;
-    height: 100px;
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    transition: transform 0.3s ease;
-    object-fit: cover;
-}
-
-.avatar-img:hover {
-    transform: scale(1.05);
-}
-
-.profile-name {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.profile-subtitle {
-    font-size: 0.9rem;
-    opacity: 0.8;
-    font-weight: 500;
-}
-
-.info-item {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 0;
-}
-
-.info-icon {
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 0.75rem;
-    backdrop-filter: blur(10px);
-}
-
-.info-icon i {
-    font-size: 1.2rem;
-    color: white;
-}
-
-.info-label {
-    font-size: 0.8rem;
-    opacity: 0.8;
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-}
-
-.info-value {
-    font-size: 0.95rem;
-    font-weight: 600;
-}
-
-/* Detail Card */
-.detail-card {
-    border-radius: 15px;
-    border: none;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-}
-
-.detail-item {
-    background: #f8f9ff;
-    border-radius: 12px;
-    padding: 1.25rem;
-    display: flex;
-    align-items: center;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(102, 126, 234, 0.1);
-    height: 100%;
-}
-
-.detail-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
-}
-
-.detail-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 1rem;
-    background: rgba(102, 126, 234, 0.1);
-}
-
-.detail-icon i {
-    font-size: 1.5rem;
-    color: #667eea;
-}
-
-.detail-label {
-    font-size: 0.9rem;
-    color: #6c757d;
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-}
-
-.detail-value {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #343a40;
-}
-
-.btn-elegant {
-    border-radius: 10px;
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.btn-elegant:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .profile-card .row {
-        text-align: center;
-    }
-    
-    .avatar-container {
-        margin-bottom: 1rem;
-    }
-    
-    .info-item {
-        justify-content: center;
-        text-align: center;
-    }
-    
-    .detail-item {
-        text-align: center;
-        flex-direction: column;
-    }
-    
-    .detail-icon {
-        margin-right: 0;
-        margin-bottom: 1rem;
-    }
-}
-</style>
 @endsection

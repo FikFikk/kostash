@@ -8,9 +8,20 @@ use App\Models\Transaction;
 
 class PaymentHistoryController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $user = auth()->user();
-        $transactions = Transaction::where('user_id', $user->id)->orderBy('created_at', 'asc')->paginate(10);
-        return view('dashboard.tenants.payment-history.index', compact('transactions'));
+
+        $baseQuery = Transaction::where('user_id', $user->id);
+
+        $totalPaid = (clone $baseQuery)->where('status', 'success')->sum('amount');
+
+        $lastPayment = (clone $baseQuery)->where('status', 'success')->latest('paid_at')->first();
+
+        $transactions = $baseQuery->with('meter')->latest()->paginate(10);
+
+        $lastPaymentDate = $lastPayment?->paid_at;
+
+        return view('dashboard.tenants.payment-history.index', compact('transactions', 'totalPaid', 'lastPaymentDate'));
     }
 }

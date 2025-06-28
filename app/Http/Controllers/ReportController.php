@@ -25,7 +25,7 @@ class ReportController extends Controller
         $user = Auth::user();
 
         if ($user->role === 'admin') {
-            // Logika filter untuk admin
+            // Admin filtering logic
             if ($request->filled('status')) {
                 $query->where('status', $request->status);
             }
@@ -38,17 +38,27 @@ class ReportController extends Controller
 
             $reports = $query->paginate(10);
             
-            // Mengirim data untuk dropdown filter di view admin
             $categories = $this->getCategoryOptions();
             $priorities = $this->getPriorityOptions();
 
             return view('dashboard.admin.report.index', compact('reports', 'categories', 'priorities'));
         }
 
-        // Logika default untuk Tenant
         $query->where('user_id', $user->id);
+
+        $tenantReportsQuery = Report::where('user_id', $user->id);
+        $totalReports = (clone $tenantReportsQuery)->count();
+        $pendingReports = (clone $tenantReportsQuery)->whereIn('status', ['pending', 'in_progress'])->count();
+        $completedReports = (clone $tenantReportsQuery)->where('status', 'completed')->count();
+        
         $reports = $query->paginate(10);
-        return view('dashboard.tenants.report.index', compact('reports'));
+
+        return view('dashboard.tenants.report.index', compact(
+            'reports',
+            'totalReports',
+            'pendingReports',
+            'completedReports'
+        ));
     }
 
     /**

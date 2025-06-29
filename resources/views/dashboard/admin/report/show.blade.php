@@ -1,28 +1,124 @@
 @extends('dashboard.admin.layouts.app')
 
-@section('title', 'Kelola Laporan')
+@section('title', 'Manage Report')
+
+@push('styles')
+{{-- Custom styles for a modern, consistent UI --}}
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --shadow-elegant: 0 10px 30px rgba(0, 0, 0, 0.08);
+        --radius-lg: 1rem;
+    }
+    .content-card {
+        border: none;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-elegant);
+    }
+    .text-gradient {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .history-timeline {
+        position: relative;
+        list-style: none;
+        padding-left: 1.5rem;
+    }
+    .history-timeline::before {
+        content: '';
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        bottom: 5px;
+        width: 2px;
+        background-color: var(--bs-border-color-translucent);
+    }
+    .history-item {
+        position: relative;
+        padding-bottom: 1.5rem;
+    }
+    .history-item:last-child {
+        padding-bottom: 0;
+    }
+    .history-icon {
+        position: absolute;
+        left: -0.5rem;
+        top: 4px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: var(--bs-card-bg);
+        border: 3px solid var(--bs-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .history-icon i {
+        font-size: 0.8rem;
+        color: var(--bs-primary);
+    }
+    /* Styles for image carousel modal */
+    .modal-carousel .carousel-control-prev,
+    .modal-carousel .carousel-control-next {
+        width: 10%;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+    .modal-carousel .carousel-control-prev:hover,
+    .modal-carousel .carousel-control-next:hover {
+        opacity: 1;
+    }
+    .modal-carousel .carousel-control-prev-icon,
+    .modal-carousel .carousel-control-next-icon {
+        background-size: 60%;
+        filter: brightness(0) invert(1);
+    }
+    .btn-close-modal {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 10;
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+</style>
+@endpush
 
 @section('content')
 <div class="container-fluid">
-    <div class="row">
-        <!-- Kolom Kiri: Detail Laporan & Form Respons -->
-        <div class="col-lg-8">
-            <!-- Detail Laporan dari Tenant -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Laporan dari {{ $report->user->name }}: {{ $report->title }}</h5>
-                    <p class="text-muted mb-0">Dilaporkan pada: {{ $report->reported_at ? $report->reported_at->format('d M Y, H:i') : 'N/A' }}</p>
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+             <div class="d-flex align-items-lg-center flex-lg-row flex-column">
+                <div class="flex-grow-1">
+                    <h1 class="h3 fw-bold text-gradient mb-1"><i class="ri-file-search-line me-2"></i>Manage Report</h1>
+                    <p class="text-muted mb-0">Review details, respond, and update report status.</p>
                 </div>
-                <div class="card-body">
-                    <h6>Deskripsi Kendala:</h6>
+                 <a href="{{ route('dashboard.report.index') }}" class="btn btn-outline-secondary btn-sm mt-3 mt-lg-0">
+                    <i class="ri-arrow-left-line me-1"></i> Back to Report List
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Column: Report Details & Responses -->
+        <div class="col-lg-7">
+            <!-- Report Details Card -->
+            <div class="card content-card mb-4">
+                <div class="card-body p-4">
+                    <p class="text-muted mb-1">Report from: {{ $report->user->name }} ({{ $report->room->name }})</p>
+                    <h4 class="card-title mb-3">{{ $report->title }}</h4>
+                    <h6>Description:</h6>
                     <p>{{ $report->description }}</p>
 
                     @if(!empty($report->images))
-                        <h6 class="mt-4">Bukti Lampiran:</h6>
+                        <h6 class="mt-4">Attachments:</h6>
                         <div class="d-flex flex-wrap gap-2">
-                            @foreach($report->images as $image)
-                                <a href="{{ asset('storage/' . $image) }}" target="_blank">
-                                    <img src="{{ asset('storage/' . $image) }}" alt="lampiran" height="80" class="rounded object-fit-cover">
+                            @foreach($report->images as $key => $image)
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#imageCarouselModal" data-bs-slide-to="{{ $key }}">
+                                    <img src="{{ asset('storage/' . $image) }}" alt="attachment {{$key+1}}" height="80" width="80" class="rounded object-fit-cover border">
                                 </a>
                             @endforeach
                         </div>
@@ -30,109 +126,104 @@
                 </div>
             </div>
 
-            <!-- Form untuk Memberi Respons -->
-            <div class="card">
-                 <div class="card-header">
-                    <h5 class="card-title mb-0">Beri Tanggapan atau Update</h5>
+            <!-- Responses Card -->
+            <div class="card content-card">
+                <div class="card-header bg-transparent p-4">
+                    <h5 class="card-title mb-0">Response History</h5>
                 </div>
-                <div class="card-body">
-                    <form action="{{ route('dashboard.report.response.store', $report->id) }}" method="POST">
+                <div class="card-body pt-0 p-4">
+                     <!-- Form to Add New Response -->
+                    <form action="{{ route('dashboard.report.response.store', $report->id) }}" method="POST" class="mb-4 pb-4 border-bottom">
                         @csrf
-                        <div class="mb-3">
-                            <label for="response_text" class="form-label">Teks Respons <span class="text-danger">*</span></label>
-                            <textarea name="response_text" id="response_text" rows="4" class="form-control @error('response_text') is-invalid @enderror" placeholder="Tuliskan tanggapan Anda di sini..."></textarea>
-                            @error('response_text')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="d-flex gap-3 mt-4">
+                            <div class="avatar-xs flex-shrink-0">
+                                <div class="avatar-title bg-primary-subtle text-primary rounded-circle">
+                                     {{ substr(auth()->user()->name, 0, 1) }}
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <textarea name="response_text" rows="3" class="form-control @error('response_text') is-invalid @enderror" placeholder="Write a response..."></textarea>
+                                @error('response_text')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="text-end mt-2">
+                                    <button type="submit" class="btn btn-success">Send Response</button>
+                                </div>
+                            </div>
                         </div>
-                         <div class="mb-3">
-                            <label for="action_taken" class="form-label">Tindakan yang Diambil (Opsional)</label>
-                            <input type="text" name="action_taken" class="form-control" placeholder="Contoh: Menjadwalkan teknisi untuk besok">
-                        </div>
-                        <button type="submit" class="btn btn-success">Kirim Respons</button>
                     </form>
-                </div>
-            </div>
 
-            <!-- Menampilkan Respons yang Sudah Ada -->
-            @foreach($report->responses->sortByDesc('created_at') as $response)
-            <div class="card">
-                <div class="card-header bg-light-subtle">
-                    <h6 class="card-title mb-0">Respons dari: {{ $response->admin->name }}</h6>
-                    <small class="text-muted">{{ $response->created_at->format('d M Y, H:i') }}</small>
-                </div>
-                <div class="card-body">
-                    <p>{{ $response->response_text }}</p>
-                    @if($response->action_taken)
-                    <p class="mb-1"><small><strong>Tindakan:</strong> {{ $response->action_taken }}</small></p>
-                    @endif
+                    <!-- Existing Responses -->
+                    @forelse($report->responses->sortByDesc('created_at') as $response)
+                        <div class="d-flex gap-3 mb-4">
+                            <div class="avatar-xs flex-shrink-0">
+                                <div class="avatar-title bg-light text-dark rounded-circle">
+                                     {{ substr($response->admin->name, 0, 1) }}
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fs-14 mb-0">{{ $response->admin->name }} <small class="text-muted ms-2">{{ $response->created_at->format('d M Y, H:i') }}</small></h6>
+                                <p class="mb-1">{{ $response->response_text }}</p>
+                                @if($response->action_taken)
+                                <p class="mb-0"><small class="text-muted"><strong>Action Taken:</strong> {{ $response->action_taken }}</small></p>
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-muted text-center">No responses have been sent yet.</p>
+                    @endforelse
                 </div>
             </div>
-            @endforeach
         </div>
 
-        <!-- Kolom Kanan: Aksi & Riwayat -->
-        <div class="col-lg-4">
-            <!-- Form Ubah Status -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Ubah Status Laporan</h5>
+        <!-- Right Column: Status & History -->
+        <div class="col-lg-5">
+             <!-- Update Status Card -->
+            <div class="card content-card mb-4">
+                <div class="card-header bg-transparent p-4">
+                     <h5 class="card-title mb-0">Update Status</h5>
                 </div>
-                <div class="card-body">
-                    <form action="{{ route('dashboard.report.updateStatus', $report->id) }}" method="POST">
+                <div class="card-body p-4">
+                     <form action="{{ route('dashboard.report.updateStatus', $report->id) }}" method="POST">
                         @csrf
                         @method('PUT')
 
-                        <!-- Tampilan Status Saat Ini -->
                         <div class="mb-3">
-                            <label class="form-label d-block">Status Saat Ini</label>
-                            <span class="badge bg-{{$report->status_color}}">{{ $report->status_label }}</span>
+                            <label class="form-label d-block">Current Status</label>
+                            <span class="badge fs-6 bg-{{$report->status_color}}">{{ $report->status_label }}</span>
                         </div>
-
-                        <!-- Dropdown untuk Mengubah Status -->
                         <div class="mb-3">
-                            <label for="status" class="form-label">Ubah Status Ke</label>
+                            <label for="status" class="form-label">Change Status To</label>
                             <select name="status" id="" class="form-select">
-                                <option value="pending" {{ $report->status == 'pending' ? 'selected' : '' }}>Menunggu</option>
-                                <option value="in_progress" {{ $report->status == 'in_progress' ? 'selected' : '' }}>Sedang Diproses</option>
-                                <option value="completed" {{ $report->status == 'completed' ? 'selected' : '' }}>Selesai</option>
-                                <option value="rejected" {{ $report->status == 'rejected' ? 'selected' : '' }}>Ditolak</option>
+                                <option value="pending" @if($report->status == 'pending') selected @endif>Pending</option>
+                                <option value="in_progress" @if($report->status == 'in_progress') selected @endif>In Progress</option>
+                                <option value="completed" @if($report->status == 'completed') selected @endif>Completed</option>
+                                <option value="rejected" @if($report->status == 'rejected') selected @endif>Rejected</option>
                             </select>
                         </div>
-
-                        <!-- Textarea untuk Alasan Perubahan -->
                         <div class="mb-3">
-                            <label for="reason" class="form-label">Alasan Perubahan (Opsional)</label>
-                            <textarea name="reason" id="reason" rows="3" class="form-control" placeholder="Contoh: Teknisi sudah dihubungi"></textarea>
+                            <label for="reason" class="form-label">Reason for Change (Optional)</label>
+                            <textarea name="reason" id="reason" rows="2" class="form-control" placeholder="e.g., Technician has been scheduled"></textarea>
                         </div>
-                        
-                        <button type="submit" class="btn btn-primary w-100">Simpan Status</button>
+                        <button type="submit" class="btn btn-primary w-100">Save Status</button>
                     </form>
                 </div>
             </div>
 
-            <!-- Riwayat Status -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Riwayat Status</h5>
+            <!-- Status History Card -->
+            <div class="card content-card">
+                 <div class="card-header bg-transparent p-4">
+                    <h5 class="card-title mb-0">Status History</h5>
                 </div>
-                <div class="card-body">
-                    <ul class="list-unstyled">
-                        @foreach($report->statusHistory->sortByDesc('changed_at') as $history)
-                            <li class="d-flex gap-3 pb-3">
-                                <div class="flex-shrink-0">
-                                    <i class="ri-checkbox-circle-fill text-primary fs-16"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">{{ $history->new_status_label }}</h6>
-                                    <p class="text-muted mb-0">
-                                        @if($history->old_status)
-                                            Berubah dari <strong>{{ $history->old_status_label }}</strong>.
-                                        @else
-                                            Laporan dibuat.
-                                        @endif
-                                    </p>
-                                    <small class="text-muted">{{ $history->changed_at->diffForHumans() }} oleh {{ $history->changedBy->name ?? 'Sistem' }}</small>
+                <div class="card-body p-4">
+                    <ul class="history-timeline">
+                        @foreach($report->statusHistory->sortBy('changed_at') as $history)
+                            <li class="history-item">
+                                <div class="history-icon"><i class="ri-check-line"></i></div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1 fs-14">{{ $history->new_status_label }}</h6>
+                                    <p class="text-muted mb-1">{{ $history->reason ?? 'Status updated.' }}</p>
+                                    <small class="text-muted">{{ $history->changed_at->diffForHumans() }} by {{ $history->changedBy->name ?? 'System' }}</small>
                                 </div>
                             </li>
                         @endforeach
@@ -142,51 +233,51 @@
         </div>
     </div>
 </div>
+
+@if(!empty($report->images))
+<div class="modal fade" id="imageCarouselModal" tabindex="-1" aria-labelledby="imageCarouselModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="background: transparent; border: none;">
+            <div class="modal-body p-0">
+                <button type="button" class="btn-close btn-close-modal" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div id="reportImageCarousel" class="carousel slide modal-carousel">
+                    <div class="carousel-inner">
+                        @foreach($report->images as $key => $image)
+                        <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
+                            <img src="{{ asset('storage/' . $image) }}" class="d-block w-100 rounded-3" alt="Full-size attachment {{$key+1}}">
+                        </div>
+                        @endforeach
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#reportImageCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#reportImageCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
 @endsection
 
-@section('script')
+@push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const statusSelect = document.getElementById('status');
-    const previewBadge = document.querySelector('#status-preview .badge');
-    const previewText = document.getElementById('preview-text');
+    const imageCarouselModal = document.getElementById('imageCarouselModal');
+    if (imageCarouselModal) {
+        const carousel = new bootstrap.Carousel(imageCarouselModal.querySelector('.carousel'));
 
-    const statusConfig = {
-        'pending': {
-            class: 'bg-warning',
-            text: 'Menunggu'
-        },
-        'in_progress': {
-            class: 'bg-info',
-            text: 'Sedang Diproses'
-        },
-        'completed': {
-            class: 'bg-success',
-            text: 'Selesai'
-        },
-        'rejected': {
-            class: 'bg-danger',
-            text: 'Ditolak'
-        }
-    };
-
-    statusSelect.addEventListener('change', function() {
-        const selectedStatus = this.value;
-        const config = statusConfig[selectedStatus];
-        
-        if (config) {
-            // Reset semua class
-            previewBadge.className = 'badge fs-6 px-3 py-2 ' + config.class;
-            previewText.textContent = config.text;
-        }
-    });
-
-    // Set initial preview
-    const initialStatus = statusSelect.value;
-    if (statusConfig[initialStatus]) {
-        previewBadge.className = 'badge fs-6 px-3 py-2 ' + statusConfig[initialStatus].class;
-        previewText.textContent = statusConfig[initialStatus].text;
+        imageCarouselModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const slideToIndex = parseInt(button.getAttribute('data-bs-slide-to'));
+            carousel.to(slideToIndex);
+        });
     }
 });
 </script>
-@endsection
+@endpush

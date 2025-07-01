@@ -17,7 +17,6 @@
         border: none;
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-elegant);
-        background-color: var(--bs-card-bg);
     }
     .text-gradient {
         background: var(--gradient-primary);

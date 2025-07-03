@@ -10,8 +10,22 @@ class RoomController extends Controller
 {
     public function index()
     {
-        $rooms = Room::with('user')->orderBy('created_at', 'asc')->paginate(10);
-        return view('dashboard.admin.room.index', compact('rooms'));
+        $roomsQuery = Room::query();
+
+        $totalRooms = (clone $roomsQuery)->count();
+        
+        $occupiedRooms = (clone $roomsQuery)->whereHas('user')->count();
+        
+        $availableRooms = $totalRooms - $occupiedRooms;
+
+        $rooms = $roomsQuery->with('user')->latest('name')->paginate(10);
+
+        return view('dashboard.admin.room.index', compact(
+            'rooms',
+            'totalRooms',
+            'occupiedRooms',
+            'availableRooms'
+        ));
     }
 
     public function create()

@@ -80,6 +80,7 @@
         <!-- end auth-page-wrapper -->
 
         <!-- JAVASCRIPT -->
+        <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
         <script src="{{ asset('assets/dashboard/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/simplebar/simplebar.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/node-waves/waves.min.js') }}"></script>

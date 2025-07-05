@@ -96,5 +96,5 @@
 </div>
 @endsection
 @push('scripts')
-<script src="{{ asset('dashboard/js/pages/password-addon.init.js') }}"></script>
+<script src="{{ asset('assets/dashboard/js/pages/password-addon.init.js') }}"></script>
 @endpush

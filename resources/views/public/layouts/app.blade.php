@@ -13,7 +13,7 @@
     <link rel="shortcut icon" href="{{ asset('assets/images/k-logo.png') }}">
 
     <!-- Layout config Js -->
-    <script src="{{ asset('assets/dashborad/js/layout.js') }}"></script>
+    <script src="{{ asset('assets/dashboard/js/layout.js') }}"></script>
 
     <!-- glightbox css -->
     <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/glightbox/css/glightbox.min.css') }}">

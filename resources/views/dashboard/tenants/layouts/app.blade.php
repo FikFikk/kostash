@@ -102,12 +102,10 @@
         <script src="{{ asset('assets/dashboard/libs/feather-icons/feather.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/flatpickr/flatpickr.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/apexcharts/apexcharts.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/jsvectormap/js/jsvectormap.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/jsvectormap/maps/world-merc.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/swiper/swiper-bundle.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/prismjs/prism.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/js/pages/dashboard-ecommerce.init.js') }}"></script>
         <script src="{{ asset('https://cdn.jsdelivr.net/npm/toastify-js') }}"></script>
 
         <!-- dropzone min -->
@@ -118,8 +116,6 @@
         <script src="{{ asset('assets/dashboard/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/filepond-plugin-file-encode/filepond-plugin-file-encode.min.js') }}"></script>
-
-        <script src="{{ asset('assets/dashboard/js/pages/form-file-upload.init.js') }}"></script>
         
         <script src="{{ asset('assets/dashboard/js/app.js') }}"></script>
         <script>

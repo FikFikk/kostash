@@ -20,18 +20,6 @@
 
         <!-- App favicon -->
         <link rel="shortcut icon" href="{{ asset('assets/images/k-logo.png') }}">
-        
-        <!-- jsvectormap css -->
-        <link href="{{ asset('assets/dashboard/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
-
-        <!-- Filepond css -->
-        <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/filepond/filepond.min.css') }}" type="text/css" />
-        <link rel="stylesheet" href="{{ asset('assets/dashboard/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css') }}">
-
-        <!--Swiper slider css-->
-        <link href="{{ asset('assets/dashboard/libs/swiper/swiper-bundle.min.css') }}" rel="stylesheet" type="text/css" />
-
-        <link href="{{ asset('assets/dashboard/libs/choices.js/public/assets/styles/choices.min.css') }}" rel="stylesheet" />
 
         <!-- Layout config Js -->
         <script src="{{ asset('assets/dashboard/js/layout.js') }}"></script>
@@ -95,27 +83,12 @@
         </button>
 
         <script src="{{ asset('assets/dashboard/js/plugins.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('assets/dashboard/libs/feather-icons/feather.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/simplebar/simplebar.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/node-waves/waves.min.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/feather-icons/feather.min.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/flatpickr/flatpickr.min.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/jsvectormap/js/jsvectormap.min.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/jsvectormap/maps/world-merc.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/swiper/swiper-bundle.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/prismjs/prism.js') }}"></script>
         <script src="{{ asset('https://cdn.jsdelivr.net/npm/toastify-js') }}"></script>
-
-        <!-- dropzone min -->
-        <script src="{{ asset('assets/dashboard/libs/dropzone/dropzone-min.js') }}"></script>
-        <!-- filepond js -->
-        <script src="{{ asset('assets/dashboard/libs/filepond/filepond.min.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/filepond-plugin-file-encode/filepond-plugin-file-encode.min.js') }}"></script>
         
         <script src="{{ asset('assets/dashboard/js/app.js') }}"></script>
         <script>

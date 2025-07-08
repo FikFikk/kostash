@@ -16,10 +16,9 @@
             <div class="dropdown ms-sm-3 header-item topbar-user">
                 <img class="rounded-circle" id="page-header-user-dropdown" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false"
-                    src="{{ asset(auth()->user()->photo ?? 'assets/dashboard/images/users/avatar-1.jpg') }}" 
-                    alt="User Avatar" 
-                    width="32" height="32"
-                    onerror="this.onerror=null;this.src='{{ asset('assets/dashboard/images/users/avatar-1.jpg') }}';">
+                    src="{{ auth()->user()->photo ? asset('storage/uploads/profile/' . auth()->user()->photo) : asset('assets/dashboard/images/users/avatar-1.jpg') }}"
+                    alt="User Avatar"
+                    width="32" height="32">
                 <div class="dropdown-menu dropdown-menu-end mt-5">
                     <!-- item-->
                     <h6 class="dropdown-header">Selamat datang, {{ auth()->user()->name ?? 'Tuan' }}!</h6>

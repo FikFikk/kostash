@@ -12,15 +12,15 @@
         <link rel="shortcut icon" href="{{ asset('assets/images/k-logo.png') }}">
 
         <!-- Layout config Js -->
-        <script src="assets/dashboard/js/layout.js"></script>
+        <script src="{{ asset('assets/dashboard/js/layout.js') }}"></script>
         <!-- Bootstrap Css -->
-        <link href="assets/dashboard/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/dashboard/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- Icons Css -->
-        <link href="assets/dashboard/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/dashboard/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- App Css-->
-        <link href="assets/dashboard/css/app.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/dashboard/css/app.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- custom Css-->
-        <link href="assets/dashboard/css/custom.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/dashboard/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
 
 
     </head>
@@ -36,7 +36,7 @@
                     <div class="row justify-content-center">
                         <div class="col-xl-4 text-center">
                             <div class="error-500 position-relative">
-                                <img src="assets/dashboard/images/error500.png" alt="" class="img-fluid error-500-img error-img" />
+                                <img src="{{ asset('assets/dashboard/images/error500.png') }}" alt="" class="img-fluid error-500-img error-img" />
                                 <h1 class="title text-muted">500</h1>
                             </div>
                             <div>

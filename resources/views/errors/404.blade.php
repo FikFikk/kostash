@@ -12,15 +12,15 @@
         <link rel="shortcut icon" href="{{ asset('assets/images/k-logo.png') }}">
 
         <!-- Layout config Js -->
-        <script src="assets/dashboard/js/layout.js"></script>
+        <script src="{{ asset('assets/dashboard/js/layout.js') }}"></script>
         <!-- Bootstrap Css -->
-        <link href="assets/dashboard/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/dashboard/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- Icons Css -->
-        <link href="assets/dashboard/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/dashboard/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- App Css-->
-        <link href="assets/dashboard/css/app.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/dashboard/css/app.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- custom Css-->
-        <link href="assets/dashboard/css/custom.min.css" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/dashboard/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
 
 
     </head>
@@ -46,7 +46,7 @@
                         <div class="col-lg-12">
                             <div class="text-center pt-4">
                                 <div class="">
-                                    <img src="assets/dashboard/images/error.svg" alt="" class="error-basic-img move-animation">
+                                    <img src="{{ asset('assets/dashboard/images/error.svg') }}" alt="" class="error-basic-img move-animation">
                                 </div>
                                 <div class="mt-n4">
                                     <h1 class="display-1 fw-medium">404</h1>
@@ -82,17 +82,17 @@
         <!-- end auth-page-wrapper -->
 
         <!-- JAVASCRIPT -->
-        <script src="assets/dashboard/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="assets/dashboard/libs/simplebar/simplebar.min.js"></script>
-        <script src="assets/dashboard/libs/node-waves/waves.min.js"></script>
-        <script src="assets/dashboard/libs/feather-icons/feather.min.js"></script>
-        <script src="assets/dashboard/js/pages/plugins/lord-icon-2.1.0.js"></script>
-        <script src="assets/dashboard/js/plugins.js"></script>
+        <script src="{{ asset('assets/dashboard/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('assets/dashboard/libs/simplebar/simplebar.min.js') }}"></script>
+        <script src="{{ asset('assets/dashboard/libs/node-waves/waves.min.js') }}"></script>
+        <script src="{{ asset('assets/dashboard/libs/feather-icons/feather.min.js') }}"></script>
+        <script src="{{ asset('assets/dashboard/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
+        <script src="{{ asset('assets/dashboard/js/plugins.js') }}"></script>
 
         <!-- particles js -->
-        <script src="assets/dashboard/libs/particles.js/particles.js"></script>
+        <script src="{{ asset('assets/dashboard/libs/particles.js/particles.js') }}"></script>
         <!-- particles app js -->
-        <script src="assets/dashboard/js/pages/particles.app.js"></script>
+        <script src="{{ asset('assets/dashboard/js/pages/particles.app.js') }}"></script>
 
     </body>
 

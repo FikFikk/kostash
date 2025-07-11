@@ -2,255 +2,310 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Bill;
-use App\Models\Gallery;
-use App\Models\GlobalSetting;
+use App\Http\Controllers\Controller;
 use App\Models\Meter;
+use App\Models\Transaction;
 use App\Models\Room;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Data dasar
-        $bills = Bill::all();
-        $galleries = Gallery::all();
-        $globalSettings = GlobalSetting::all();
-        $meters = Meter::all();
-        $rooms = Room::orderBy('name')->get();
-        $users = User::all();
+        $currentMonth = Carbon::now()->startOfMonth();
+        $lastMonth = Carbon::now()->subMonth()->startOfMonth();
+        $lastMonthEnd = Carbon::now()->startOfMonth()->subDay();
 
-        // Statistik Revenue (dari tabel bills)
-        $totalRevenue = $meters->sum('total_bill');
-        $totalPaidBills = $bills->where('status', 'paid')->sum('total_amount');
-        $totalUnpaidBills = $bills->where('status', 'unpaid')->sum('total_amount');
+        // Core Statistics
+        $stats = $this->getCoreStatistics($currentMonth, $lastMonth, $lastMonthEnd);
 
-        // Statistik Bills
-        $totalBills = $bills->count();
-        $totalPaidBillsCount = $bills->where('status', 'paid')->count();
-        $totalUnpaidBillsCount = $bills->where('status', 'unpaid')->count();
+        // Financial Data
+        $financialData = $this->getFinancialData($currentMonth, $lastMonth, $lastMonthEnd);
 
-        // Average charges
-        $averageRoomCharge = $bills->avg('room_charge') ?? 0;
-        $averageWaterCharge = $bills->avg('water_charge') ?? 0;
-        $averageElectricCharge = $bills->avg('electric_charge') ?? 0;
-        $averageTotalAmount = $bills->avg('total_amount') ?? 0;
+        // Room Analytics
+        $roomAnalytics = $this->getRoomAnalytics();
 
-        // Statistik Users (berdasarkan role)
-        $totalUsers = $users->count();
-        $totalAdmins = $users->where('role', 'admin')->count();
-        $totalTenants = $users->where('role', 'tenants')->count();
-        $totalActiveUsers = $users->where('status', 'aktif')->count();
-        $totalInactiveUsers = $users->where('status', 'tidak_aktif')->count();
+        // Recent Activities
+        $recentData = $this->getRecentActivities();
 
-        // Statistik Rooms (berdasarkan status dan occupancy)
-        $totalRooms = $rooms->count();
-        $availableRooms = $rooms->where('status', 'available')->count();
-        $occupiedRooms = $rooms->where('status', 'occupied')->count();
+        // Chart Data with filter
+        $chartData = $this->getChartData($request->get('period', '12_months'));
+
+        // Alert Data
+        $alerts = $this->getAlerts();
+
+        // Additional data for view compatibility
+        $viewData = $this->getViewCompatibleData($stats, $financialData, $roomAnalytics);
+
+        // Check if this is an AJAX request
+        if ($request->ajax()) {
+            return response()->json($chartData);
+        }
+
+        return view('dashboard.admin.home.index', array_merge(
+            $stats,
+            $financialData,
+            $roomAnalytics,
+            $recentData,
+            $chartData,
+            $alerts,
+            $viewData
+        ));
+    }
+
+    private function getViewCompatibleData($stats, $financialData, $roomAnalytics)
+    {
+        // Map existing data to view variable names
+        $totalRevenue = $stats['totalRevenueThisMonth'];
+        $revenueGrowthPercent = $stats['revenueGrowth'];
+        $totalTenants = $stats['totalActiveTenants'];
         
-        // Rooms dengan penghuni (cek dari users->room_id)
-        $roomsWithTenants = $users->whereNotNull('room_id')->pluck('room_id')->unique()->count();
-        $roomsWithoutTenants = $totalRooms - $roomsWithTenants;
+        // Calculate tenant growth percentage
+        $currentMonth = Carbon::now()->startOfMonth();
+        $lastMonth = Carbon::now()->subMonth()->startOfMonth();
+        $lastMonthEnd = Carbon::now()->startOfMonth()->subDay();
+        
+        $totalTenantsLastMonth = User::whereHas('room')
+            ->where('created_at', '<=', $lastMonthEnd)
+            ->count();
+        
+        $growthPercent = 0;
+        if ($totalTenantsLastMonth > 0) {
+            $growthPercent = (($totalTenants - $totalTenantsLastMonth) / $totalTenantsLastMonth) * 100;
+        }
+        
+        // Get pending transactions count
+        $totalPendingTransactionsCount = Meter::whereIn('payment_status', ['unpaid', 'partial'])
+            ->count();
+        
+        $totalPendingTransactions = $stats['totalOutstanding'];
+
+        return compact(
+            'totalRevenue',
+            'revenueGrowthPercent', 
+            'totalTenants',
+            'growthPercent',
+            'totalPendingTransactionsCount',
+            'totalPendingTransactions'
+        );
+    }
+
+    private function getChartData($period = '12_months')
+    {
+        $monthlyRevenue = collect();
+        $now = Carbon::now();
+        
+        // Determine the period range
+        switch ($period) {
+            case '6_months':
+                $monthsBack = 5;
+                break;
+            case 'ytd':
+                $monthsBack = $now->month - 1;
+                break;
+            case '1_year':
+                $monthsBack = 11;
+                break;
+            case '3_years':
+                $monthsBack = 35;
+                break;
+            case '5_years':
+                $monthsBack = 59;
+                break;
+            default:
+                $monthsBack = 11; // 12_months
+        }
+
+        // Build the collection from oldest to newest
+        for ($i = $monthsBack; $i >= 0; $i--) {
+            $month = $now->copy()->subMonths($i);
+            $monthStart = $month->copy()->startOfMonth();
+            $monthEnd = $month->copy()->endOfMonth();
+            
+            // Get revenue for this month using paid_at field
+            $revenue = Meter::where('payment_status', 'paid')
+                ->whereBetween('paid_at', [
+                    $monthStart->format('Y-m-d H:i:s'),
+                    $monthEnd->format('Y-m-d H:i:s')
+                ])
+                ->sum('total_bill');
+
+            // If no data found using paid_at, try using period field as fallback
+            if ($revenue == 0) {
+                $revenue = Meter::where('payment_status', 'paid')
+                    ->whereBetween('period', [
+                        $monthStart->format('Y-m-01'),
+                        $monthEnd->format('Y-m-d')
+                    ])
+                    ->sum('total_bill');
+            }
+
+            $monthlyRevenue->push([
+                'month' => $month->format('M Y'),
+                'revenue' => (float) $revenue,
+                'period' => $month->format('Y-m'), // For debugging
+            ]);
+        }
+
+        // Debug: Log the data to check if it's being populated correctly
+        Log::info('Chart Data for period: ' . $period, [
+            'monthsBack' => $monthsBack,
+            'data' => $monthlyRevenue->toArray()
+        ]);
+
+        return compact('monthlyRevenue');
+    }
+
+    private function getCoreStatistics($currentMonth, $lastMonth, $lastMonthEnd)
+    {
+        // Total Revenue This Month from Meters
+        $totalRevenueThisMonth = Meter::where('payment_status', 'paid')
+            ->whereBetween('paid_at', [
+                $currentMonth,
+                $currentMonth->copy()->endOfMonth()
+            ])
+            ->sum('total_bill');
+
+        // Total Revenue Last Month from Meters  
+        $totalRevenueLastMonth = Meter::where('payment_status', 'paid')
+            ->whereBetween('paid_at', [
+                $lastMonth,
+                $lastMonthEnd
+            ])
+            ->sum('total_bill');
+
+        // Calculate growth percentage
+        $revenueGrowth = 0;
+        if ($totalRevenueLastMonth > 0) {
+            $revenueGrowth = (($totalRevenueThisMonth - $totalRevenueLastMonth) / $totalRevenueLastMonth) * 100;
+        }
+
+        // Total Outstanding Bills
+        $totalOutstanding = Meter::whereIn('payment_status', ['unpaid', 'partial'])
+            ->sum('total_bill');
+
+        // Total Rooms
+        $totalRooms = Room::count();
+
+        // Total Active Tenants
+        $totalActiveTenants = User::whereHas('room')->count();
+
+        return compact(
+            'totalRevenueThisMonth',
+            'totalRevenueLastMonth', 
+            'revenueGrowth',
+            'totalOutstanding',
+            'totalRooms',
+            'totalActiveTenants'
+        );
+    }
+
+    private function getFinancialData($currentMonth, $lastMonth, $lastMonthEnd)
+    {
+        // Average Bill Amount
+        $averageBill = Meter::where('payment_status', 'paid')
+            ->whereBetween('paid_at', [
+                $currentMonth,
+                $currentMonth->copy()->endOfMonth()
+            ])
+            ->avg('total_bill');
+
+        // Total Water Usage This Month
+        $totalWaterUsage = Meter::whereBetween('period', [
+                $currentMonth->format('Y-m-01'),
+                $currentMonth->copy()->endOfMonth()->format('Y-m-d')
+            ])
+            ->sum('total_water');
+
+        // Total Electric Usage This Month
+        $totalElectricUsage = Meter::whereBetween('period', [
+                $currentMonth->format('Y-m-01'),
+                $currentMonth->copy()->endOfMonth()->format('Y-m-d')
+            ])
+            ->sum('total_electric');
+
+        // Collection Rate (Paid vs Total Bills)
+        $totalBillsThisMonth = Meter::whereBetween('period', [
+                $currentMonth->format('Y-m-01'),
+                $currentMonth->copy()->endOfMonth()->format('Y-m-d')
+            ])
+            ->count();
+
+        $paidBillsThisMonth = Meter::where('payment_status', 'paid')
+            ->whereBetween('period', [
+                $currentMonth->format('Y-m-01'),
+                $currentMonth->copy()->endOfMonth()->format('Y-m-d')
+            ])
+            ->count();
+
+        $collectionRate = $totalBillsThisMonth > 0 ? ($paidBillsThisMonth / $totalBillsThisMonth) * 100 : 0;
+
+        return compact(
+            'averageBill',
+            'totalWaterUsage',
+            'totalElectricUsage',
+            'collectionRate'
+        );
+    }
+
+    private function getRoomAnalytics()
+    {
+        // Rooms with tenants
+        $roomsWithTenants = Room::whereHas('users')->count();
+        
+        // Rooms without tenants
+        $roomsWithoutTenants = Room::whereDoesntHave('users')->count();
+        
+        // Occupancy Rate
+        $totalRooms = Room::count();
         $occupancyRate = $totalRooms > 0 ? ($roomsWithTenants / $totalRooms) * 100 : 0;
 
-        // Statistik Meters
-        $totalMeters = $meters->count();
-        $totalWaterUsage = $meters->sum('total_water') ?? 0;
-        $totalElectricUsage = $meters->sum('total_electric') ?? 0;
-        $totalBillFromMeters = $meters->sum('total_bill') ?? 0;
-        $averageWaterUsage = $meters->avg('total_water') ?? 0;
-        $averageElectricUsage = $meters->avg('total_electric') ?? 0;
+        return compact('roomsWithTenants', 'roomsWithoutTenants', 'occupancyRate', 'totalRooms');
+    }
 
-        // Global Settings (harga dari global_settings)
-        $monthlyRoomPrice = $globalSettings->where('id', 1)->first()->monthly_room_price ?? 0;
-        $waterPrice = $globalSettings->where('id', 1)->first()->water_price ?? 0;
-        $electricPrice = $globalSettings->where('id', 1)->first()->electric_price ?? 0;
-
-        // Statistik Gallery
-        $totalGalleryItems = $galleries->count();
-
-        $startOfThisMonth = Carbon::now()->startOfMonth();
-        $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
-        $endOfLastMonth = Carbon::now()->startOfMonth()->subDay();
-
-        $tenantsThisMonth = User::where('role', 'tenants')
-            ->whereBetween('created_at', [$startOfThisMonth, now()])
-            ->count();
-
-        $tenantsLastMonth = User::where('role', 'tenants')
-            ->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])
-            ->count();
-
-        // growth dalam persentase
-        $growthPercent = $tenantsLastMonth > 0
-            ? (($tenantsThisMonth - $tenantsLastMonth) / $tenantsLastMonth) * 100
-            : ($tenantsThisMonth > 0 ? 100 : 0);
-
-        // Total revenue bulan ini
-        $totalRevenueThisMonth = $meters->whereBetween('created_at', [$startOfThisMonth, now()])
-            ->sum('total_bill');
-
-        // Total revenue bulan lalu
-        $totalRevenueLastMonth = $meters->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])
-            ->sum('total_bill');
-
-        // Growth revenue dalam persentase
-        $revenueGrowthPercent = $totalRevenueLastMonth > 0
-            ? (($totalRevenueThisMonth - $totalRevenueLastMonth) / $totalRevenueLastMonth) * 100
-            : ($totalRevenueThisMonth > 0 ? 100 : 0);
-
-        // Data untuk Chart - Monthly Revenue
-        $monthlyRevenue = $bills->where('status', 'paid')
-            ->groupBy(function($bill) {
-                return date('Y-m', strtotime($bill->created_at));
-            })
-            ->map(function($bills) {
-                return $bills->sum('total_amount');
-            })
-            ->take(12); // Ambil 12 bulan terakhir
-
-        // Bill status distribution untuk pie chart
-        $billStatusDistribution = [
-            'paid' => $totalPaidBillsCount,
-            'unpaid' => $totalUnpaidBillsCount
-        ];
-
-        // Room status distribution untuk pie chart
-        $roomStatusDistribution = [
-            'available' => $availableRooms,
-            'occupied' => $occupiedRooms
-        ];
-
-        // User role distribution
-        $userRoleDistribution = [
-            'admin' => $totalAdmins,
-            'tenants' => $totalTenants
-        ];
-
-        // Recent activities (5 latest bills dengan relasi)
-        $recentBills = Bill::with(['user', 'room', 'meter'])
-            ->orderBy('created_at', 'desc')
-            ->take(5)
+    private function getRecentActivities()
+    {
+        // Recent Payments
+        $recentPayments = Meter::where('payment_status', 'paid')
+            ->with(['room', 'user'])
+            ->orderBy('paid_at', 'desc')
+            ->take(10)
             ->get();
 
-        // Top 5 highest bills
-        $topBills = $bills->sortByDesc('total_amount')->take(5);
+        // Recent Unpaid Bills
+        $recentUnpaidBills = Meter::where('payment_status', 'unpaid')
+            ->with(['room', 'user'])
+            ->orderBy('period', 'desc')
+            ->take(10)
+            ->get();
 
-        $topTenants = Meter::select([
-                'meters.user_id',
-                'meters.room_id',
-                DB::raw('SUM(meters.total_water) as total_water'),
-                DB::raw('SUM(meters.total_electric) as total_electric'),
-                DB::raw('SUM(meters.total_bill) as total_amount'),
-                DB::raw('MAX(meters.period) as period'),
-                DB::raw('COUNT(*) as meter_reading_count'),
-                // Hitung charge dari konsumsi
-                DB::raw('SUM(meters.total_water) * 5000 as water_charge'),
-                DB::raw('SUM(meters.total_electric) * 1500 as electric_charge')
+        return compact('recentPayments', 'recentUnpaidBills');
+    }
+
+    private function getAlerts()
+    {
+        // Overdue Bills (older than 30 days)
+        $overdueBills = Meter::where('payment_status', 'unpaid')
+            ->where('period', '<', Carbon::now()->subDays(30)->format('Y-m-01'))
+            ->count();
+
+        // High Usage Alerts (above average + 50%)
+        $averageWaterUsage = Meter::avg('total_water');
+        $averageElectricUsage = Meter::avg('total_electric');
+        
+        $highUsageAlerts = Meter::where(function($query) use ($averageWaterUsage, $averageElectricUsage) {
+                $query->where('total_water', '>', $averageWaterUsage * 1.5)
+                      ->orWhere('total_electric', '>', $averageElectricUsage * 1.5);
+            })
+            ->whereBetween('period', [
+                Carbon::now()->startOfMonth()->format('Y-m-01'),
+                Carbon::now()->endOfMonth()->format('Y-m-d')
             ])
-            ->with(['user', 'room'])
-            ->whereNotNull('meters.user_id')
-            ->whereNotNull('meters.total_bill')
-            ->where('meters.total_bill', '>', 0) // Pastikan ada tagihan
-            ->whereHas('user', function($query) {
-                $query->where('role', 'tenants');
-            })
-            ->groupBy('meters.user_id', 'meters.room_id')
-            ->orderBy('total_amount', 'desc')
-            ->take(5) // Ambil 10 data untuk lebih banyak pilihan
-            ->get();
+            ->count();
 
-        // Hitung percentage change untuk setiap tenant
-        foreach($topTenants as $index => $tenant) {
-            // Ambil data periode sebelumnya
-            $previousMeter = Meter::where('user_id', $tenant->user_id)
-                ->where('room_id', $tenant->room_id)
-                ->where('period', '<', $tenant->period)
-                ->orderBy('period', 'desc')
-                ->first();
-            
-            if($previousMeter && $previousMeter->total_bill > 0) {
-                $currentTotal = $tenant->total_amount;
-                $previousTotal = $previousMeter->total_bill;
-                
-                $tenant->percentage_change = round((($currentTotal - $previousTotal) / $previousTotal) * 100, 1);
-            } else {
-                $tenant->percentage_change = null;
-            }
-            
-            // Pastikan periode dalam format yang benar
-            if(!$tenant->period) {
-                $tenant->period = now()->format('Y-m-d');
-            }
-        }
-
-        // Monthly usage trends
-        $monthlyWaterUsage = $meters->groupBy(function($meter) {
-                return date('Y-m', strtotime($meter->created_at));
-            })
-            ->map(function($meters) {
-                return $meters->sum('total_water');
-            })
-            ->take(12);
-
-        $monthlyElectricUsage = $meters->groupBy(function($meter) {
-                return date('Y-m', strtotime($meter->created_at));
-            })
-            ->map(function($meters) {
-                return $meters->sum('total_electric');
-            })
-            ->take(12);
-
-        // Room facilities analysis (dari JSON field)
-        $facilitiesCount = [];
-        foreach($rooms as $room) {
-            if($room->facilities) {
-                $facilities = json_decode($room->facilities, true);
-                if(is_array($facilities)) {
-                    foreach($facilities as $facility) {
-                        $facilitiesCount[$facility] = ($facilitiesCount[$facility] ?? 0) + 1;
-                    }
-                }
-            }
-        }
-
-        return view('dashboard.admin.home.index', compact(
-            // Data dasar
-            'bills', 'galleries', 'globalSettings', 'meters', 'rooms', 'users',
-            
-            // Revenue Statistics
-            'totalRevenue', 'totalPaidBills', 'totalUnpaidBills', 'revenueGrowthPercent',
-            'averageRoomCharge', 'averageWaterCharge', 'averageElectricCharge', 'averageTotalAmount',
-            
-            // Bill Statistics
-            'totalBills', 'totalPaidBillsCount', 'totalUnpaidBillsCount', 'topTenants',
-            
-            // User Statistics
-            'totalUsers', 'totalAdmins', 'totalTenants', 'totalActiveUsers', 'totalInactiveUsers', 'growthPercent',
-            
-            // Room Statistics
-            'totalRooms', 'availableRooms', 'occupiedRooms',
-            'roomsWithTenants', 'roomsWithoutTenants', 'occupancyRate',
-            
-            // Meter Statistics
-            'totalMeters', 'totalWaterUsage', 'totalElectricUsage', 'totalBillFromMeters',
-            'averageWaterUsage', 'averageElectricUsage',
-            
-            // Global Settings
-            'monthlyRoomPrice', 'waterPrice', 'electricPrice',
-            
-            // Gallery Statistics
-            'totalGalleryItems',
-            
-            // Chart/Graph Data
-            'monthlyRevenue', 'billStatusDistribution', 'roomStatusDistribution', 'userRoleDistribution',
-            'monthlyWaterUsage', 'monthlyElectricUsage',
-            
-            // Additional Data
-            'recentBills', 'topBills', 'facilitiesCount'
-        ));
+        return compact('overdueBills', 'highUsageAlerts');
     }
 }

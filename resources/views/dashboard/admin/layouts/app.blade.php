@@ -14,6 +14,7 @@
         <meta name="description" content="KostASH" />
         <meta name="kaywords" content="KostASH" />
         <meta name="author" content="KostASH.id" />
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <script src="{{ asset('assets/js/dark-mode.js') }}"></script>
 
@@ -83,10 +84,8 @@
             <i class="ri-arrow-up-line"></i>
         </button>
 
-        {{-- Ini adalah skrip global yang dimuat di bagian paling bawah body --}}
         <script src="{{ asset('assets/dashboard/js/plugins.js') }}"></script>
         <script src="{{ asset('assets/dashboard/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
-        {{-- Pastikan bootstrap.bundle.min.js dimuat sebelum skrip Anda yang lain --}}
         <script src="{{ asset('assets/dashboard/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/simplebar/simplebar.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/node-waves/waves.min.js') }}"></script>
@@ -98,6 +97,8 @@
         <script src="{{ asset('assets/dashboard/libs/swiper/swiper-bundle.min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/prismjs/prism.js') }}"></script>
         <script src="{{ asset('https://cdn.jsdelivr.net/npm/toastify-js') }}"></script>
+
+        <script src="{{ asset('assets/dashboard/libs/apexcharts/apexcharts.min.js') }}"></script>
 
         <script src="{{ asset('assets/dashboard/libs/dropzone/dropzone-min.js') }}"></script>
         <script src="{{ asset('assets/dashboard/libs/filepond/filepond.min.js') }}"></script>
@@ -133,6 +134,21 @@
                 });
             });
         </script>
+
+        <!-- <script>
+            // Pass PHP data to JavaScript
+            window.monthlyRevenue = @json($monthlyRevenue ?? []);
+            window.roomsWithTenants = {{ $roomsWithTenants ?? 0 }};
+            window.roomsWithoutTenants = {{ $roomsWithoutTenants ?? 0 }};
+            
+            // Debug log
+            console.log('PHP data passed to JS:', {
+                monthlyRevenue: window.monthlyRevenue,
+                roomsWithTenants: window.roomsWithTenants,
+                roomsWithoutTenants: window.roomsWithoutTenants
+            });
+        </script> -->
+        @yield('script')
 
     </body>
 </html>

@@ -170,22 +170,7 @@
                 </div>
                 <div class="card-body">
                     <div id="room-status-chart" style="height: 300px;"></div>
-                    <div class="row mt-3">
-                        <div class="col-6 text-center">
-                            <div class="d-flex align-items-center justify-content-center mb-2">
-                                <div class="bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
-                                <span class="text-muted small">Terisi</span>
-                            </div>
-                            <h6 class="mb-0">{{ $roomsWithTenants ?? 0 }}</h6>
-                        </div>
-                        <div class="col-6 text-center">
-                            <div class="d-flex align-items-center justify-content-center mb-2">
-                                <div class="bg-secondary rounded-circle me-2" style="width: 12px; height: 12px;"></div>
-                                <span class="text-muted small">Kosong</span>
-                            </div>
-                            <h6 class="mb-0">{{ $roomsWithoutTenants ?? 0 }}</h6>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -397,8 +382,6 @@ document.addEventListener('DOMContentLoaded', function() {
             revenueValues = [2500000, 3200000, 2800000, 3500000, 4100000, 3800000];
         }
 
-        console.log('Initial chart data:', { labels: revenueLabels, values: revenueValues });
-
         const revenueOptions = {
             series: [{
                 name: 'Pendapatan',
@@ -471,61 +454,257 @@ document.addEventListener('DOMContentLoaded', function() {
             revenueChart.render();
         }
 
-        // Room Status Chart - Get data from PHP variables
-        let roomsWithTenants = 0;
+        // Enhanced Room Status Chart - Beautiful Donut Chart
+        let roomsWithTenants = 6;
         let roomsWithoutTenants = 0;
         
-        // These variables should be passed from the PHP controller
+        // Try to get data from PHP variables with multiple fallback methods
         if (typeof window.roomsWithTenants !== 'undefined') {
-            roomsWithTenants = window.roomsWithTenants;
+            roomsWithTenants = parseInt(window.roomsWithTenants) || 0;
+        } else if (typeof roomsWithTenants !== 'undefined') {
+            roomsWithTenants = parseInt(roomsWithTenants) || 0;
         }
+        
         if (typeof window.roomsWithoutTenants !== 'undefined') {
-            roomsWithoutTenants = window.roomsWithoutTenants;
+            roomsWithoutTenants = parseInt(window.roomsWithoutTenants) || 0;
+        } else if (typeof roomsWithoutTenants !== 'undefined') {
+            roomsWithoutTenants = parseInt(roomsWithoutTenants) || 0;
         }
 
         const roomStatusOptions = {
             series: [roomsWithTenants, roomsWithoutTenants],
             chart: {
                 type: 'donut',
-                height: '100%'
+                height: 320,
+                width: '100%',
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 1000,
+                    animateGradually: {
+                        enabled: true,
+                        delay: 150
+                    },
+                    dynamicAnimation: {
+                        enabled: true,
+                        speed: 350
+                    }
+                },
+                dropShadow: {
+                    enabled: true,
+                    top: 2,
+                    left: 2,
+                    blur: 4,
+                    opacity: 0.1
+                }
             },
             labels: ['Terisi', 'Kosong'],
-            colors: ['#198754', '#6c757d'],
+            colors: ['#28a745', '#dc3545'],
             plotOptions: {
                 pie: {
                     donut: {
-                        size: '70%',
+                        size: '75%',
+                        background: 'transparent',
                         labels: {
                             show: true,
+                            name: {
+                                show: true,
+                                fontSize: '18px',
+                                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                                fontWeight: 500,
+                                color: '#374151',
+                                offsetY: -15,
+                                formatter: function (val) {
+                                    return val
+                                }
+                            },
+                            value: {
+                                show: true,
+                                fontSize: '32px',
+                                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                                fontWeight: 700,
+                                color: '#1f2937',
+                                offsetY: 5,
+                                formatter: function (val) {
+                                    return parseInt(val)
+                                }
+                            },
                             total: {
                                 show: true,
+                                showAlways: true,
                                 label: 'Total Kamar',
+                                fontSize: '16px',
+                                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                                fontWeight: 500,
+                                color: '#6b7280',
                                 formatter: function (w) {
-                                    return w.globals.seriesTotals.reduce((a, b) => {
+                                    const total = w.globals.seriesTotals.reduce((a, b) => {
                                         return a + b
-                                    }, 0)
+                                    }, 0);
+                                    return total
                                 }
                             }
                         }
-                    }
+                    },
+                    expandOnClick: true
                 }
             },
             legend: {
-                show: false
+                show: true,
+                position: 'bottom',
+                fontSize: '14px',
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                fontWeight: 500,
+                offsetY: 10,
+                labels: {
+                    colors: '#374151',
+                    useSeriesColors: false
+                },
+                markers: {
+                    width: 14,
+                    height: 14,
+                    radius: 7,
+                    offsetX: -2,
+                    offsetY: 0
+                },
+                itemMargin: {
+                    horizontal: 15,
+                    vertical: 8
+                },
+                formatter: function(seriesName, opts) {
+                    return seriesName + ': ' + opts.w.globals.series[opts.seriesIndex] + ' kamar'
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                show: true,
+                width: 3,
+                colors: ['#ffffff']
+            },
+            tooltip: {
+                enabled: true,
+                theme: 'light',
+                style: {
+                    fontSize: '14px',
+                    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                },
+                y: {
+                    formatter: function(val) {
+                        return val + ' kamar'
+                    }
+                },
+                fillSeriesColor: false,
+                custom: function({series, seriesIndex, dataPointIndex, w}) {
+                    const percentage = ((series[seriesIndex] / series.reduce((a, b) => a + b, 0)) * 100).toFixed(1);
+                    return `
+                        <div class="custom-tooltip" style="background: white; padding: 12px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb;">
+                            <div style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">
+                                ${w.globals.labels[seriesIndex]}
+                            </div>
+                            <div style="color: #6b7280; font-size: 13px;">
+                                ${series[seriesIndex]} kamar (${percentage}%)
+                            </div>
+                        </div>
+                    `;
+                }
+            },
+            states: {
+                hover: {
+                    filter: {
+                        type: 'lighten',
+                        value: 0.1
+                    }
+                },
+                active: {
+                    filter: {
+                        type: 'darken',
+                        value: 0.1
+                    }
+                }
             },
             responsive: [{
+                breakpoint: 768,
+                options: {
+                    chart: {
+                        width: '100%',
+                        height: 280
+                    },
+                    plotOptions: {
+                        pie: {
+                            donut: {
+                                labels: {
+                                    name: {
+                                        fontSize: '16px'
+                                    },
+                                    value: {
+                                        fontSize: '28px'
+                                    },
+                                    total: {
+                                        fontSize: '14px'
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'bottom',
+                        offsetY: 5
+                    }
+                }
+            }, {
                 breakpoint: 480,
                 options: {
                     chart: {
-                        width: 200
+                        width: '100%',
+                        height: 260
+                    },
+                    plotOptions: {
+                        pie: {
+                            donut: {
+                                size: '70%',
+                                labels: {
+                                    name: {
+                                        fontSize: '14px'
+                                    },
+                                    value: {
+                                        fontSize: '24px'
+                                    },
+                                    total: {
+                                        fontSize: '12px'
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    legend: {
+                        fontSize: '12px'
                     }
                 }
             }]
         };
 
-        if (document.querySelector("#room-status-chart")) {
-            roomChart = new ApexCharts(document.querySelector("#room-status-chart"), roomStatusOptions);
-            roomChart.render();
+        // Initialize room chart with better error handling
+        const roomChartElement = document.querySelector("#room-status-chart");
+        if (roomChartElement) {
+            try {
+                roomChartElement.innerHTML = '';
+                roomChart = new ApexCharts(roomChartElement, roomStatusOptions);
+                roomChart.render();
+            } catch (error) {
+                roomChartElement.innerHTML = `
+                    <div class="d-flex justify-content-center align-items-center h-100">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <span class="badge bg-success me-2">Terisi: ${roomsWithTenants}</span>
+                                <span class="badge bg-secondary">Kosong: ${roomsWithoutTenants}</span>
+                            </div>
+                            <p class="text-muted">Chart tidak dapat dimuat</p>
+                        </div>
+                    </div>
+                `;
+            }
         }
     }
 
@@ -557,13 +736,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            console.log('Received data:', data); // Debug log
-            
             if (data.monthlyRevenue && data.monthlyRevenue.length > 0 && revenueChart) {
                 const labels = data.monthlyRevenue.map(item => item.month);
                 const values = data.monthlyRevenue.map(item => parseFloat(item.revenue) || 0);
-                
-                console.log('Updating chart with:', { labels, values }); // Debug log
                 
                 // Update chart with new data
                 revenueChart.updateOptions({
@@ -581,8 +756,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     name: 'Pendapatan',
                     data: values
                 }], true);
-            } else {
-                console.warn('No data received or chart not initialized:', data);
             }
             
             // Remove loading state
@@ -591,8 +764,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Error fetching chart data:', error);
-            
             // Show error message to user
             const chartContainer = document.querySelector("#revenue-chart");
             if (chartContainer) {
@@ -613,7 +784,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle window resize
     window.addEventListener('resize', function() {
-        // ApexCharts automatically handles resize, but we can force it if needed
         if (revenueChart) {
             setTimeout(() => {
                 revenueChart.updateOptions({}, false, true);

@@ -265,40 +265,40 @@
 </div>
 
 <style>
-.hover-card {
-    transition: all 0.3s ease;
-}
+    .hover-card {
+        transition: all 0.3s ease;
+    }
 
-.hover-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
-}
+    .hover-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+    }
 
-.avatar-lg {
-    width: 60px;
-    height: 60px;
-}
+    .avatar-lg {
+        width: 60px;
+        height: 60px;
+    }
 
-.avatar-sm {
-    width: 35px;
-    height: 35px;
-}
+    .avatar-sm {
+        width: 35px;
+        height: 35px;
+    }
 
-.card {
-    border-radius: 12px;
-}
+    .card {
+        border-radius: 12px;
+    }
 
-.btn {
-    border-radius: 8px;
-}
+    .btn {
+        border-radius: 8px;
+    }
 
-.badge {
-    border-radius: 6px;
-}
+    .badge {
+        border-radius: 6px;
+    }
 
-.space-y-3 > * + * {
-    margin-top: 1rem;
-}
+    .space-y-3 > * + * {
+        margin-top: 1rem;
+    }
 </style>
 @endsection
 

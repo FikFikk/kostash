@@ -181,6 +181,8 @@ class DashboardController extends Controller
         $revenueGrowth = 0;
         if ($totalRevenueLastMonth > 0) {
             $revenueGrowth = (($totalRevenueThisMonth - $totalRevenueLastMonth) / $totalRevenueLastMonth) * 100;
+        } elseif ($totalRevenueThisMonth > 0) {
+            $revenueGrowth = 100;
         }
 
         // Total Outstanding Bills

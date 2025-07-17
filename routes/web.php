@@ -118,6 +118,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('dashboard')->name('dashboard.
         Route::delete('/destroy/{report}', [ReportController::class, 'destroy'])->name('destroy');
 
         Route::post('/response/{report}', [ReportResponseController::class, 'store'])->name('response.store');
+        Route::put('/response/{response}', [ReportResponseController::class, 'update'])->name('response.update');
+        Route::delete('/response/{response}', [ReportResponseController::class, 'destroy'])->name('response.destroy');
     });
 
     Route::prefix('transaction')->name('transaction.')->group(function () {

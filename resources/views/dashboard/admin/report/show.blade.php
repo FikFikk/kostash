@@ -132,13 +132,13 @@
                     <h5 class="card-title mb-0">Response History</h5>
                 </div>
                 <div class="card-body pt-0 p-4">
-                     <!-- Form to Add New Response -->
+                    <!-- Form to Add New Response -->
                     <form action="{{ route('dashboard.report.response.store', $report->id) }}" method="POST" class="mb-4 pb-4 border-bottom">
                         @csrf
                         <div class="d-flex gap-3 mt-4">
                             <div class="avatar-xs flex-shrink-0">
                                 <div class="avatar-title bg-primary-subtle text-primary rounded-circle">
-                                     {{ substr(auth()->user()->name, 0, 1) }}
+                                    {{ substr(auth()->user()->name, 0, 1) }}
                                 </div>
                             </div>
                             <div class="flex-grow-1">
@@ -158,17 +158,89 @@
                         <div class="d-flex gap-3 mb-4">
                             <div class="avatar-xs flex-shrink-0">
                                 <div class="avatar-title bg-light text-dark rounded-circle">
-                                     {{ substr($response->admin->name, 0, 1) }}
+                                    {{ substr($response->admin->name, 0, 1) }}
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h6 class="fs-14 mb-0">{{ $response->admin->name }} <small class="text-muted ms-2">{{ $response->created_at->format('d M Y, H:i') }}</small></h6>
-                                <p class="mb-1">{{ $response->response_text }}</p>
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="fs-14 mb-0">{{ $response->admin->name }} 
+                                        <small class="text-muted ms-2">{{ $response->created_at->format('d M Y, H:i') }}</small>
+                                    </h6>
+                                    
+                                    @if(auth()->user()->role === 'admin' && auth()->id() === $response->admin_id)
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ri-more-2-line"></i>
+                                        </button>
+                                        <ul class="dropdown-menu response-menu">
+                                            <li>
+                                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editResponseModal-{{ $response->id }}">
+                                                    <i class="ri-edit-line me-2"></i>Edit Response
+                                                </button>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <button class="dropdown-item text-danger" onclick="confirmDelete('{{ $response->id }}')">
+                                                    <i class="ri-delete-bin-line me-2"></i>Delete Response
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    @endif
+                                </div>
+
+                                <p class="mb-1 mt-1">{{ $response->response_text }}</p>
                                 @if($response->action_taken)
                                 <p class="mb-0"><small class="text-muted"><strong>Action Taken:</strong> {{ $response->action_taken }}</small></p>
                                 @endif
                             </div>
                         </div>
+
+                        {{-- Hidden Delete Form --}}
+                        @if(auth()->user()->role === 'admin' && auth()->id() === $response->admin_id)
+                        <form id="deleteForm-{{ $response->id }}" action="{{ route('dashboard.report.response.destroy', $response->id) }}" method="POST" style="display: none;">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                        @endif
+
+                        {{-- Modal untuk Edit Response --}}
+                        @if(auth()->user()->role === 'admin' && auth()->id() === $response->admin_id)
+                        <div class="modal fade" id="editResponseModal-{{ $response->id }}" tabindex="-1" aria-labelledby="editResponseModalLabel-{{ $response->id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editResponseModalLabel-{{ $response->id }}">
+                                            <i class="ri-edit-line me-2"></i>Edit Response
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="{{ route('dashboard.report.response.update', $response->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="response_text_{{ $response->id }}" class="form-label fw-semibold">Response Text</label>
+                                                <textarea name="response_text" id="response_text_{{ $response->id }}" rows="4" class="form-control" required>{{ old('response_text', $response->response_text) }}</textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="action_taken_{{ $response->id }}" class="form-label fw-semibold">Action Taken <span class="text-muted">(Optional)</span></label>
+                                                <input type="text" name="action_taken" id="action_taken_{{ $response->id }}" class="form-control" value="{{ old('action_taken', $response->action_taken) }}" placeholder="Describe any actions taken...">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                <i class="ri-close-line me-1"></i>Cancel
+                                            </button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="ri-save-line me-1"></i>Save Changes
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     @empty
                         <p class="text-muted text-center">No responses have been sent yet.</p>
                     @endforelse
@@ -279,5 +351,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function confirmDelete(responseId) {
+    if (confirm('Are you sure you want to delete this response? This action cannot be undone.')) {
+        document.getElementById('deleteForm-' + responseId).submit();
+    }
+}
 </script>
 @endpush

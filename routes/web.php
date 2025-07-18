@@ -15,166 +15,173 @@ use App\Http\Controllers\{
     UserController,
 };
 
-use App\Http\Controllers\Tenants\PaymentController;
-use App\Http\Controllers\Tenants\PaymentHistoryController;
-use App\Http\Controllers\Tenants\ProfileController;
-use App\Http\Controllers\Tenants\TenantDashboardController;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Redirect;
+use App\Http\Controllers\Tenants\{
+    PaymentController,
+    PaymentHistoryController,
+    ProfileController,
+    TenantDashboardController,
+};
 
-Route::controller(PublicController::class)->name('public.')->group(function () {
-    Route::get('/', 'index')->name('home');
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/', [PublicController::class, 'index'])->name('public.home');
+
+// Login alias route untuk compatibility
+Route::redirect('/login', '/auth/login')->name('login');
+
+/*
+|--------------------------------------------------------------------------
+| Social Authentication Routes
+|--------------------------------------------------------------------------
+*/
+Route::prefix('auth/{provider}')->name('social.')->group(function () {
+    Route::get('/redirect', [SocialAuthController::class, 'redirectToProvider'])->name('redirect');
+    Route::get('/callback', [SocialAuthController::class, 'handleProviderCallback'])->name('callback');
 });
 
-// Alias route 'login' supaya tidak error
-Route::get('login', function () {
-    return Redirect::route('auth.login');
-})->name('login');
-
-Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirectToProvider'])->name('social.redirect');
-Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback'])->name('social.callback');
-
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes
+|--------------------------------------------------------------------------
+*/
 Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(function () {
+    // Guest only routes
     Route::middleware('guest')->group(function () {
         Route::get('login', 'login')->name('login');
         Route::post('login', 'login_process')->name('login.process');
         Route::get('register', 'register')->name('register');
         Route::post('register', 'register_process')->name('register.process');
-
     });
 
+    // Authenticated routes
     Route::middleware('auth')->group(function () {
         Route::get('logout', 'logout_process')->name('logout');
     });
 
-    Route::get('logout-page', function () {
-        return view('auth.logout');
-    })->name('logout.page');
+    // Logout page (accessible by all)
+    Route::view('logout-page', 'auth.logout')->name('logout.page');
 });
 
-// -----------------------------
-// Admin Dashboard Route
-// -----------------------------
+/*
+|--------------------------------------------------------------------------
+| Admin Dashboard Routes
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth', 'role:admin'])->prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('home');
 
-    Route::prefix('room')->name('room.')->group(function () {
-        Route::controller(RoomController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/store', 'store')->name('store');
-            Route::get('/edit/{id}', 'edit')->name('edit');
-            Route::put('/update/{id}', 'update')->name('update');
-            Route::delete('/destroy/{room}', 'destroy')->name('destroy');
-            Route::post('/rooms/temp-upload', 'tempUpload')->name('upload');
-        });
+    // Room Management
+    Route::prefix('room')->name('room.')->controller(RoomController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{room}', 'destroy')->name('destroy');
+        Route::post('/temp-upload', 'tempUpload')->name('upload');
     });
 
-    Route::prefix('global')->name('global.')->group(function () {
-        Route::controller(GlobalSettingController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/edit/{id}', 'edit')->name('edit');
-            Route::put('/update/{id}', 'update')->name('update');
-        });
+    // Global Settings
+    Route::prefix('global')->name('global.')->controller(GlobalSettingController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
     });
 
-    Route::prefix('gallery')->name('gallery.')->group(function () {
-        Route::controller(GalleryController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/store', 'store')->name('store');
-            Route::get('/edit/{gallery}', 'edit')->name('edit');
-            Route::put('/update/{gallery}', 'update')->name('update');
-            Route::delete('/destroy/{gallery}', 'destroy')->name('destroy');
-        });
+    // Gallery Management
+    Route::prefix('gallery')->name('gallery.')->controller(GalleryController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{gallery}/edit', 'edit')->name('edit');
+        Route::put('/{gallery}', 'update')->name('update');
+        Route::delete('/{gallery}', 'destroy')->name('destroy');
     });
 
-    Route::prefix('meter')->name('meter.')->group(function () {
-        Route::controller(MeterController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/store', 'store')->name('store');
-            Route::get('/edit/{id}', 'edit')->name('edit');
-            Route::put('/update/{id}', 'update')->name('update');
-            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
-
-            // Ini adalah rute AJAX yang BENAR dan SATU-SATUNYA
-        });
+    // Meter Management
+    Route::prefix('meter')->name('meter.')->controller(MeterController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+        
+        // AJAX routes with constraints
+        Route::get('/{meter:uuid}/details', 'getMeterDetails')->name('details');
+        Route::get('/room/{room:uuid}/details', 'getRoomDetails')->name('room.details');
     });
 
-    Route::get('meter/{id}/details', [MeterController::class, 'getMeterDetails'])
-        ->name('meter.details')
-        ->where('id', '[0-9a-f\-]{36}'); // UUID pattern for room IDs
-    
-    Route::get('meter/room/{roomId}/details', [MeterController::class, 'getRoomDetails'])
-        ->name('meter.room.details')
-        ->where('roomId', '[0-9a-f\-]{36}');
-
-    Route::prefix('report')->name('report.')->group(function () {
-        Route::get('/', [ReportController::class, 'index'])->name('index');
-        Route::get('/show/{report}', [ReportController::class, 'show'])->name('show');
-        Route::get('/statistics', [ReportController::class, 'statistics'])->name('statistics');
-        Route::put('/update-status/{report}', [ReportController::class, 'updateStatus'])->name('updateStatus');
-        Route::delete('/destroy/{report}', [ReportController::class, 'destroy'])->name('destroy');
-
-        Route::post('/response/{report}', [ReportResponseController::class, 'store'])->name('response.store');
-        Route::put('/response/{response}', [ReportResponseController::class, 'update'])->name('response.update');
-        Route::delete('/response/{response}', [ReportResponseController::class, 'destroy'])->name('response.destroy');
-    });
-
-    Route::prefix('transaction')->name('transaction.')->group(function () {
-        Route::controller(TransactionController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-        });
-    });
-
-    Route::prefix('user')->name('user.')->group(function () {
-        Route::controller(UserController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/store', 'store')->name('store');
-            Route::get('/edit/{id}', 'edit')->name('edit');
-            Route::put('/update/{id}', 'update')->name('update');
-            Route::delete('/destroy/{id}', 'destroy')->name('destroy');
-            Route::get('/show/{id}', 'show')->name('show');
-        });
-    });
-});
-
-// -----------------------------
-// Tenant Dashboard Route
-// -----------------------------
-Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->group(function () {
-    Route::get('/', [TenantDashboardController::class, 'index'])->name('home');
-    Route::get('/export', [TenantDashboardController::class, 'exportInvoice'])->name('export');
-    Route::get('/payment/token', [PaymentController::class, 'getSnapToken'])->name('getSnapToken');
-
-    Route::prefix('profile')->name('profile.')->group(function () {
-        Route::controller(ProfileController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/edit', 'edit')->name('edit');
-            Route::put('/update', 'update')->name('update');
-            Route::get('/change-password', 'changePasswordForm')->name('change-password');
-            Route::post('/change-password', 'changePassword')->name('change-password');
-        });
-    });
-
+    // Report Management
     Route::prefix('report')->name('report.')->group(function () {
         Route::controller(ReportController::class)->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/store', 'store')->name('store');
-            Route::get('/show/{report}', 'show')->name('show');
-            Route::delete('/destroy/{report}', 'destroy')->name('destroy');
+            Route::get('/statistics', 'statistics')->name('statistics');
+            Route::get('/{report}', 'show')->name('show');
+            Route::put('/{report}/status', 'updateStatus')->name('updateStatus');
+            Route::delete('/{report}', 'destroy')->name('destroy');
+        });
+
+        // Report Response Management
+        Route::controller(ReportResponseController::class)->name('response.')->group(function () {
+            Route::post('/{report}/response', 'store')->name('store');
+            Route::put('/response/{response}', 'update')->name('update');
+            Route::delete('/response/{response}', 'destroy')->name('destroy');
         });
     });
 
-    Route::prefix('history')->name('history.')->group(function () {
-        Route::controller(PaymentHistoryController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-        });
+    // Transaction Management
+    Route::get('transaction', [TransactionController::class, 'index'])->name('transaction.index');
+
+    // User Management
+    Route::prefix('user')->name('user.')->controller(UserController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{id}', 'show')->name('show');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Tenant Dashboard Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->group(function () {
+    Route::controller(TenantDashboardController::class)->group(function () {
+        Route::get('/', 'index')->name('home');
+        Route::get('/export', 'exportInvoice')->name('export');
     });
 
-    // Tambahkan fitur lainnya khusus tenant di sini nanti
-    // Route::get('/bills', [TenantBillController::class, 'index'])->name('bills');
+    // Payment Token (AJAX)
+    Route::get('/payment/token', [PaymentController::class, 'getSnapToken'])->name('getSnapToken');
+
+    // Profile Management
+    Route::prefix('profile')->name('profile.')->controller(ProfileController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/edit', 'edit')->name('edit');
+        Route::put('/', 'update')->name('update');
+        Route::get('/change-password', 'changePasswordForm')->name('change-password');
+        Route::post('/change-password', 'changePassword')->name('change-password.process');
+    });
+
+    // Report Management (Tenant)
+    Route::prefix('report')->name('report.')->controller(ReportController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{report}', 'show')->name('show');
+        Route::delete('/{report}', 'destroy')->name('destroy');
+    });
+
+    // Payment History
+    Route::get('history', [PaymentHistoryController::class, 'index'])->name('history.index');
 });

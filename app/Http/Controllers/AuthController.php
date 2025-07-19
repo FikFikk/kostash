@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -57,6 +58,32 @@ class AuthController extends Controller
         return redirect()
             ->route('tenant.home')
             ->with('success', 'Selamat datang! Akun Anda berhasil dibuat dan Anda telah masuk secara otomatis.');
+    }
+
+    public function lock_screen()
+    {
+        // Set session bahwa screen sedang terkunci
+        session(['screen_locked' => true, 'lock_time' => now()]);
+        
+        return view('auth.lock-screen');
+    }
+    
+    public function unlock_process(Request $request)
+    {
+        $request->validate([
+            'password' => 'required'
+        ]);
+        
+        // Verifikasi password dengan user yang sedang login
+        if (!Hash::check($request->password, auth()->user()->password)) {
+            return back()->withErrors(['password' => 'Password salah']);
+        }
+        
+        // Hapus session lock
+        session()->forget(['screen_locked', 'lock_time']);
+        
+        return redirect()->intended(route('dashboard.home'))
+            ->with('success', 'Screen unlocked successfully! Welcome back, ' . auth()->user()->name);
     }
 
     public function logout_view()

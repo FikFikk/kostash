@@ -61,6 +61,10 @@ Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(f
     // Authenticated routes
     Route::middleware('auth')->group(function () {
         Route::get('logout', 'logout_process')->name('logout');
+
+        // Lock screen routes
+        Route::get('lock-screen', 'lock_screen')->name('lock.screen');
+        Route::post('unlock', 'unlock_process')->name('unlock.process');
     });
 
     // Logout page (accessible by all)
@@ -72,7 +76,7 @@ Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(f
 | Admin Dashboard Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'role:admin'])->prefix('dashboard')->name('dashboard.')->group(function () {
+Route::middleware(['auth', 'role:admin', 'check.screen.lock'])->prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('home');
 
     // Room Management

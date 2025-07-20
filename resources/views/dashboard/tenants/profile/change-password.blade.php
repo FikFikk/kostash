@@ -206,10 +206,79 @@
             </div>
         </div>
     @endif
+
+    <!-- Login History Card -->
+    <div class="card shadow-lg border-0 mb-4 login-history-card">
+        <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0 fw-bold">
+                <i class="mdi mdi-history me-2"></i>
+                Riwayat Login
+            </h5>
+            <a href="#" class="btn btn-outline-danger btn-sm btn-elegant">
+                <i class="mdi mdi-logout-variant me-1"></i> Logout Semua Perangkat
+            </a>
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item login-item">
+                    <div class="login-item-details">
+                        <i class="mdi mdi-cellphone device-icon text-primary"></i>
+                        <div class="login-info">
+                            <span class="device-name">iPhone 12 Pro</span>
+                            <span class="location-time">Los Angeles, Amerika Serikat - 16 Maret 2025 pukul 14:47</span>
+                        </div>
+                    </div>
+                    <form action="#" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-secondary btn-sm btn-elegant">Logout</button>
+                    </form>
+                </li>
+                <li class="list-group-item login-item">
+                    <div class="login-item-details">
+                        <i class="mdi mdi-tablet device-icon text-primary"></i>
+                        <div class="login-info">
+                            <span class="device-name">Apple iPad Pro</span>
+                            <span class="location-time">Washington, Amerika Serikat - 06 November 2025 pukul 10:43</span>
+                        </div>
+                    </div>
+                    <form action="#" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-secondary btn-sm btn-elegant">Logout</button>
+                    </form>
+                </li>
+                <li class="list-group-item login-item">
+                    <div class="login-item-details">
+                        <i class="mdi mdi-cellphone device-icon text-primary"></i>
+                        <div class="login-info">
+                            <span class="device-name">Galaxy S21 Ultra 5G</span>
+                            <span class="location-time">Connecticut, Amerika Serikat - 12 Juni 2025 pukul 15:24</span>
+                        </div>
+                    </div>
+                    <form action="#" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-secondary btn-sm btn-elegant">Logout</button>
+                    </form>
+                </li>
+                <li class="list-group-item login-item">
+                    <div class="login-item-details">
+                        <i class="mdi mdi-desktop-classic device-icon text-primary"></i>
+                        <div class="login-info">
+                            <span class="device-name">Dell Inspiron 14</span>
+                            <span class="location-time">Phoenix, Amerika Serikat - 26 Juli 2025 pukul 08:10</span>
+                        </div>
+                    </div>
+                    <form action="#" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-secondary btn-sm btn-elegant">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 <style>
-.password-card, .google-oauth-card, .security-card {
+.password-card, .google-oauth-card, .security-card, .login-history-card {
     border-radius: 15px;
     border: none;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
@@ -299,6 +368,53 @@
 }
 
 .security-option-content p {
+    font-size: 0.85rem;
+}
+
+/* Login History Styles */
+.login-history-card .card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.login-history-card .card-body {
+    padding: 0.5rem 0;
+}
+
+.login-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.login-item:last-child {
+    border-bottom: none !important;
+}
+
+.login-item-details {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.device-icon {
+    font-size: 2rem;
+    width: 40px;
+    text-align: center;
+}
+
+.login-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.device-name {
+    font-weight: 600;
+}
+
+.location-time {
     font-size: 0.85rem;
 }
 
@@ -457,11 +573,18 @@
     .oauth-info-container {
         flex-direction: column;
         text-align: center;
+        align-items: center;
     }
     
     .security-option {
         flex-direction: column;
         text-align: center;
+        gap: 0.75rem;
+    }
+    
+    .login-item {
+        flex-direction: column;
+        align-items: flex-start;
         gap: 0.75rem;
     }
 }

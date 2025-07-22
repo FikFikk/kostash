@@ -30,8 +30,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [PublicController::class, 'index'])->name('public.home');
-
-// Login alias route untuk compatibility
 Route::redirect('/login', '/auth/login')->name('login');
 
 /*
@@ -50,7 +48,6 @@ Route::prefix('auth/{provider}')->name('social.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(function () {
-    // Guest only routes
     Route::middleware('guest')->group(function () {
         Route::get('login', 'login')->name('login');
         Route::post('login', 'login_process')->name('login.process');
@@ -58,16 +55,12 @@ Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(f
         Route::post('register', 'register_process')->name('register.process');
     });
 
-    // Authenticated routes
     Route::middleware('auth')->group(function () {
         Route::get('logout', 'logout_process')->name('logout');
-
-        // Lock screen routes
         Route::get('lock-screen', 'lock_screen')->name('lock.screen');
         Route::post('unlock', 'unlock_process')->name('unlock.process');
     });
 
-    // Logout page (accessible by all)
     Route::view('logout-page', 'auth.logout')->name('logout.page');
 });
 
@@ -79,46 +72,19 @@ Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(f
 Route::middleware(['auth', 'role:admin', 'check.screen.lock'])->prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('home');
 
-    // Room Management
-    Route::prefix('room')->name('room.')->controller(RoomController::class)->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/', 'store')->name('store');
-        Route::get('/{id}/edit', 'edit')->name('edit');
-        Route::put('/{id}', 'update')->name('update');
-        Route::delete('/{room}', 'destroy')->name('destroy');
-        Route::post('/temp-upload', 'tempUpload')->name('upload');
-    });
+    // Resource Routes
+    Route::resource('room', RoomController::class);
+    Route::resource('gallery', GalleryController::class);
+    Route::resource('meter', MeterController::class)->except(['show']);
+    Route::resource('user', UserController::class);
 
-    // Global Settings
-    Route::prefix('global')->name('global.')->controller(GlobalSettingController::class)->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/{id}/edit', 'edit')->name('edit');
-        Route::put('/{id}', 'update')->name('update');
-    });
+    // Global Settings - Resource with only index, edit, update
+    Route::resource('global', GlobalSettingController::class)->only(['index', 'edit', 'update']);
 
-    // Gallery Management
-    Route::prefix('gallery')->name('gallery.')->controller(GalleryController::class)->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/', 'store')->name('store');
-        Route::get('/{gallery}/edit', 'edit')->name('edit');
-        Route::put('/{gallery}', 'update')->name('update');
-        Route::delete('/{gallery}', 'destroy')->name('destroy');
-    });
-
-    // Meter Management
-    Route::prefix('meter')->name('meter.')->controller(MeterController::class)->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/', 'store')->name('store');
-        Route::get('/{id}/edit', 'edit')->name('edit');
-        Route::put('/{id}', 'update')->name('update');
-        Route::delete('/{id}', 'destroy')->name('destroy');
-        
-        // AJAX routes with constraints
-        Route::get('/{meter:uuid}/details', 'getMeterDetails')->name('details');
-        Route::get('/room/{room:uuid}/details', 'getRoomDetails')->name('room.details');
+    // Meter additional routes
+    Route::prefix('meter')->name('meter.')->group(function () {
+        Route::get('/{meter:uuid}/details', [MeterController::class, 'getMeterDetails'])->name('details');
+        Route::get('/room/{room:uuid}/details', [MeterController::class, 'getRoomDetails'])->name('room.details');
     });
 
     // Report Management
@@ -131,27 +97,14 @@ Route::middleware(['auth', 'role:admin', 'check.screen.lock'])->prefix('dashboar
             Route::delete('/{report}', 'destroy')->name('destroy');
         });
 
-        // Report Response Management
-        Route::controller(ReportResponseController::class)->name('response.')->group(function () {
-            Route::post('/{report}/response', 'store')->name('store');
-            Route::put('/response/{response}', 'update')->name('update');
-            Route::delete('/response/{response}', 'destroy')->name('destroy');
-        });
+        // Report Response - Resource with store, update, destroy
+        Route::resource('{report}/response', ReportResponseController::class)->only(['store', 'update', 'destroy'])->parameters([
+            'response' => 'response'
+        ]);
     });
 
     // Transaction Management
-    Route::get('transaction', [TransactionController::class, 'index'])->name('transaction.index');
-
-    // User Management
-    Route::prefix('user')->name('user.')->controller(UserController::class)->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/', 'store')->name('store');
-        Route::get('/{id}', 'show')->name('show');
-        Route::get('/{id}/edit', 'edit')->name('edit');
-        Route::put('/{id}', 'update')->name('update');
-        Route::delete('/{id}', 'destroy')->name('destroy');
-    });
+    Route::resource('transaction', TransactionController::class)->only(['index']);
 });
 
 /*
@@ -160,6 +113,7 @@ Route::middleware(['auth', 'role:admin', 'check.screen.lock'])->prefix('dashboar
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->group(function () {
+    // Dashboard
     Route::controller(TenantDashboardController::class)->group(function () {
         Route::get('/', 'index')->name('home');
         Route::get('/export', 'exportInvoice')->name('export');
@@ -168,7 +122,7 @@ Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->
     // Payment Token (AJAX)
     Route::get('/payment/token', [PaymentController::class, 'getSnapToken'])->name('getSnapToken');
 
-    // Profile Management
+    // Profile Management - Custom resource-like structure
     Route::prefix('profile')->name('profile.')->controller(ProfileController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/edit', 'edit')->name('edit');
@@ -177,15 +131,9 @@ Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->
         Route::post('/change-password', 'changePassword')->name('change-password.process');
     });
 
-    // Report Management (Tenant)
-    Route::prefix('report')->name('report.')->controller(ReportController::class)->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/', 'store')->name('store');
-        Route::get('/{report}', 'show')->name('show');
-        Route::delete('/{report}', 'destroy')->name('destroy');
-    });
+    // Report Management - Resource with index, create, store, show, destroy
+    Route::resource('report', ReportController::class)->only(['index', 'create', 'store', 'show', 'destroy']);
 
-    // Payment History
-    Route::get('history', [PaymentHistoryController::class, 'index'])->name('history.index');
+    // Payment History - Resource with only index
+    Route::resource('history', PaymentHistoryController::class)->only(['index']);
 });

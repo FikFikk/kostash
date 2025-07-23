@@ -6,6 +6,12 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -15,7 +21,10 @@ class Handler extends ExceptionHandler
      * @var array<int, class-string<Throwable>>
      */
     protected $dontReport = [
-        //
+        AuthenticationException::class,
+        ValidationException::class,
+        NotFoundHttpException::class,
+        ModelNotFoundException::class,
     ];
 
     /**
@@ -27,6 +36,9 @@ class Handler extends ExceptionHandler
         'current_password',
         'password',
         'password_confirmation',
+        'password_new',
+        'token',
+        'api_key',
     ];
 
     /**
@@ -40,17 +52,91 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Customize the response for exceptions.
+     * Render an exception into an HTTP response.
      */
     public function render($request, Throwable $exception): Response
     {
-        if ($request->expectsJson()) {
-            return response()->json([
-                'error' => $exception->getMessage(),
-                'trace' => config('app.debug') ? $exception->getTrace() : [],
-            ], method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 500);
+        // Handle JSON requests with optimized response structure
+        if ($request->expectsJson() || $request->is('api/*')) {
+            return $this->renderJsonException($request, $exception);
         }
 
         return parent::render($request, $exception);
+    }
+
+    /**
+     * Render JSON exception response with proper status codes and structure.
+     */
+    protected function renderJsonException(Request $request, Throwable $exception): JsonResponse
+    {
+        $statusCode = $this->getStatusCode($exception);
+        $message = $this->getExceptionMessage($exception);
+        
+        $response = [
+            'success' => false,
+            'message' => $message,
+            'status_code' => $statusCode,
+        ];
+
+        // Add validation errors for ValidationException
+        if ($exception instanceof ValidationException) {
+            $response['errors'] = $exception->errors();
+        }
+
+        // Add debug information only in debug mode
+        if (config('app.debug')) {
+            $response['debug'] = [
+                'exception' => get_class($exception),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'trace' => collect($exception->getTrace())->take(5)->toArray(), // Limit trace for performance
+            ];
+        }
+
+        return response()->json($response, $statusCode);
+    }
+
+    /**
+     * Get the status code from the exception.
+     */
+    protected function getStatusCode(Throwable $exception): int
+    {
+        if ($exception instanceof HttpException) {
+            return $exception->getStatusCode();
+        }
+
+        if ($exception instanceof ValidationException) {
+            return 422;
+        }
+
+        if ($exception instanceof AuthenticationException) {
+            return 401;
+        }
+
+        if ($exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException) {
+            return 404;
+        }
+
+        return 500;
+    }
+
+    /**
+     * Get user-friendly message from exception.
+     */
+    protected function getExceptionMessage(Throwable $exception): string
+    {
+        // Don't expose internal errors in production
+        if (!config('app.debug')) {
+            return match (true) {
+                $exception instanceof ValidationException => 'The given data was invalid.',
+                $exception instanceof AuthenticationException => 'Unauthenticated.',
+                $exception instanceof ModelNotFoundException,
+                $exception instanceof NotFoundHttpException => 'Resource not found.',
+                $exception instanceof HttpException => $exception->getMessage() ?: 'An error occurred.',
+                default => 'Internal server error.',
+            };
+        }
+
+        return $exception->getMessage() ?: 'An unexpected error occurred.';
     }
 }

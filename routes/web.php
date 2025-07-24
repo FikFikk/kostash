@@ -50,15 +50,15 @@ Route::prefix('auth/{provider}')->name('social.')->group(function () {
 Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('login', 'login')->name('login');
-        Route::post('login', 'login_process')->name('login.process');
+        Route::post('login', 'loginProcess')->name('login.process');
         Route::get('register', 'register')->name('register');
-        Route::post('register', 'register_process')->name('register.process');
+        Route::post('register', 'registerProcess')->name('register.process');
     });
 
     Route::middleware('auth')->group(function () {
-        Route::get('logout', 'logout_process')->name('logout');
-        Route::get('lock-screen', 'lock_screen')->name('lock.screen');
-        Route::post('unlock', 'unlock_process')->name('unlock.process');
+        Route::get('logout', 'logoutProcess')->name('logout');
+        Route::get('lock-screen', 'lockScreen')->name('lock.screen');
+        Route::post('unlock', 'unlockProcess')->name('unlock.process');
     });
 
     Route::view('logout-page', 'auth.logout')->name('logout.page');

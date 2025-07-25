@@ -146,15 +146,8 @@ class DashboardController extends Controller
             $monthlyRevenue->push([
                 'month' => $month->format('M Y'),
                 'revenue' => (float) $revenue,
-                'period' => $month->format('Y-m'), // For debugging
             ]);
         }
-
-        // Debug: Log the data to check if it's being populated correctly
-        Log::info('Chart Data for period: ' . $period, [
-            'monthsBack' => $monthsBack,
-            'data' => $monthlyRevenue->toArray()
-        ]);
 
         return compact('monthlyRevenue');
     }

@@ -225,10 +225,24 @@
                             </td>
                             <td class="text-end">
                                 <div class="d-flex gap-2 justify-content-end action-buttons">
+                                    {{-- Vacate Room Button (only show if room has tenant) --}}
+                                    @if($room->user)
+                                        <form action="{{ route('dashboard.room.vacate', $room->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin mengosongkan kamar ini? Penyewa akan dipindahkan dari kamar.');">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-sm btn-soft-info" data-bs-toggle="tooltip" title="Kosongkan Kamar">
+                                                <i class="ri-door-open-line"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                    
+                                    {{-- Edit Room Button --}}
                                     <a href="{{ route('dashboard.room.edit', $room->id) }}" class="btn btn-sm btn-soft-warning" data-bs-toggle="tooltip" title="Edit">
                                         <i class="ri-pencil-line"></i>
                                     </a>
-                                    <form action="{{ route('dashboard.room.destroy', $room->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                                    
+                                    {{-- Delete Room Button --}}
+                                    <form action="{{ route('dashboard.room.destroy', $room->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kamar ini? {{ $room->user ? 'Penyewa akan dipindahkan dari kamar.' : '' }}');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-soft-danger" data-bs-toggle="tooltip" title="Delete">

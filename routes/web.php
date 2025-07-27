@@ -87,6 +87,11 @@ Route::middleware(['auth', 'role:admin', 'check.screen.lock'])->prefix('dashboar
         Route::get('/room/{room:uuid}/details', [MeterController::class, 'getRoomDetails'])->name('room.details');
     });
 
+    // Room additional routes
+    Route::prefix('room')->name('room.')->group(function () {
+        Route::patch('{room}/vacate', [RoomController::class, 'vacate'])->name('vacate');
+    });
+
     // Report Management
     Route::prefix('report')->name('report.')->group(function () {
         Route::controller(ReportController::class)->group(function () {

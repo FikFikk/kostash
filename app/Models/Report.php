@@ -11,7 +11,7 @@ class Report extends Model
 {
     protected $keyType = 'string';
     public $incrementing = false;
-    
+
     protected $fillable = [
         'user_id',
         'room_id', 
@@ -35,13 +35,10 @@ class Report extends Model
     {
         parent::boot();
         static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = Str::uuid();
-            }
+            $model->id = $model->id ?: Str::uuid();
         });
     }
 
-    // Relationships
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -62,65 +59,58 @@ class Report extends Model
         return $this->hasMany(ReportStatusHistory::class);
     }
 
-    // Accessors & Mutators
     public function getCategoryLabelAttribute(): string
     {
-        $categories = [
+        return [
             'electrical' => 'Listrik',
             'water' => 'Air',
             'facility' => 'Fasilitas',
             'cleaning' => 'Kebersihan',
             'security' => 'Keamanan',
             'other' => 'Lainnya'
-        ];
-        return $categories[$this->category] ?? $this->category;
+        ][$this->category] ?? $this->category;
     }
 
     public function getPriorityLabelAttribute(): string
     {
-        $priorities = [
+        return [
             'low' => 'Rendah',
             'medium' => 'Sedang', 
             'high' => 'Tinggi',
             'urgent' => 'Mendesak'
-        ];
-        return $priorities[$this->priority] ?? $this->priority;
+        ][$this->priority] ?? $this->priority;
     }
 
     public function getStatusLabelAttribute(): string
     {
-        $statuses = [
+        return [
             'pending' => 'Menunggu',
             'in_progress' => 'Sedang Diproses',
             'completed' => 'Selesai',
             'rejected' => 'Ditolak'
-        ];
-        return $statuses[$this->status] ?? $this->status;
+        ][$this->status] ?? $this->status;
     }
 
     public function getPriorityColorAttribute(): string
     {
-        $colors = [
+        return [
             'low' => 'success',
             'medium' => 'warning',
             'high' => 'danger',
             'urgent' => 'dark'
-        ];
-        return $colors[$this->priority] ?? 'secondary';
+        ][$this->priority] ?? 'secondary';
     }
 
     public function getStatusColorAttribute(): string
     {
-        $colors = [
+        return [
             'pending' => 'warning',
             'in_progress' => 'info',
             'completed' => 'success',
             'rejected' => 'danger'
-        ];
-        return $colors[$this->status] ?? 'secondary';
+        ][$this->status] ?? 'secondary';
     }
 
-    // Scopes
     public function scopeByStatus($query, $status)
     {
         return $query->where('status', $status);

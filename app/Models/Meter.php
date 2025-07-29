@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Meter extends Model
@@ -33,19 +34,17 @@ class Meter extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getFormattedPeriodAttribute()
+    public function getFormattedPeriodAttribute(): string
     {
         return Carbon::parse($this->period)->format('F Y');
     }
 
-    // Accessor for water usage
-    public function getWaterUsageAttribute()
+    public function getWaterUsageAttribute(): float
     {
         return $this->total_water ?? ($this->water_meter_end - $this->water_meter_start);
     }
 
-    // Accessor for electric usage
-    public function getElectricUsageAttribute()
+    public function getElectricUsageAttribute(): float
     {
         return $this->total_electric ?? ($this->electric_meter_end - $this->electric_meter_start);
     }

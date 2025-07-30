@@ -27,7 +27,7 @@ class User extends Authenticatable
         'nik',
         'address',
         'alamat',
-        'tanggal_masuk',
+        'date_entry',
         'room_id',
         'role',
         'provider',
@@ -61,6 +61,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'date_entry' => 'date',
             'password' => 'hashed',
         ];
     }

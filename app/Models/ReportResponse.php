@@ -18,27 +18,22 @@ class ReportResponse extends Model
         'action_taken',
         'estimated_completion',
         'actual_completion',
-        'notes'
+        'notes',
     ];
 
     protected $casts = [
         'estimated_completion' => 'datetime',
         'actual_completion' => 'datetime',
         'created_at' => 'datetime',
-        'updated_at' => 'datetime'
+        'updated_at' => 'datetime',
     ];
 
     protected static function boot()
     {
         parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = Str::uuid();
-            }
-        });
+        static::creating(fn($model) => $model->id ??= Str::uuid());
     }
 
-    // Relationships
     public function report(): BelongsTo
     {
         return $this->belongsTo(Report::class);

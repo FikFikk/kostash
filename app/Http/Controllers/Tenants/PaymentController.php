@@ -4,116 +4,26 @@ namespace App\Http\Controllers\Tenants;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Midtrans\Snap;
-use Midtrans\Config;
-use App\Models\Transaction;
-use App\Models\Meter;
-use App\Models\GlobalSetting;
+use App\Http\Controllers\Payments\MayarController;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
-    public function getSnapToken(Request $request)
+    protected $mayarController;
+
+    public function __construct(MayarController $mayarController)
     {
-        try {
-            $user = auth()->user();
-            $month = (int) $request->input('month', now()->month);
-            $year = (int) $request->input('year', now()->year);
+        $this->mayarController = $mayarController;
+    }
 
-            $meter = Meter::where('room_id', $user->room_id)
-                ->where('user_id', $user->id)
-                ->whereMonth('period', $month)
-                ->whereYear('period', $year)
-                ->first();
+    public function createPayment(Request $request)
+    {
+        return $this->mayarController->createPayment($request);
+    }
 
-            if (!$meter) {
-                return response()->json(['error' => 'Data meter tidak ditemukan'], 404);
-            }
-
-            // Cek apakah sudah ada transaksi yang success
-            $successTransaction = Transaction::where('meter_id', $meter->id)
-                ->where('status', 'success')
-                ->first();
-
-            if ($successTransaction) {
-                return response()->json(['error' => 'Tagihan untuk periode ini sudah dibayar'], 400);
-            }
-
-            // Cari transaksi pending yang masih ada
-            $existingTransaction = Transaction::where('meter_id', $meter->id)
-                ->where('status', 'pending')
-                ->first();
-
-            $global = GlobalSetting::first();
-
-            if (!$global) {
-                return response()->json(['error' => 'Global setting tidak ditemukan'], 500);
-            }
-
-            $waterUsage = max(0, $meter->water_meter_end - $meter->water_meter_start);
-            $electricUsage = max(0, $meter->electric_meter_end - $meter->electric_meter_start);
-            $totalBill = ($waterUsage * $global->water_price) +
-                        ($electricUsage * $global->electric_price) +
-                        $global->monthly_room_price;
-
-            // Generate unique order ID
-            $orderId = 'INV-' . now()->format('ymd') . '-' . substr(md5($meter->id . time()), 0, 6);
-
-            // Konfigurasi Midtrans
-            \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-            \Midtrans\Config::$isProduction = false;
-            \Midtrans\Config::$isSanitized = true;
-            \Midtrans\Config::$is3ds = true;
-
-            // Data transaksi
-            $transaction_details = [
-                'order_id' => $orderId,
-                'gross_amount' => $totalBill,
-            ];
-
-            $customer_details = [
-                'first_name' => $user->name,
-                'email' => $user->email,
-            ];
-
-            $params = [
-                'transaction_details' => $transaction_details,
-                'customer_details' => $customer_details,
-            ];
-
-            // Selalu generate snap token baru
-            $snapToken = \Midtrans\Snap::getSnapToken($params);
-
-            // Update atau create transaction record
-            if ($existingTransaction) {
-                // Jika ada transaksi pending, update dengan token baru
-                $existingTransaction->update([
-                    'order_id' => $orderId,
-                    'amount' => $totalBill,
-                    'snap_token' => $snapToken,
-                    'status' => 'pending',
-                    'updated_at' => now()
-                ]);
-                $transaction = $existingTransaction;
-            } else {
-                // Create new transaction record
-                $transaction = Transaction::create([
-                    'order_id' => $orderId,
-                    'user_id' => $user->id,
-                    'meter_id' => $meter->id,
-                    'amount' => $totalBill,
-                    'status' => 'pending',
-                    'snap_token' => $snapToken,
-                ]);
-            }
-
-            return response()->json([
-                'token' => $snapToken,
-                'transaction_id' => $transaction->id,
-                'amount' => $totalBill
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+    public function getPaymentStatus($orderId)
+    {
+        return $this->mayarController->getPaymentStatus($orderId);
     }
 }

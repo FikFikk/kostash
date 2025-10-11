@@ -1,97 +1,102 @@
 <!doctype html>
-<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-bs-theme="light">
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg"
+    data-bs-theme="light">
 
-    <head>
-        <meta charset="utf-8" />
-        <title>
-            @hasSection('title')
-                @yield('title') | {{ config('app.name') }}
-            @else
-                {{ config('app.name') }}
-            @endif
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="KostASH" />
-        <meta name="kaywords" content="KostASH" />
-        <meta name="author" content="KostASH.id" />
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-        
-        <script src="{{ asset('assets/js/dark-mode.js') }}"></script>
+<head>
+    <meta charset="utf-8" />
+    <title>
+        @hasSection('title')
+            @yield('title') | {{ config('app.name') }}
+        @else
+            {{ config('app.name') }}
+        @endif
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KostASH" />
+    <meta name="kaywords" content="KostASH" />
+    <meta name="author" content="KostASH.id" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <!-- App favicon -->
-        <link rel="shortcut icon" href="{{ asset('assets/images/k-logo.png') }}">
+    <script src="{{ asset('assets/js/dark-mode.js') }}"></script>
 
-        <!-- Layout config Js -->
-        <script src="{{ asset('assets/dashboard/js/layout.js') }}"></script>
-        <!-- Bootstrap Css -->
-        <link href="{{ asset('assets/dashboard/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
-        <!-- Icons Css -->
-        <link href="{{ asset('assets/dashboard/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
-        <!-- App Css-->
-        <link href="{{ asset('assets/dashboard/css/app.min.css') }}" rel="stylesheet" type="text/css" />
-        <!-- custom Css-->
-        <link href="{{ asset('assets/dashboard/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
-        
-        <!-- Custom Notification Styles -->
-        <style>
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{{ asset('assets/images/k-logo.png') }}">
+
+    <!-- Layout config Js -->
+    <script src="{{ asset('assets/dashboard/js/layout.js') }}"></script>
+    <!-- Bootstrap Css -->
+    <link href="{{ asset('assets/dashboard/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="{{ asset('assets/dashboard/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="{{ asset('assets/dashboard/css/app.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- custom Css-->
+    <link href="{{ asset('assets/dashboard/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
+
+    <!-- Custom Notification Styles -->
+    <style>
+        .notification-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1055;
+            max-width: 400px;
+        }
+
+        .notification-container .alert {
+            margin-bottom: 10px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
             .notification-container {
-                position: fixed;
-                top: 80px;
+                left: 20px;
                 right: 20px;
-                z-index: 1055;
-                max-width: 400px;
+                max-width: none;
             }
-            
-            .notification-container .alert {
-                margin-bottom: 10px;
-                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-            }
-            
-            @media (max-width: 768px) {
-                .notification-container {
-                    left: 20px;
-                    right: 20px;
-                    max-width: none;
-                }
-            }
-        </style>
+        }
+    </style>
 
-        @stack('styles')
-    </head>
-    <body>
-        <div id="layout-wrapper">
-            @include('dashboard.tenants.layouts.header')
-            @include('dashboard.tenants.layouts.navigation')
-            <!-- Vertical Overlay-->
-            <div class="vertical-overlay"></div>
-            <div class="main-content">
-                <div class="page-content">
-                    <!-- Notifications Container -->
-                    <div class="notification-container">
-                        @include('dashboard.components.notifications')
-                    </div>
+    @stack('styles')
+</head>
 
-                    @yield('content')
+<body>
+    <div id="layout-wrapper">
+        @include('dashboard.tenants.layouts.header')
+        @include('dashboard.tenants.layouts.navigation')
+        <!-- Vertical Overlay-->
+        <div class="vertical-overlay"></div>
+        <div class="main-content">
+            <div class="page-content">
+                <!-- Notifications Container -->
+                <div class="notification-container">
+                    @include('dashboard.components.notifications')
                 </div>
-                @include('dashboard.tenants.layouts.footer')
+
+                @yield('content')
             </div>
+            @include('dashboard.tenants.layouts.footer')
         </div>
-        @yield('script')
+    </div>
+    @yield('script')
 
-        <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
-            <i class="ri-arrow-up-line"></i>
-        </button>
+    <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
+        <i class="ri-arrow-up-line"></i>
+    </button>
 
-        <script src="{{ asset('assets/dashboard/js/plugins.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/feather-icons/feather.min.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/simplebar/simplebar.min.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/node-waves/waves.min.js') }}"></script>
-        <script src="{{ asset('assets/dashboard/libs/prismjs/prism.js') }}"></script>
-        <script src="{{ asset('https://cdn.jsdelivr.net/npm/toastify-js') }}"></script>
-        
-        <script src="{{ asset('assets/dashboard/js/app.js') }}"></script>
-        <script>
+    <script src="{{ asset('assets/dashboard/js/plugins.js') }}"></script>
+    <script src="{{ asset('assets/dashboard/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/dashboard/libs/feather-icons/feather.min.js') }}"></script>
+    <script src="{{ asset('assets/dashboard/libs/simplebar/simplebar.min.js') }}"></script>
+    <script src="{{ asset('assets/dashboard/libs/node-waves/waves.min.js') }}"></script>
+    <script src="{{ asset('assets/dashboard/libs/prismjs/prism.js') }}"></script>
+    <script src="{{ asset('https://cdn.jsdelivr.net/npm/toastify-js') }}"></script>
+
+    <script src="{{ asset('assets/dashboard/js/app.js') }}"></script>
+
+    @yield('scripts')
+
+    <script>
         function validateFileSize(input) {
             const maxSize = 2 * 1024 * 1024; // 2MB
             const errorEl = document.getElementById('image-error');
@@ -115,6 +120,7 @@
                 }, 5000); // 5 seconds
             });
         });
-        </script>
-    </body>
+    </script>
+</body>
+
 </html>

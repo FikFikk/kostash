@@ -8,9 +8,9 @@
     <meta name="description" content="KostASH" />
     <meta name="keywords" content="KostASH" />
     <meta name="author" content="KostASH.id" />
-    
+
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/k-logo.png') }}">
+    <link rel="shortcut icon" href="{{ secure_asset('assets/images/k-logo.png') }}">
 
     <!-- Layout config Js -->
     <script src="{{ asset('assets/dashboard/js/layout.js') }}"></script>

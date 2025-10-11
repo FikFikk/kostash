@@ -16,7 +16,8 @@
                             <img src="{{ asset('assets/dashboard/images/logo-sm.png') }}" alt="" height="22">
                         </span>
                         <span class="logo-lg">
-                            <img src="{{ asset('assets/images/kostash-logo-tp-white.png') }}" alt="" height="35">
+                            <img src="{{ asset('assets/images/kostash-logo-tp-white.png') }}" alt=""
+                                height="35">
                         </span>
                     </a>
 
@@ -25,7 +26,8 @@
                             <img src="{{ asset('assets/dashboard/images/logo-sm.png') }}" alt="" height="22">
                         </span>
                         <span class="logo-lg">
-                            <img src="{{ asset('assets/images/kostash-logo-tp-white.png') }}" alt="" height="35">
+                            <img src="{{ asset('assets/images/kostash-logo-tp-white.png') }}" alt=""
+                                height="35">
                         </span>
                     </a>
                 </div>
@@ -199,8 +201,8 @@
                                 <ul class="nav nav-tabs dropdown-tabs nav-tabs-custom" data-dropdown-tabs="true"
                                     id="notificationItemsTab" role="tablist">
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link active" data-bs-toggle="tab" href="#all-noti-tab" role="tab"
-                                            aria-selected="true">
+                                        <a class="nav-link active" data-bs-toggle="tab" href="#all-noti-tab"
+                                            role="tab" aria-selected="true">
                                             All (4)
                                         </a>
                                     </li>
@@ -263,7 +265,8 @@
                                                     <h6 class="mt-0 mb-1 fs-13 fw-semibold">Angela Bernier</h6>
                                                 </a>
                                                 <div class="fs-13 text-muted">
-                                                    <p class="mb-1">Answered to your comment on the cash flow forecast's
+                                                    <p class="mb-1">Answered to your comment on the cash flow
+                                                        forecast's
                                                         graph 🔔.</p>
                                                 </div>
                                                 <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
@@ -292,7 +295,8 @@
                                             <div class="flex-1">
                                                 <a href="#!" class="stretched-link">
                                                     <h6 class="mt-0 mb-2 fs-13 lh-base">You have received <b
-                                                            class="text-success">20</b> new messages in the conversation
+                                                            class="text-success">20</b> new messages in the
+                                                        conversation
                                                     </h6>
                                                 </a>
                                                 <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
@@ -337,7 +341,8 @@
                                     </div>
 
                                     <div class="my-3 text-center">
-                                        <button type="button" class="btn btn-soft-success waves-effect waves-light">View
+                                        <button type="button"
+                                            class="btn btn-soft-success waves-effect waves-light">View
                                             All Notifications <i class="ri-arrow-right-line align-middle"></i></button>
                                     </div>
                                 </div>
@@ -382,7 +387,8 @@
                                                     <h6 class="mt-0 mb-1 fs-13 fw-semibold">Angela Bernier</h6>
                                                 </a>
                                                 <div class="fs-13 text-muted">
-                                                    <p class="mb-1">Answered to your comment on the cash flow forecast's
+                                                    <p class="mb-1">Answered to your comment on the cash flow
+                                                        forecast's
                                                         graph 🔔.</p>
                                                 </div>
                                                 <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
@@ -409,7 +415,8 @@
                                                     <h6 class="mt-0 mb-1 fs-13 fw-semibold">Kenneth Brown</h6>
                                                 </a>
                                                 <div class="fs-13 text-muted">
-                                                    <p class="mb-1">Mentionned you in his comment on 📃 invoice #12501.
+                                                    <p class="mb-1">Mentionned you in his comment on 📃 invoice
+                                                        #12501.
                                                     </p>
                                                 </div>
                                                 <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
@@ -454,14 +461,17 @@
                                     </div>
 
                                     <div class="my-3 text-center">
-                                        <button type="button" class="btn btn-soft-success waves-effect waves-light">View
+                                        <button type="button"
+                                            class="btn btn-soft-success waves-effect waves-light">View
                                             All Messages <i class="ri-arrow-right-line align-middle"></i></button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade p-4" id="alerts-tab" role="tabpanel" aria-labelledby="alerts-tab">
+                            <div class="tab-pane fade p-4" id="alerts-tab" role="tabpanel"
+                                aria-labelledby="alerts-tab">
                                 <div class="w-25 w-sm-50 pt-3 mx-auto">
-                                    <img src="{{ asset('assets/dashboard/images/svg/bell.svg') }}" class="img-fluid" alt="user-pic">
+                                    <img src="{{ asset('assets/dashboard/images/svg/bell.svg') }}" class="img-fluid"
+                                        alt="user-pic">
                                 </div>
                                 <div class="text-center pb-5 mt-2">
                                     <h6 class="fs-18 fw-semibold lh-base">Hey! You have no any notifications </h6>
@@ -475,17 +485,19 @@
                     <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         <span class="d-flex align-items-center">
-                            @if($user->photo)
+                            {{-- @if ($user->photo)
                                 <img src="{{ asset('storage/uploads/profile/' . $user->photo) }}" 
                                     alt="Profile Picture" 
                                     class="rounded-circle header-profile-user" style='object-fit: cover;'>
                             @else
                                 <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=667eea&color=fff&size=120&font-size=0.4"
                                     alt="Avatar" class="rounded-circle header-profile-user">
-                            @endif
+                            @endif --}}
                             <span class="text-start ms-xl-2">
-                                <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $name }}</span>
-                                <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">{{ ucfirst($role) }}</span>
+                                <span
+                                    class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $name }}</span>
+                                <span
+                                    class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">{{ ucfirst($role) }}</span>
                             </span>
                         </span>
                     </button>
@@ -493,11 +505,11 @@
                         <!-- item-->
                         <h6 class="dropdown-header">Selamat datang, {{ auth()->user()->name ?? 'Tuan' }}!</h6>
                         <a class="dropdown-item" href="{{ route('public.home') }}"><i
-                            class="mdi mdi-view-dashboard-outline text-muted fs-16 align-middle me-1"></i> <span
-                            class="align-middle">Beranda</span></a>
+                                class="mdi mdi-view-dashboard-outline text-muted fs-16 align-middle me-1"></i> <span
+                                class="align-middle">Beranda</span></a>
                         <a class="dropdown-item" href="{{ route('tenant.profile.index') }}"><i
-                            class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span
-                            class="align-middle">Profile</span></a>
+                                class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span
+                                class="align-middle">Profile</span></a>
                         <!-- <a class="dropdown-item" href="apps-chat.html"><i
                                 class="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle">Messages</span></a>
@@ -505,8 +517,8 @@
                                 class="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle">Taskboard</span></a> -->
                         <a class="dropdown-item" href=""><i
-                            class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span
-                            class="align-middle">Help</span></a>
+                                class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span
+                                class="align-middle">Help</span></a>
                         <div class="dropdown-divider"></div>
                         <!-- <a class="dropdown-item" href="pages-profile.html"><i
                                 class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span

@@ -15,6 +15,8 @@ use App\Http\Controllers\{
     UserController,
 };
 
+use App\Http\Controllers\Payments\MayarController;
+
 use App\Http\Controllers\Tenants\{
     PaymentController,
     PaymentHistoryController,
@@ -24,13 +26,32 @@ use App\Http\Controllers\Tenants\{
 
 use Illuminate\Support\Facades\Route;
 
+// Include quick login routes for testing
+require __DIR__ . '/quick-login.php';
+
+// Include final debug routes
+require __DIR__ . '/debug-final.php';
+
 /*
 |--------------------------------------------------------------------------
 | Public Routes
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', [PublicController::class, 'index'])->name('public.home');
 Route::redirect('/login', '/auth/login')->name('login');
+
+/*
+|--------------------------------------------------------------------------
+| Mayar Webhook Callback (No Auth Required)
+|--------------------------------------------------------------------------
+*/
+Route::post('/mayar/webhook', [MayarController::class, 'handleWebhook'])->name('mayar.webhook');
+
+// Payment return URLs
+Route::get('/payment/success', [MayarController::class, 'paymentSuccess'])->name('payment.success');
+Route::get('/payment/pending', [MayarController::class, 'paymentPending'])->name('payment.pending');
+Route::get('/payment/failed', [MayarController::class, 'paymentFailed'])->name('payment.failed');
 
 /*
 |--------------------------------------------------------------------------
@@ -78,8 +99,12 @@ Route::middleware(['auth', 'role:admin', 'check.screen.lock'])->prefix('dashboar
     Route::resource('meter', MeterController::class)->except(['show']);
     Route::resource('user', UserController::class);
 
-    // Global Settings - Resource with only index, edit, update
-    Route::resource('global', GlobalSettingController::class)->only(['index', 'edit', 'update']);
+    // Global Settings - Custom routes (only one global setting record)
+    Route::prefix('global')->name('global.')->group(function () {
+        Route::get('/', [GlobalSettingController::class, 'index'])->name('index');
+        Route::get('/edit', [GlobalSettingController::class, 'edit'])->name('edit');
+        Route::put('/update', [GlobalSettingController::class, 'update'])->name('update');
+    });
 
     // Meter additional routes
     Route::prefix('meter')->name('meter.')->group(function () {
@@ -122,10 +147,12 @@ Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->
     Route::controller(TenantDashboardController::class)->group(function () {
         Route::get('/', 'index')->name('home');
         Route::get('/export', 'exportInvoice')->name('export');
+        Route::get('/receipt/{transaction}', 'downloadReceipt')->name('download.receipt');
     });
 
-    // Payment Token (AJAX)
-    Route::get('/payment/token', [PaymentController::class, 'getSnapToken'])->name('getSnapToken');
+    // Payment Routes
+    Route::post('/payment/create', [PaymentController::class, 'createPayment'])->name('createPayment');
+    Route::get('/payment/status/{orderId}', [PaymentController::class, 'getPaymentStatus'])->name('getPaymentStatus');
 
     // Profile Management - Custom resource-like structure
     Route::prefix('profile')->name('profile.')->controller(ProfileController::class)->group(function () {
@@ -142,3 +169,20 @@ Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->
     // Payment History - Resource with only index
     Route::resource('history', PaymentHistoryController::class)->only(['index']);
 });
+
+/*
+|--------------------------------------------------------------------------
+| Payment API Routes
+|--------------------------------------------------------------------------
+*/
+// Mayar Payment Routes
+Route::prefix('api/payments/mayar')->name('api.payments.mayar.')->group(function () {
+    // Protected routes for authenticated users
+    Route::middleware('auth')->group(function () {
+        Route::post('/create', [MayarController::class, 'createPayment'])->name('create');
+        Route::get('/status/{orderId}', [MayarController::class, 'getPaymentStatus'])->name('status');
+    });
+});
+
+// API route for payment status check (used by JavaScript)
+Route::get('/api/payment/status/{orderId}', [MayarController::class, 'getPaymentStatus'])->name('api.payment.status');

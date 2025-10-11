@@ -10,18 +10,17 @@ class Transaction extends Model
 
     protected $fillable = [
         'order_id',
-        'user_id', 
+        'user_id',
         'meter_id',
         'amount',
         'status',
         'payment_type',
-        'snap_token',
-        'midtrans_response',
+        'mayar_payment_id',
+        'mayar_link',
         'paid_at'
     ];
 
     protected $casts = [
-        'midtrans_response' => 'array',
         'paid_at' => 'datetime',
         'amount' => 'decimal:2'
     ];

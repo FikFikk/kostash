@@ -96,7 +96,205 @@
 
     @yield('scripts')
 
+    <!-- Notification System Script -->
     <script>
+        // Notification System
+        let notificationDropdown;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            notificationDropdown = document.getElementById('notification-dropdown');
+            loadNotifications();
+
+            // Mark all as read button
+            const markAllReadBtn = document.getElementById('mark-all-read-btn');
+            if (markAllReadBtn) {
+                markAllReadBtn.addEventListener('click', markAllAsRead);
+            }
+
+            // Refresh notifications every 30 seconds
+            setInterval(updateNotificationCount, 30000);
+        });
+
+        function loadNotifications() {
+            fetch('/notifications', {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    renderNotifications(data.notifications, 'all');
+                    renderNotifications(data.notifications.filter(n => n.type === 'transaction'), 'transaction');
+                    renderNotifications(data.notifications.filter(n => n.type === 'report'), 'report');
+                    updateNotificationBadge(data.unread_count);
+                })
+                .catch(error => {
+                    console.error('Error loading notifications:', error);
+                });
+        }
+
+        function renderNotifications(notifications, type) {
+            const container = document.getElementById(`notification-list-${type}`);
+            if (!container) return;
+
+            if (notifications.length === 0) {
+                const emptyState = getEmptyState(type);
+                container.innerHTML = emptyState;
+                return;
+            }
+
+            let html = '';
+            notifications.forEach(notification => {
+                html += createNotificationItem(notification);
+            });
+            container.innerHTML = html;
+        }
+
+        function createNotificationItem(notification) {
+            const isRead = notification.is_read;
+            const readClass = isRead ? '' : 'active';
+            const readStyle = isRead ? 'opacity: 0.7;' : '';
+
+            return `
+                <div class="text-reset notification-item d-block dropdown-item position-relative ${readClass}" 
+                     style="${readStyle}" data-notification-id="${notification.id}">
+                    <div class="d-flex">
+                        <div class="avatar-xs me-3">
+                            <span class="avatar-title bg-soft-info text-info rounded-circle fs-16">
+                                <i class="${notification.icon}"></i>
+                            </span>
+                        </div>
+                        <div class="flex-1">
+                            <a href="${notification.url}" class="stretched-link" onclick="markAsRead(${notification.id})">
+                                <h6 class="mt-0 mb-1 fs-13 fw-semibold">${notification.title}</h6>
+                            </a>
+                            <div class="fs-13 text-muted">
+                                <p class="mb-1">${notification.message}</p>
+                            </div>
+                            <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
+                                <span><i class="mdi mdi-clock-outline"></i> ${notification.created_at}</span>
+                            </p>
+                        </div>
+                        <div class="px-2 fs-15">
+                            ${!isRead ? '<div class="bg-primary rounded-circle" style="width: 8px; height: 8px;"></div>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getEmptyState(type) {
+            const icons = {
+                'all': 'bx-bell',
+                'transaction': 'bx-wallet',
+                'report': 'bx-message-alt-detail'
+            };
+
+            const messages = {
+                'all': 'Belum ada notifikasi',
+                'transaction': 'Belum ada notifikasi transaksi',
+                'report': 'Belum ada notifikasi laporan'
+            };
+
+            return `
+                <div class="text-center py-4">
+                    <i class="${icons[type]} fs-48 text-muted"></i>
+                    <p class="mt-2 text-muted">${messages[type]}</p>
+                </div>
+            `;
+        }
+
+        function markAsRead(notificationId) {
+            fetch(`/notifications/${notificationId}/read`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(() => {
+                    // Update UI
+                    const item = document.querySelector(`[data-notification-id="${notificationId}"]`);
+                    if (item) {
+                        item.classList.remove('active');
+                        item.style.opacity = '0.7';
+                        const indicator = item.querySelector('.bg-primary.rounded-circle');
+                        if (indicator) indicator.remove();
+                    }
+                    updateNotificationCount();
+                })
+                .catch(error => {
+                    console.error('Error marking notification as read:', error);
+                });
+        }
+
+        function markAllAsRead() {
+            fetch('/notifications/mark-all-read', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(() => {
+                    loadNotifications();
+                })
+                .catch(error => {
+                    console.error('Error marking all as read:', error);
+                });
+        }
+
+        function updateNotificationCount() {
+            fetch('/notifications/unread-count', {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    updateNotificationBadge(data.count);
+                })
+                .catch(error => {
+                    console.error('Error updating notification count:', error);
+                });
+        }
+
+        function updateNotificationBadge(count) {
+            const badge = document.getElementById('notification-badge');
+            const countElement = document.getElementById('notification-count');
+
+            if (count > 0) {
+                if (badge) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.style.display = 'inline-block';
+                } else {
+                    // Create badge if it doesn't exist
+                    const button = document.querySelector('#page-header-notifications-dropdown');
+                    const newBadge = document.createElement('span');
+                    newBadge.id = 'notification-badge';
+                    newBadge.className =
+                        'position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger';
+                    newBadge.innerHTML =
+                    `${count > 99 ? '99+' : count}<span class="visually-hidden">unread messages</span>`;
+                    button.appendChild(newBadge);
+                }
+
+                if (countElement) {
+                    countElement.textContent = `${count} Baru`;
+                }
+            } else {
+                if (badge) {
+                    badge.style.display = 'none';
+                }
+                if (countElement) {
+                    countElement.textContent = '0 Baru';
+                }
+            }
+        }
+
+        // Other existing functions...
         function validateFileSize(input) {
             const maxSize = 2 * 1024 * 1024; // 2MB
             const errorEl = document.getElementById('image-error');

@@ -43,7 +43,7 @@ class AuthController extends Controller
 
         if (!Auth::attempt($credentials, $request->boolean('remember'))) {
             $this->incrementLoginAttempts($request);
-            
+
             Log::warning('Failed login attempt', [
                 'email' => $request->email,
                 'ip' => $request->ip(),
@@ -57,9 +57,9 @@ class AuthController extends Controller
 
         $this->clearLoginAttempts($request);
         $request->session()->regenerate();
-        
+
         $user = Auth::user();
-        
+
         // Log successful login
         Log::info('Successful login', [
             'user_id' => $user->id,
@@ -68,8 +68,8 @@ class AuthController extends Controller
         ]);
 
         $route = $user->role === 'admin' ? self::ADMIN_ROUTE : self::TENANT_ROUTE;
-        $message = $user->role === 'admin' 
-            ? 'Berhasil masuk sebagai admin.' 
+        $message = $user->role === 'admin'
+            ? 'Berhasil masuk sebagai admin.'
             : 'Login berhasil. Selamat datang kembali!';
 
         return redirect()->intended(route($route))->with('success', $message);
@@ -83,7 +83,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
             'email' => 'required|email|unique:users,email|max:255',
             'password' => 'required|string|min:8|max:255|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/',
-            'terms' => 'required|accepted',
+            // 'terms' => 'required|accepted',
         ], [
             'password.regex' => 'Password harus mengandung minimal 1 huruf kecil, 1 huruf besar, 1 angka, dan 1 karakter khusus.',
             'name.regex' => 'Nama hanya boleh mengandung huruf dan spasi.',
@@ -94,10 +94,20 @@ class AuthController extends Controller
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
-                'role' => 'tenant',
+                'role' => 'tenants',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
+
+            // Notifikasi ke semua admin
+            $admins = \App\Models\User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                \App\Services\NotificationService::general(
+                    $admin,
+                    'Pendaftaran Pengguna Baru',
+                    'Pengguna baru telah mendaftar: ' . $user->name . ' (' . $user->email . ')'
+                );
+            }
 
             Auth::login($user);
             $request->session()->regenerate();
@@ -111,7 +121,6 @@ class AuthController extends Controller
             return redirect()
                 ->route(self::TENANT_ROUTE)
                 ->with('success', 'Selamat datang! Akun Anda berhasil dibuat dan Anda telah masuk secara otomatis.');
-
         } catch (\Exception $e) {
             Log::error('Registration failed', [
                 'email' => $request->email,
@@ -125,16 +134,16 @@ class AuthController extends Controller
         }
     }
 
-    public function lockScreen(): View
+    public function lockScreen(): \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
     {
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect()->route(self::LOGIN_ROUTE);
         }
 
         session([
-            'screen_locked' => true, 
+            'screen_locked' => true,
             'lock_time' => now(),
-            'locked_user_id' => auth()->id()
+            'locked_user_id' => Auth::id()
         ]);
 
         return view('auth.lock-screen');
@@ -142,7 +151,7 @@ class AuthController extends Controller
 
     public function unlockProcess(Request $request): RedirectResponse
     {
-        if (!auth()->check() || !session('screen_locked')) {
+        if (!Auth::check() || !session('screen_locked')) {
             return redirect()->route(self::LOGIN_ROUTE);
         }
 
@@ -152,9 +161,9 @@ class AuthController extends Controller
             'password' => 'required|string|max:255'
         ]);
 
-        if (!Hash::check($request->password, auth()->user()->password)) {
+        if (!Hash::check($request->password, Auth::user()->password)) {
             Log::warning('Failed screen unlock attempt', [
-                'user_id' => auth()->id(),
+                'user_id' => Auth::id(),
                 'ip' => $request->ip(),
             ]);
 
@@ -166,13 +175,13 @@ class AuthController extends Controller
         session()->forget(['screen_locked', 'lock_time', 'locked_user_id']);
 
         Log::info('Screen unlocked', [
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'ip' => $request->ip(),
         ]);
 
         return redirect()
             ->intended(route(self::ADMIN_ROUTE))
-            ->with('success', 'Screen unlocked successfully! Welcome back, ' . auth()->user()->name);
+            ->with('success', 'Screen unlocked successfully! Welcome back, ' . Auth::user()->name);
     }
 
     public function logoutView(): View
@@ -182,8 +191,8 @@ class AuthController extends Controller
 
     public function logoutProcess(Request $request): RedirectResponse
     {
-        $userId = auth()->id();
-        
+        $userId = Auth::id();
+
         Log::info('User logged out', [
             'user_id' => $userId,
             'ip' => $request->ip(),
@@ -201,10 +210,10 @@ class AuthController extends Controller
     private function checkRateLimit(Request $request, string $action = 'login'): void
     {
         $key = $action . '|' . $request->ip();
-        
+
         if (RateLimiter::tooManyAttempts($key, self::MAX_LOGIN_ATTEMPTS)) {
             $seconds = RateLimiter::availableIn($key);
-            
+
             Log::warning("Rate limit exceeded for {$action}", [
                 'ip' => $request->ip(),
                 'email' => $request->email ?? 'N/A',

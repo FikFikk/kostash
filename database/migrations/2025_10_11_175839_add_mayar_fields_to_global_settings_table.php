@@ -12,10 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('global_settings', function (Blueprint $table) {
-            $table->string('mayar_api_key')->nullable();
-            $table->string('mayar_webhook_token')->nullable();
-            $table->string('mayar_redirect_url')->nullable();
-            $table->boolean('mayar_sandbox')->default(true);
+            if (!Schema::hasColumn('global_settings', 'mayar_api_key')) {
+                $table->string('mayar_api_key')->nullable();
+            }
+            if (!Schema::hasColumn('global_settings', 'mayar_webhook_token')) {
+                $table->string('mayar_webhook_token')->nullable();
+            }
+            if (!Schema::hasColumn('global_settings', 'mayar_redirect_url')) {
+                $table->string('mayar_redirect_url')->nullable();
+            }
+            if (!Schema::hasColumn('global_settings', 'mayar_sandbox')) {
+                $table->boolean('mayar_sandbox')->default(true);
+            }
         });
     }
 

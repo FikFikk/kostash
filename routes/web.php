@@ -3,9 +3,11 @@
 use App\Http\Controllers\{
     AuthController,
     DashboardController,
+    EventController,
     GalleryController,
     GlobalSettingController,
     MeterController,
+    NotificationController,
     PublicController,
     ReportController,
     ReportResponseController,
@@ -22,15 +24,10 @@ use App\Http\Controllers\Tenants\{
     PaymentHistoryController,
     ProfileController,
     TenantDashboardController,
+    CalendarController as TenantCalendarController,
 };
 
 use Illuminate\Support\Facades\Route;
-
-// Include quick login routes for testing
-require __DIR__ . '/quick-login.php';
-
-// Include final debug routes
-require __DIR__ . '/debug-final.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -135,6 +132,27 @@ Route::middleware(['auth', 'role:admin', 'check.screen.lock'])->prefix('dashboar
 
     // Transaction Management
     Route::resource('transaction', TransactionController::class)->only(['index']);
+
+    // Notification Management
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [NotificationController::class, 'adminIndex'])->name('index');
+        Route::get('/data', [NotificationController::class, 'adminData'])->name('data');
+    });
+
+    // Calendar Management
+    Route::prefix('calendar')->name('calendar.')->group(function () {
+        Route::controller(\App\Http\Controllers\EventController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/events', 'getEvents')->name('events.get');
+            Route::post('/events', 'store')->name('events.store');
+            Route::get('/events/{event}', 'show')->name('events.show');
+            Route::put('/events/{event}', 'update')->name('events.update');
+            Route::delete('/events/{event}', 'destroy')->name('events.destroy');
+            Route::put('/events/{event}/datetime', 'updateDateTime')->name('events.updateDateTime');
+            Route::get('/types', 'getEventTypes')->name('types');
+            Route::get('/statistics', 'getStatistics')->name('statistics');
+        });
+    });
 });
 
 /*
@@ -166,8 +184,33 @@ Route::middleware(['auth', 'role:tenants'])->prefix('tenant')->name('tenant.')->
     // Report Management - Resource with index, create, store, show, destroy
     Route::resource('report', ReportController::class)->only(['index', 'create', 'store', 'show', 'destroy']);
 
+    // Tenant can respond to their own report
+    Route::post('report/{report}/response', [\App\Http\Controllers\ReportResponseController::class, 'tenantStore'])->name('report.response.store');
+    // Tenant can update their own response
+    Route::put('report/{report}/response/{response}', [\App\Http\Controllers\ReportResponseController::class, 'update'])->name('report.response.update');
+
     // Payment History - Resource with only index
     Route::resource('history', PaymentHistoryController::class)->only(['index']);
+
+    // Notification Management
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [NotificationController::class, 'tenantIndex'])->name('index');
+        Route::get('/data', [NotificationController::class, 'tenantData'])->name('data');
+    });
+
+    // Calendar Management (limited access for tenants)
+    Route::prefix('calendar')->name('calendar.')->group(function () {
+        Route::controller(TenantCalendarController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/events', 'getEvents')->name('events.get');
+            Route::post('/events', 'store')->name('events.store');
+            Route::get('/events/{event}', 'show')->name('events.show');
+            Route::put('/events/{event}', 'update')->name('events.update');
+            Route::delete('/events/{event}', 'destroy')->name('events.destroy');
+            Route::put('/events/{event}/datetime', 'updateDateTime')->name('events.updateDateTime');
+            Route::get('/statistics', 'getStatistics')->name('statistics');
+        });
+    });
 });
 
 /*
@@ -186,3 +229,27 @@ Route::prefix('api/payments/mayar')->name('api.payments.mayar.')->group(function
 
 // API route for payment status check (used by JavaScript)
 Route::get('/api/payment/status/{orderId}', [MayarController::class, 'getPaymentStatus'])->name('api.payment.status');
+
+/*
+|--------------------------------------------------------------------------
+| Notification Routes (Simple Routes)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->prefix('notifications')->name('notifications.')->group(function () {
+    Route::post('/{notification}/read', [NotificationController::class, 'markAsRead'])->name('read');
+    Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
+    Route::delete('/{notification}', [NotificationController::class, 'destroy'])->name('destroy');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Notification Routes (AJAX)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->prefix('notifications')->name('notifications.')->group(function () {
+    Route::get('/', [NotificationController::class, 'index'])->name('index');
+    Route::post('/{notification}/read', [NotificationController::class, 'markAsRead'])->name('read');
+    Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
+    Route::delete('/{notification}', [NotificationController::class, 'destroy'])->name('destroy');
+    Route::get('/unread-count', [NotificationController::class, 'unreadCount'])->name('unread-count');
+});

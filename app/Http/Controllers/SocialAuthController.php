@@ -24,9 +24,38 @@ class SocialAuthController extends Controller
     private const LOGIN_ROUTE = 'auth.login';
     private const MAX_SOCIAL_ATTEMPTS = 10;
     private const RATE_LIMIT_DURATION = 3600;
-    
+
     public function redirectToProvider(string $provider): RedirectResponse
     {
+        // Override config dari global_settings
+        $global = \App\Models\GlobalSetting::first();
+        if ($provider === 'google') {
+            Log::info('Google Socialite redirect_uri', [
+                'redirect_uri' => $global->google_redirect_uri
+            ]);
+        }
+        // Override config dari global_settings
+        $global = \App\Models\GlobalSetting::first();
+        if ($provider === 'google') {
+            config([
+                'services.google.client_id' => $global->google_client_id,
+                'services.google.client_secret' => $global->google_client_secret,
+                'services.google.redirect' => $global->google_redirect_uri,
+            ]);
+        } elseif ($provider === 'facebook') {
+            config([
+                'services.facebook.client_id' => $global->facebook_client_id,
+                'services.facebook.client_secret' => $global->facebook_client_secret,
+                'services.facebook.redirect' => $global->facebook_redirect_uri,
+            ]);
+        } elseif ($provider === 'twitter') {
+            config([
+                'services.twitter.client_id' => $global->twitter_client_id,
+                'services.twitter.client_secret' => $global->twitter_client_secret,
+                'services.twitter.redirect' => $global->twitter_redirect_uri,
+            ]);
+        }
+
         if (!$this->isValidProvider($provider)) {
             Log::warning('Invalid social provider attempted', [
                 'provider' => $provider,
@@ -46,17 +75,20 @@ class SocialAuthController extends Controller
                 'ip' => request()->ip(),
             ]);
 
-            return Socialite::driver($provider)
-                ->with(['prompt' => 'select_account'])
-                ->redirect();
-
+            if ($provider === 'google') {
+                return Socialite::driver($provider)
+                    ->with(['prompt' => 'select_account'])
+                    ->redirect();
+            } else {
+                return Socialite::driver($provider)->redirect();
+            }
         } catch (Exception $e) {
             Log::error('Social auth redirect failed', [
                 'provider' => $provider,
                 'error' => $e->getMessage(),
                 'ip' => request()->ip(),
             ]);
-            
+
             return redirect()
                 ->route(self::LOGIN_ROUTE)
                 ->with('error', 'Terjadi kesalahan saat menghubungkan ke provider.');
@@ -65,6 +97,28 @@ class SocialAuthController extends Controller
 
     public function handleProviderCallback(string $provider): Response|RedirectResponse
     {
+        // Override config dari global_settings
+        $global = \App\Models\GlobalSetting::first();
+        if ($provider === 'google') {
+            config([
+                'services.google.client_id' => $global->google_client_id,
+                'services.google.client_secret' => $global->google_client_secret,
+                'services.google.redirect' => $global->google_redirect_uri,
+            ]);
+        } elseif ($provider === 'facebook') {
+            config([
+                'services.facebook.client_id' => $global->facebook_client_id,
+                'services.facebook.client_secret' => $global->facebook_client_secret,
+                'services.facebook.redirect' => $global->facebook_redirect_uri,
+            ]);
+        } elseif ($provider === 'twitter') {
+            config([
+                'services.twitter.client_id' => $global->twitter_client_id,
+                'services.twitter.client_secret' => $global->twitter_client_secret,
+                'services.twitter.redirect' => $global->twitter_redirect_uri,
+            ]);
+        }
+
         if (!$this->isValidProvider($provider)) {
             Log::warning('Invalid social provider callback', [
                 'provider' => $provider,
@@ -80,7 +134,7 @@ class SocialAuthController extends Controller
 
         try {
             $socialUser = Socialite::driver($provider)->stateless()->user();
-            
+
             if (!$socialUser || !$socialUser->email) {
                 Log::warning('Social auth missing email', [
                     'provider' => $provider,
@@ -106,7 +160,7 @@ class SocialAuthController extends Controller
             }
 
             $user = $this->findOrCreateUser($socialUser, $provider);
-            
+
             Auth::login($user);
             request()->session()->regenerate();
 
@@ -126,7 +180,6 @@ class SocialAuthController extends Controller
                 'redirectTo' => route($route),
                 'message' => $message,
             ]);
-
         } catch (Exception $e) {
             Log::error('Social auth callback failed', [
                 'provider' => $provider,
@@ -134,7 +187,7 @@ class SocialAuthController extends Controller
                 'trace' => $e->getTraceAsString(),
                 'ip' => request()->ip(),
             ]);
-            
+
             return redirect()
                 ->route(self::LOGIN_ROUTE)
                 ->with('error', 'Terjadi kesalahan saat proses login. Silakan coba lagi.');
@@ -147,7 +200,7 @@ class SocialAuthController extends Controller
         $email = strtolower(trim($socialUser->email));
 
         $existingUser = User::where('email', $email)->first();
-        
+
         if ($existingUser) {
             if (!$existingUser->provider_id) {
                 $existingUser->update([
@@ -166,8 +219,8 @@ class SocialAuthController extends Controller
         }
 
         $socialAccount = User::where('provider_id', $socialUser->id)
-                            ->where('provider', $provider)
-                            ->first();
+            ->where('provider', $provider)
+            ->first();
 
         if ($socialAccount) {
             Log::warning('Social account exists with different email', [
@@ -194,11 +247,21 @@ class SocialAuthController extends Controller
             'provider_token' => $this->hashToken($socialUser->token),
             'provider' => $provider,
             'password' => Hash::make(Str::random(64)),
-            'role' => 'tenant',
+            'role' => 'tenants',
             'email_verified_at' => Carbon::now(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
+
+        // Notifikasi ke semua admin
+        $admins = \App\Models\User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            \App\Services\NotificationService::general(
+                $admin,
+                'Pendaftaran Pengguna Baru (Social)',
+                'Pengguna baru mendaftar via ' . ucfirst($provider) . ': ' . $newUser->name . ' (' . $newUser->email . ')'
+            );
+        }
 
         Log::info('Created new social user', [
             'user_id' => $newUser->id,
@@ -222,7 +285,7 @@ class SocialAuthController extends Controller
 
         $name = preg_replace('/[^\p{L}\p{N}\s\-\'\.]/u', '', $name);
         $name = trim($name);
-        
+
         return substr($name, 0, 255) ?: 'User';
     }
 
@@ -234,10 +297,10 @@ class SocialAuthController extends Controller
     private function checkRateLimit(string $action): void
     {
         $key = "social_auth_{$action}|" . request()->ip();
-        
+
         if (RateLimiter::tooManyAttempts($key, self::MAX_SOCIAL_ATTEMPTS)) {
             $seconds = RateLimiter::availableIn($key);
-            
+
             Log::warning("Social auth rate limit exceeded", [
                 'action' => $action,
                 'ip' => request()->ip(),

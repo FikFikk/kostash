@@ -1,123 +1,172 @@
 @extends('auth.app')
 
-@section('title') Login @endsection
+@section('title')
+    Login
+@endsection
 
 @section('content')
-<div class="auth-page-wrapper pt-5">
-	<!-- auth page content -->
-	<div class="auth-page-content">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="text-center mt-sm-5 mb-4 text-white-50">
-						<div>
-							<a href="/" class="d-inline-block auth-logo">
-								<img src="{{ asset('assets/images/kostash-logo-tp-white.png') }}" alt="kostash.id" height="35">
-							</a>
-						</div>
-						<p class="mt-3 fs-15 fw-medium">Kos asik, Bayar tinggal klik! di KostASH</p>
-					</div>
-				</div>
-			</div>
-			<!-- end row -->
+    <div class="auth-page-wrapper pt-5">
+        <!-- auth page content -->
+        <div class="auth-page-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="text-center mt-sm-5 mb-4 text-white-50">
+                            <div>
+                                <a href="/" class="d-inline-block auth-logo">
+                                    <img src="{{ asset('assets/images/kostash-logo-tp-white.png') }}" alt="kostash.id"
+                                        height="35">
+                                </a>
+                            </div>
+                            <p class="mt-3 fs-15 fw-medium">Kos asik, Bayar tinggal klik! di KostASH</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- end row -->
 
-			<div class="row justify-content-center">
-				<div class="col-md-8 col-lg-6 col-xl-5">
-					<div class="card mt-4">
-					
-						<div class="card-body p-4"> 
-							<div class="text-center mt-2">
-								<h5 class="text-primary">Welcome Back !</h5>
-								<p class="text-muted">Sign in to continue to KostASH</p>
-							</div>
-							<div class="p-2 mt-4">
-								<form action="{{ route('auth.login.process') }}" method="POST">
-									@csrf
-									<div class="mb-3">
-										<label for="email" class="form-label">Email</label>
-										<input type="text" class="form-control" name="email" id="email" placeholder="Enter email">
-									</div>
-			
-									<div class="mb-3">
-										<div class="float-end">
-											<a href="auth-pass-reset-basic.html" class="text-muted">Forgot password?</a>
-										</div>
-										<label class="form-label" for="password-input">Password</label>
-										<div class="position-relative auth-pass-inputgroup mb-3">
-											<input type="password" class="form-control pe-5" name="password" placeholder="Enter password" id="password-input">
-											<button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted" type="button" id="password-addon"><i class="ri-eye-fill align-middle"></i></button>
-										</div>
-									</div>
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6 col-xl-5">
+                        <div class="card mt-4">
 
-									<div class="form-check">
-										<input class="form-check-input" type="checkbox" value="" id="auth-remember-check">
-										<label class="form-check-label" for="auth-remember-check">Remember me</label>
-									</div>
-									
-									<div class="mt-4">
-										<button class="btn btn-success w-100" type="submit">Sign In</button>
-									</div>
+                            <div class="card-body p-4">
+                                <div class="text-center mt-2">
+                                    <h5 class="text-primary">Welcome Back !</h5>
+                                    <p class="text-muted">Sign in to continue to KostASH</p>
+                                </div>
+                                <div class="p-2 mt-4">
+                                    <form action="{{ route('auth.login.process') }}" method="POST">
+                                        @csrf
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="text" class="form-control" name="email" id="email"
+                                                placeholder="Enter email">
+                                        </div>
 
-									<div class="mt-4 text-center">
-										<div class="signin-other-title">
-											<h5 class="fs-13 mb-4 title">Sign In with</h5>
-										</div>
-										<div>
-											<a href="{{ route('social.redirect', 'google') }}" id="google-login-btn" class="btn btn-danger btn-icon waves-effect waves-light" title="Login with Google">
-												<i class="ri-google-fill fs-16"></i>
-											</a>
-											<a href="{{ route('social.redirect', 'facebook') }}" id="facebook-login-btn" class="btn btn-primary btn-icon waves-effect waves-light" title="Login with Facebook">
-												<i class="ri-facebook-fill fs-16"></i>
-											</a>
-											<a href="{{ route('social.redirect', 'twitter') }}" id="twitter-login-btn" class="btn btn-info btn-icon waves-effect waves-light" title="Login with Twitter">
-												<i class="ri-twitter-fill fs-16"></i>
-											</a>
+                                        <div class="mb-3">
+                                            <div class="float-end">
+                                                <a href="auth-pass-reset-basic.html" class="text-muted">Forgot password?</a>
+                                            </div>
+                                            <label class="form-label" for="password-input">Password</label>
+                                            <div class="position-relative auth-pass-inputgroup mb-3">
+                                                <input type="password" class="form-control pe-5" name="password"
+                                                    placeholder="Enter password" id="password-input">
+                                                <button
+                                                    class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted"
+                                                    type="button" id="password-addon"><i
+                                                        class="ri-eye-fill align-middle"></i></button>
+                                            </div>
+                                        </div>
 
-											<!-- <button type="button" class="btn btn-dark btn-icon waves-effect waves-light"><i class="ri-github-fill fs-16"></i></button> -->
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-						<!-- end card body -->
-					</div>
-					<!-- end card -->
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value=""
+                                                id="auth-remember-check">
+                                            <label class="form-check-label" for="auth-remember-check">Remember me</label>
+                                        </div>
 
-					<div class="mt-4 text-center">
-						<p class="mb-0">Don't have an account ? <a href="{{ route('auth.register') }}" class="fw-semibold text-primary text-decoration-underline"> Signup </a> </p>
-					</div>
+                                        <div class="mt-4">
+                                            <button class="btn btn-success w-100" type="submit">Sign In</button>
+                                        </div>
 
-				</div>
-			</div>
-			<!-- end row -->
-		</div>
-		<!-- end container -->
-	</div>
-	<!-- end auth page content -->
-</div>
+                                        <div class="mt-4 text-center">
+                                            <div class="signin-other-title">
+                                                <h5 class="fs-13 mb-4 title">Sign In with</h5>
+                                            </div>
+                                            <div>
+                                                <a href="{{ route('social.redirect', 'google') }}" id="google-login-btn"
+                                                    class="btn btn-danger btn-icon waves-effect waves-light"
+                                                    title="Login with Google">
+                                                    <i class="ri-google-fill fs-16"></i>
+                                                </a>
+                                                <a href="{{ route('social.redirect', 'facebook') }}" id="facebook-login-btn"
+                                                    class="btn btn-primary btn-icon waves-effect waves-light"
+                                                    title="Login with Facebook">
+                                                    <i class="ri-facebook-fill fs-16"></i>
+                                                </a>
+                                                <a href="{{ route('social.redirect', 'twitter') }}" id="twitter-login-btn"
+                                                    class="btn btn-info btn-icon waves-effect waves-light"
+                                                    title="Login with Twitter">
+                                                    <i class="ri-twitter-fill fs-16"></i>
+                                                </a>
 
+                                                <!-- <button type="button" class="btn btn-dark btn-icon waves-effect waves-light"><i class="ri-github-fill fs-16"></i></button> -->
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- end card body -->
+                        </div>
+                        <!-- end card -->
+
+                        <div class="mt-4 text-center">
+                            <p class="mb-0">Don't have an account ? <a href="{{ route('auth.register') }}"
+                                    class="fw-semibold text-primary text-decoration-underline"> Signup </a> </p>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- end row -->
+            </div>
+            <!-- end container -->
+        </div>
+        <!-- end auth page content -->
+    </div>
 @endsection
 
 @push('scripts')
-<script src="{{ asset('assets/dashboard/js/pages/password-addon.init.js') }}"></script>
+    <script src="{{ asset('assets/dashboard/js/pages/password-addon.init.js') }}"></script>
+    <script>
+        // Auto-fill email after logout using localStorage (1 day)
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailInput = document.getElementById('email');
+            const rememberCheckbox = document.getElementById('auth-remember-check');
+            // Load email if available and not expired
+            const saved = localStorage.getItem('remembered_email');
+            if (saved) {
+                try {
+                    const obj = JSON.parse(saved);
+                    if (obj.value && obj.expire > Date.now()) {
+                        emailInput.value = obj.value;
+                        if (rememberCheckbox) rememberCheckbox.checked = true;
+                    } else {
+                        localStorage.removeItem('remembered_email');
+                    }
+                } catch (e) {
+                    localStorage.removeItem('remembered_email');
+                }
+            }
+            // On form submit, save/remove email
+            const form = emailInput.closest('form');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    if (rememberCheckbox && rememberCheckbox.checked) {
+                        localStorage.setItem('remembered_email', JSON.stringify({
+                            value: emailInput.value,
+                            expire: Date.now() + 24 * 60 * 60 * 1000 // 1 day
+                        }));
+                    } else {
+                        localStorage.removeItem('remembered_email');
+                    }
+                });
+            }
+        });
+        const providers = ['google', 'facebook', 'twitter'];
 
-<script>
-    const providers = ['google', 'facebook', 'twitter'];
+        providers.forEach(provider => {
+            const btn = document.getElementById(`${provider}-login-btn`);
+            if (btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const url = this.href;
+                    const width = 500;
+                    const height = 600;
+                    const left = (window.innerWidth / 2) - (width / 2);
+                    const top = (window.innerHeight / 2) - (height / 2);
 
-    providers.forEach(provider => {
-        const btn = document.getElementById(`${provider}-login-btn`);
-        if (btn) {
-            btn.addEventListener('click', function (e) {
-                e.preventDefault();
-                const url = this.href;
-                const width = 500;
-                const height = 600;
-                const left = (window.innerWidth / 2) - (width / 2);
-                const top = (window.innerHeight / 2) - (height / 2);
-
-                window.open(url, `Login with ${provider.charAt(0).toUpperCase() + provider.slice(1)}`, `width=${width},height=${height},top=${top},left=${left}`);
-            });
-        }
-    });
-</script>
+                    window.open(url, `Login with ${provider.charAt(0).toUpperCase() + provider.slice(1)}`,
+                        `width=${width},height=${height},top=${top},left=${left}`);
+                });
+            }
+        });
+    </script>
 @endpush

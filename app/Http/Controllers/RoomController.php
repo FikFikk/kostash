@@ -53,23 +53,58 @@ class RoomController extends Controller
     public function edit($id)
     {
         $room = Room::findOrFail($id);
-        return view('dashboard.admin.room.edit', compact('room'));
+        // User yang bisa dipilih: tenants yang belum punya room atau yang sedang menempati room ini
+        $userList = User::where('role', 'tenants')
+            ->where(function ($q) use ($room) {
+                $q->whereNull('room_id')->orWhere('room_id', $room->id);
+            })
+            ->get();
+        return view('dashboard.admin.room.edit', compact('room', 'userList'));
     }
 
     public function update(Request $request, $id)
     {
         $room = Room::findOrFail($id);
-
         $validated = $this->validateRoom($request, $room->id);
-
         if ($request->hasFile('image')) {
             $this->deleteOldImage($room->image);
             $validated['image'] = $this->uploadImage($request);
         }
-
         $validated['facilities'] = $this->processFacilities($request);
 
+        // Handle user assignment
+        $newUserId = $request->input('user_id');
+        $oldUser = $room->user;
+        // Update room data
         $room->update($validated);
+
+        // Kosongkan user lama jika diganti
+        if ($oldUser && (!$newUserId || $oldUser->id != $newUserId)) {
+            $oldUser->update(['room_id' => null]);
+            \App\Services\NotificationService::general(
+                $oldUser,
+                'room',
+                'Kamar dikosongkan',
+                [
+                    'message' => 'Anda sudah tidak menempati kamar ' . $room->name
+                ]
+            );
+        }
+        // Assign user baru jika dipilih
+        if ($newUserId) {
+            $newUser = \App\Models\User::find($newUserId);
+            if ($newUser && $newUser->room_id != $room->id) {
+                $newUser->update(['room_id' => $room->id]);
+                \App\Services\NotificationService::general(
+                    $newUser,
+                    'room',
+                    'Kamar baru',
+                    [
+                        'message' => 'Anda sekarang menempati kamar ' . $room->name
+                    ]
+                );
+            }
+        }
 
         return redirect()->route('dashboard.room.index')->with('success', 'Room berhasil diperbarui.');
     }
@@ -84,7 +119,7 @@ class RoomController extends Controller
 
             // Delete room image
             $this->deleteOldImage($room->image);
-            
+
             // Delete room
             $room->delete();
         });
@@ -101,10 +136,20 @@ class RoomController extends Controller
             return redirect()->route('dashboard.room.index')->with('error', 'Kamar sudah kosong.');
         }
 
+        $user = $room->user;
         DB::transaction(function () use ($room) {
             // Remove user from room
             $room->user->update(['room_id' => null]);
         });
+        // Notifikasi ke user yang dikeluarkan
+        \App\Services\NotificationService::general(
+            $user,
+            'room',
+            'Kamar dikosongkan',
+            [
+                'message' => 'Anda sudah tidak menempati kamar ' . $room->name
+            ]
+        );
 
         return redirect()->route('dashboard.room.index')->with('success', 'Kamar berhasil dikosongkan.');
     }
@@ -166,7 +211,7 @@ class RoomController extends Controller
         }
 
         if (is_array($facilities)) {
-            $facilities = array_filter($facilities, function($item) {
+            $facilities = array_filter($facilities, function ($item) {
                 return !empty(trim($item));
             });
         }

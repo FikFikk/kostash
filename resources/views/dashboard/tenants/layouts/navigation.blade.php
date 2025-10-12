@@ -49,6 +49,12 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('tenant.calendar.index') }}">
+                        <i class="ri-calendar-2-line"></i> <span data-key="t-calendar">Calendar</span>
+                    </a>
+                </li>
+
                 <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Template</span></li>
 
                 <li class="nav-item">

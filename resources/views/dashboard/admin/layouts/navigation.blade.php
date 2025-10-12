@@ -45,13 +45,16 @@
                     <div class="collapse menu-dropdown" id="sidebarMaster">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ route('dashboard.room.index') }}" class="nav-link" data-key="t-room"> Room </a>
+                                <a href="{{ route('dashboard.room.index') }}" class="nav-link" data-key="t-room"> Room
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('dashboard.global.index') }}" class="nav-link" data-key="t-room"> Global Setting </a>
+                                <a href="{{ route('dashboard.global.index') }}" class="nav-link" data-key="t-room">
+                                    Global Setting </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('dashboard.gallery.index') }}" class="nav-link" data-key="t-gallery"> Gallery </a>
+                                <a href="{{ route('dashboard.gallery.index') }}" class="nav-link" data-key="t-gallery">
+                                    Gallery </a>
                             </li>
                         </ul>
                     </div>
@@ -71,10 +74,12 @@
                     <div class="collapse menu-dropdown" id="sidebarReport">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ route('dashboard.report.index') }}" class="nav-link" data-key="t-room"> Report List </a>
+                                <a href="{{ route('dashboard.report.index') }}" class="nav-link" data-key="t-room">
+                                    Report List </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('dashboard.report.statistics') }}" class="nav-link" data-key="t-room"> Statistics </a>
+                                <a href="{{ route('dashboard.report.statistics') }}" class="nav-link"
+                                    data-key="t-room"> Statistics </a>
                             </li>
                         </ul>
                     </div>
@@ -92,6 +97,12 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('dashboard.calendar.index') }}">
+                        <i class="ri-calendar-2-line"></i> <span data-key="t-calendar">Calendar</span>
+                    </a>
+                </li>
+
                 <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Template</span></li>
 
                 <li class="nav-item">
@@ -106,7 +117,8 @@
                             </li>
                             <li class="nav-item">
                                 <a href="#sidebarSignIn" class="nav-link" data-bs-toggle="collapse" role="button"
-                                    aria-expanded="false" aria-controls="sidebarSignIn" data-key="t-signin"> Sub Menu 2
+                                    aria-expanded="false" aria-controls="sidebarSignIn" data-key="t-signin"> Sub Menu
+                                    2
                                 </a>
                                 <div class="collapse menu-dropdown" id="sidebarSignIn">
                                     <ul class="nav nav-sm flex-column">

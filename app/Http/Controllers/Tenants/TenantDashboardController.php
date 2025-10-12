@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tenants;
 
 use App\Http\Controllers\Controller;
+use App\Services\NotificationService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -11,6 +12,7 @@ use App\Models\Room;
 use App\Models\User;
 use App\Models\GlobalSetting;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Auth;
 
 class TenantDashboardController extends Controller
 {
@@ -19,7 +21,7 @@ class TenantDashboardController extends Controller
      */
     public function index(Request $request)
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $room = $user->room;
 
         $month = (int) $request->input('month', now()->month);
@@ -83,7 +85,7 @@ class TenantDashboardController extends Controller
 
     public function exportInvoice(Request $request)
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $room = $user->room;
 
         $userAgent = $request->header('User-Agent');
@@ -92,10 +94,15 @@ class TenantDashboardController extends Controller
         $month = (int) $request->input('month', now()->month);
         $year = (int) $request->input('year', now()->year);
 
+
         $meter = Meter::where('room_id', $user->room_id)
             ->whereYear('period', $year)
             ->whereMonth('period', $month)
             ->first();
+
+        if (!$meter) {
+            return redirect()->back()->with('error', 'Tidak ada laporan/tagihan untuk periode ini.');
+        }
 
         $global = GlobalSetting::first();
 
@@ -176,7 +183,7 @@ class TenantDashboardController extends Controller
     public function downloadReceipt(Transaction $transaction)
     {
         // Verify transaction belongs to current user
-        if ($transaction->user_id !== auth()->id()) {
+        if ($transaction->user_id !== Auth::id()) {
             abort(403, 'Unauthorized access to transaction');
         }
 
@@ -185,7 +192,7 @@ class TenantDashboardController extends Controller
             return redirect()->back()->with('error', 'Bukti pembayaran hanya tersedia untuk transaksi yang berhasil');
         }
 
-        $user = auth()->user();
+        $user = Auth::user();
         $meter = $transaction->meter;
         $global = GlobalSetting::first();
 

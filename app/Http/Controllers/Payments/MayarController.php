@@ -7,6 +7,7 @@ use App\Models\GlobalSetting;
 use App\Models\Meter;
 use App\Models\Transaction;
 use App\Services\MayarService;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -265,7 +266,7 @@ class MayarController extends Controller
      */
     private function generateOrderId($meterId)
     {
-        return 'KOS-' . Carbon::now()->format('ymd') . '-' . substr(md5($meterId . time()), 0, 6);
+        return 'KOS-' . now()->format('ymd') . '-' . substr(md5($meterId . time()), 0, 6);
     }
 
     /**
@@ -301,10 +302,29 @@ class MayarController extends Controller
     {
         if ($existingTransaction) {
             $existingTransaction->update($data);
+
+            // Notification for transaction update
+            if (isset($data['user_id'])) {
+                $user = \App\Models\User::find($data['user_id']);
+                if ($user) {
+                    NotificationService::transaction($user, 'created', $existingTransaction);
+                }
+            }
+
             return $existingTransaction;
         }
 
-        return Transaction::create($data);
+        $transaction = Transaction::create($data);
+
+        // Notification for new transaction
+        if (isset($data['user_id'])) {
+            $user = \App\Models\User::find($data['user_id']);
+            if ($user) {
+                NotificationService::transaction($user, 'created', $transaction);
+            }
+        }
+
+        return $transaction;
     }
 
     /**
@@ -313,12 +333,15 @@ class MayarController extends Controller
     private function updateTransactionStatus($transaction, $webhookData)
     {
         $status = $webhookData['status'];
+        $oldStatus = $transaction->status;
 
         Log::info('Updating transaction status', [
             'order_id' => $transaction->order_id,
-            'old_status' => $transaction->status,
+            'old_status' => $oldStatus,
             'new_status' => $status
         ]);
+
+        $user = \App\Models\User::find($transaction->user_id);
 
         if ($status === 'paid') {
             $transaction->update([
@@ -326,12 +349,32 @@ class MayarController extends Controller
                 'paid_at' => now(),
                 'payment_type' => 'mayar'
             ]);
+
+            // Send success notification
+            if ($user) {
+                NotificationService::payment($user, 'success', $transaction);
+            }
         } elseif ($status === 'unpaid') {
             $transaction->update(['status' => 'pending']);
+
+            // Send pending notification
+            if ($user && $oldStatus !== 'pending') {
+                NotificationService::payment($user, 'pending', $transaction);
+            }
         } elseif ($status === 'expired') {
             $transaction->update(['status' => 'expired']);
+
+            // Send expired notification
+            if ($user) {
+                NotificationService::payment($user, 'expired', $transaction);
+            }
         } elseif ($status === 'cancelled') {
             $transaction->update(['status' => 'cancelled']);
+
+            // Send failed notification
+            if ($user) {
+                NotificationService::payment($user, 'failed', $transaction);
+            }
         }
     }
 

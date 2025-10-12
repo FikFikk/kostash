@@ -43,6 +43,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Get all notifications for this user
+     */
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'notifiable')->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Get unread notifications count
+     */
+    public function unreadNotificationsCount()
+    {
+        return $this->notifications()->unread()->count();
+    }
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>

@@ -384,9 +384,9 @@
                         <a class="dropdown-item" href="{{ route('public.home') }}"><i
                                 class="mdi mdi-view-dashboard-outline text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle">Beranda</span></a>
-                        <a class="dropdown-item" href="{{ route('tenant.profile.index') }}"><i
+                        {{-- <a class="dropdown-item" href="{{ route('tenant.profile.index') }}"><i
                                 class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span
-                                class="align-middle">Profile</span></a>
+                                class="align-middle">Profile</span></a> --}}
                         <!-- <a class="dropdown-item" href="apps-chat.html"><i
                                 class="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle">Messages</span></a>
@@ -400,10 +400,10 @@
                         <!-- <a class="dropdown-item" href="pages-profile.html"><i
                                 class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle">Balance : <b>$5971.67</b></span></a> -->
-                        <a class="dropdown-item" href="{{ route('tenant.profile.change-password') }}">
+                        {{-- <a class="dropdown-item" href="{{ route('tenant.profile.change-password') }}">
                             <i class="mdi mdi-key text-muted fs-16 align-middle me-1"></i>
                             <span class="align-middle">Change Password</span>
-                        </a>
+                        </a> --}}
                         <!-- <a class="dropdown-item" href="auth-lockscreen-basic.html">
                             <span class="badge bg-soft-success text-success mt-1 float-end">New</span>
                             <i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i>

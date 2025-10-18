@@ -87,18 +87,21 @@
                                             </div>
 
                                             <div>
-                                                <button type="button"
-                                                    class="btn btn-primary btn-icon waves-effect waves-light"><i
-                                                        class="ri-facebook-fill fs-16"></i></button>
-                                                <button type="button"
-                                                    class="btn btn-danger btn-icon waves-effect waves-light"><i
-                                                        class="ri-google-fill fs-16"></i></button>
-                                                <button type="button"
-                                                    class="btn btn-dark btn-icon waves-effect waves-light"><i
-                                                        class="ri-github-fill fs-16"></i></button>
-                                                <button type="button"
-                                                    class="btn btn-info btn-icon waves-effect waves-light"><i
-                                                        class="ri-twitter-fill fs-16"></i></button>
+                                                <a href="{{ route('social.redirect', 'google') }}" id="google-login-btn"
+                                                    class="btn btn-danger btn-icon waves-effect waves-light"
+                                                    title="Login with Google">
+                                                    <i class="ri-google-fill fs-16"></i>
+                                                </a>
+                                                <a href="{{ route('social.redirect', 'facebook') }}" id="facebook-login-btn"
+                                                    class="btn btn-primary btn-icon waves-effect waves-light"
+                                                    title="Login with Facebook">
+                                                    <i class="ri-facebook-fill fs-16"></i>
+                                                </a>
+                                                <a href="{{ route('social.redirect', 'twitter') }}" id="twitter-login-btn"
+                                                    class="btn btn-info btn-icon waves-effect waves-light"
+                                                    title="Login with Twitter">
+                                                    <i class="ri-twitter-fill fs-16"></i>
+                                                </a>
                                             </div>
                                         </div>
                                     </form>

@@ -292,6 +292,13 @@
                                                                 title="Edit Reading">
                                                                 <i class="ri-pencil-line"></i>
                                                             </a>
+
+                                                            <a href="{{ route('dashboard.meter.export', $meter->id) }}"
+                                                                target="_blank" class="btn btn-sm btn-outline-success"
+                                                                title="Export PDF">
+                                                                <i class="ri-file-download-line"></i>
+                                                            </a>
+
                                                             <form
                                                                 action="{{ route('dashboard.meter.destroy', $meter->id) }}"
                                                                 method="POST"

@@ -12,6 +12,49 @@ use Illuminate\Support\Facades\DB;
 
 class MeterController extends Controller
 {
+    /**
+     * Export meter bill as PDF (admin version, reusing tenant export logic)
+     */
+    public function export($id)
+    {
+        // Find meter by ID
+        $meter = \App\Models\Meter::findOrFail($id);
+        $room = $meter->room;
+        $user = $meter->user ?? \App\Models\User::where('room_id', $room->id)->where('role', 'tenants')->first();
+        $global = \App\Models\GlobalSetting::first();
+
+        // Calculate month and year from period
+        $period = \Carbon\Carbon::parse($meter->period);
+        $month = (int) $period->format('m');
+        $year = (int) $period->format('Y');
+
+        // Calculate usage
+        $electricUsage = max(0, $meter->electric_meter_end - $meter->electric_meter_start);
+        $waterUsage = max(0, $meter->water_meter_end - $meter->water_meter_start);
+        $totalBill = ($electricUsage * $global->electric_price) + ($waterUsage * $global->water_price) + $global->monthly_room_price;
+
+        // Prepare data for the view
+        $data = [
+            'user' => $user,
+            'room' => $room,
+            'month' => $month,
+            'year' => $year,
+            'meter' => $meter,
+            'global' => $global,
+            'electricUsage' => $electricUsage,
+            'waterUsage' => $waterUsage,
+            'totalBill' => $totalBill,
+        ];
+
+        // Use DomPDF and QrCode (same as tenant)
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('dashboard.tenants.pdf.export', $data)
+            ->setPaper([0, 0, 842, 700], 'portrait');
+
+        $filename = 'tagihan_kamar_' . $room->name . '_' . $month . '_' . $year . '.pdf';
+
+        // Always stream for admin
+        return $pdf->stream($filename);
+    }
     public function index(Request $request)
     {
         $selectedYear = $request->get('year', now()->year);
@@ -26,7 +69,9 @@ class MeterController extends Controller
             $availableYears[] = now()->year;
             rsort($availableYears);
         } else {
-            usort($availableYears, function($a, $b) { return $b - $a; });
+            usort($availableYears, function ($a, $b) {
+                return $b - $a;
+            });
         }
 
         $rooms = Room::orderBy('name')->get();

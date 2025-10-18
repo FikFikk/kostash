@@ -107,6 +107,7 @@ Route::middleware(['auth', 'role:admin', 'check.screen.lock'])->prefix('dashboar
     Route::prefix('meter')->name('meter.')->group(function () {
         Route::get('/{meter:uuid}/details', [MeterController::class, 'getMeterDetails'])->name('details');
         Route::get('/room/{room:uuid}/details', [MeterController::class, 'getRoomDetails'])->name('room.details');
+        Route::get('/{meter}/export', [MeterController::class, 'export'])->name('export');
     });
 
     // Room additional routes

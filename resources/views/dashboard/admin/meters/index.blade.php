@@ -395,7 +395,7 @@
 
                 applyRoomFilter(selectedRoom) {
                     const elements = [...document.querySelectorAll('.room-row'), ...document.querySelectorAll(
-                    '.room-card')];
+                        '.room-card')];
 
                     elements.forEach(element => {
                         element.style.display = (selectedRoom === 'all' || element.dataset.room === selectedRoom) ?
@@ -451,8 +451,10 @@
 
             window.viewMeterDetail = async function(meterId) {
                 MeterApp.showLoadingInModal("Meter Reading Details");
-                const url = '{{ route('dashboard.meter.details', ':id') }}'.replace(':id', meterId);
-
+                let url = '{{ route('dashboard.meter.details', ':id') }}'.replace(':id', meterId);
+                if (window.location.protocol === 'https:') {
+                    url = url.replace(/^http:/, 'https:');
+                }
                 try {
                     const data = await MeterApp.fetchData(url);
                     MeterApp.modalContent.innerHTML = data.html || '<p>No details available.</p>';

@@ -380,18 +380,55 @@
                 let revenueLabels = [];
                 let revenueValues = [];
 
-                if (initialChartData && initialChartData.length > 0) {
-                    // Use actual data from controller. Accept numeric, null, or 'pending' values.
-                    revenueLabels = initialChartData.map(item => item.month);
-                    revenueValues = initialChartData.map(item => {
-                        // allow strings like 'pending' or null; return null for gaps in chart
-                        if (item === null || typeof item === 'undefined') return null;
-                        const r = item.revenue ?? item.value ?? null;
-                        if (r === null || typeof r === 'undefined') return null;
-                        if (typeof r === 'string' && r.toLowerCase() === 'pending') return null;
-                        const num = parseFloat(r);
-                        return Number.isFinite(num) ? num : null;
+                // Build helper to compute series data including pending amounts
+                function isFiniteNumber(v) {
+                    if (v === null || typeof v === 'undefined') return false;
+                    const n = Number(v);
+                    return typeof n === 'number' && isFinite(n);
+                }
+
+                function buildSeriesData(arr) {
+                    const labels = [];
+                    const data = arr.map(item => {
+                        const month = item.month || item.label || '';
+                        labels.push(month);
+
+                        // Determine numeric values: prefer totalRevenue / total / revenue, else sum paid + pending
+                        let paid = 0;
+                        let pending = 0;
+
+                        if (isFiniteNumber(item.paid)) paid = Number(item.paid);
+                        else if (isFiniteNumber(item.paidAmount)) paid = Number(item.paidAmount);
+
+                        if (isFiniteNumber(item.pending)) pending = Number(item.pending);
+                        else if (isFiniteNumber(item.pendingAmount)) pending = Number(item.pendingAmount);
+
+                        let val = null;
+                        if (isFiniteNumber(item.totalRevenue)) val = Number(item.totalRevenue);
+                        else if (isFiniteNumber(item.total)) val = Number(item.total);
+                        else if (isFiniteNumber(item.revenue)) val = Number(item.revenue);
+                        else if (paid || pending) val = paid + pending;
+
+                        return {
+                            x: month,
+                            y: val !== null ? val : null,
+                            meta: {
+                                pending: pending
+                            }
+                        };
                     });
+
+                    return {
+                        labels,
+                        data
+                    };
+                }
+
+                if (initialChartData && initialChartData.length > 0) {
+                    const built = buildSeriesData(initialChartData);
+                    revenueLabels = built.labels;
+                    // revenueValues will be an array of objects for ApexCharts (x,y,meta)
+                    revenueValues = built.data;
                 } else {
                     // No server data: render empty chart (no dummy data)
                     revenueLabels = [];
@@ -458,11 +495,28 @@
                     },
                     tooltip: {
                         y: {
-                            formatter: function(value) {
-                                if (value === null || typeof value === 'undefined') {
-                                    return 'Pending';
+                            formatter: function(value, {
+                                seriesIndex,
+                                dataPointIndex,
+                                w
+                            }) {
+                                // Access the original data point to check for pending amount
+                                try {
+                                    const point = w.config.series[seriesIndex].data[dataPointIndex];
+                                    const pending = point && point.meta ? point.meta.pending : 0;
+                                    if (value === null || typeof value === 'undefined') {
+                                        if (pending && pending > 0) return 'Pending (includes Rp ' + pending
+                                            .toLocaleString('id-ID') + ')';
+                                        return 'Pending';
+                                    }
+                                    let text = 'Rp ' + value.toLocaleString('id-ID');
+                                    if (pending && pending > 0) text += ' (termasuk Pending Rp ' + pending
+                                        .toLocaleString('id-ID') + ')';
+                                    return text;
+                                } catch (e) {
+                                    if (value === null || typeof value === 'undefined') return 'Pending';
+                                    return 'Rp ' + value.toLocaleString('id-ID');
                                 }
-                                return 'Rp ' + value.toLocaleString('id-ID');
                             }
                         }
                     }
@@ -763,20 +817,13 @@
                     })
                     .then(data => {
                         if (data.monthlyRevenue && revenueChart) {
-                            const labels = data.monthlyRevenue.map(item => item.month);
-                            const values = data.monthlyRevenue.map(item => {
-                                if (item === null || typeof item === 'undefined') return null;
-                                const r = item.revenue ?? item.value ?? null;
-                                if (r === null || typeof r === 'undefined') return null;
-                                if (typeof r === 'string' && r.toLowerCase() === 'pending') return null;
-                                const num = parseFloat(r);
-                                return Number.isFinite(num) ? num : null;
-                            });
+                            // Build series data including pending amounts
+                            const built = buildSeriesData(data.monthlyRevenue || []);
 
                             // Update chart with new data (allow empty arrays)
                             revenueChart.updateOptions({
                                 xaxis: {
-                                    categories: labels,
+                                    categories: built.labels,
                                     labels: {
                                         style: {
                                             fontSize: '12px'
@@ -787,7 +834,7 @@
 
                             revenueChart.updateSeries([{
                                 name: 'Pendapatan',
-                                data: values
+                                data: built.data
                             }], true);
                         }
 

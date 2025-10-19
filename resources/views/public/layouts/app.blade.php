@@ -3,11 +3,26 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>@yield('title', 'Home') | {{ config('app.name') }}</title>
+    <title>
+        @hasSection('title')
+            @yield('title') | {{ $global->site_title ?? config('app.name') }}
+        @else
+            {{ $global->site_title ?? config('app.name') }}
+        @endif
+    </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="KostASH" />
-    <meta name="keywords" content="KostASH" />
-    <meta name="author" content="KostASH.id" />
+    <meta name="description"
+        content="{{ $global->site_description ?? 'Kost, kontrakan, sewa rumah Menganti Gresik Jawa Timur' }}" />
+    <meta name="keywords"
+        content="{{ $global->site_keywords ?? 'kost, kontrakan, sewa rumah, Menganti, Gresik, Surabaya, Jawa Timur, murah, strategis, fasilitas lengkap, pelajar, mahasiswa, karyawan, keluarga' }}" />
+    <meta name="author" content="{{ $global->meta_author ?? 'KostASH.id' }}" />
+    <meta name="robots" content="{{ $global->meta_robots ?? 'index, follow' }}" />
+    <meta property="og:title"
+        content="{{ $global->og_title ?? ($global->site_title ?? 'Kost, Kontrakan, Sewa Rumah Menganti Gresik Jawa Timur') }}" />
+    <meta property="og:description"
+        content="{{ $global->og_description ?? ($global->site_description ?? 'Cari kost, kontrakan, dan sewa rumah di Menganti, Gresik, Jawa Timur. Lokasi strategis, fasilitas lengkap, harga terjangkau, cocok untuk pelajar, mahasiswa, karyawan, dan keluarga.') }}" />
+    <meta property="og:image" content="{{ $global->og_image ?? asset('assets/images/kostash-logo-tp-white.png') }}" />
+    <meta property="og:type" content="website" />
 
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ secure_asset('assets/images/k-logo.png') }}">

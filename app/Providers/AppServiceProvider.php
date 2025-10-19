@@ -43,19 +43,26 @@ class AppServiceProvider extends ServiceProvider
             $currentPath = $request->path();
             $currentUrl = $request->url();
 
+            // Log semua request untuk debugging
+            Log::info('Request incoming', [
+                'path' => $currentPath,
+                'url' => $currentUrl,
+                'ip' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'referer' => $request->header('referer')
+            ]);
+
             // Skip tracking untuk route yang bukan public/landing page
-            if (
-                str_contains($currentUrl, '/dashboard') ||
-                str_contains($currentUrl, '/tenant') ||
-                str_contains($currentUrl, '/auth') ||
-                str_contains($currentUrl, '/artisan') ||
-                str_contains($currentUrl, '/api') ||
-                str_contains($currentUrl, '/storage') ||
-                str_contains($currentUrl, '/build') ||
-                str_contains($currentUrl, '/assets') ||
-                $request->ajax() ||
-                $currentPath === 'favicon.ico'
-            ) {
+            $skipPaths = ['/dashboard', '/tenant', '/auth', '/artisan', '/api', '/storage', '/build', '/assets'];
+            foreach ($skipPaths as $skipPath) {
+                if (str_starts_with($currentPath, trim($skipPath, '/'))) {
+                    Log::info('Skipping tracking - matched skip path: ' . $skipPath);
+                    return;
+                }
+            }
+
+            if ($request->ajax() || $currentPath === 'favicon.ico') {
+                Log::info('Skipping tracking - AJAX or favicon');
                 return;
             }
 
@@ -64,7 +71,7 @@ class AppServiceProvider extends ServiceProvider
             $date = now()->toDateString();
             $url = $request->fullUrl();
             $userAgent = $request->userAgent();
-            $referer = $request->header('referer');
+            $referer = $request->header('referer'); // Bisa dari Google Maps, Facebook, dll
 
             // Cek apakah sudah ada kunjungan hari ini dari IP ini (tidak peduli URL)
             $exists = Visit::where('ip', $ip)
@@ -72,7 +79,7 @@ class AppServiceProvider extends ServiceProvider
                 ->exists();
 
             if (!$exists) {
-                Visit::create([
+                $visit = Visit::create([
                     'ip' => $ip,
                     'user_id' => $userId,
                     'date' => $date,
@@ -81,16 +88,22 @@ class AppServiceProvider extends ServiceProvider
                     'referer' => $referer
                 ]);
 
-                Log::info('Visitor tracked', [
+                Log::info('✅ Visitor tracked successfully!', [
+                    'id' => $visit->id,
                     'ip' => $ip,
                     'url' => $url,
                     'user_agent' => $userAgent,
                     'referer' => $referer
                 ]);
+            } else {
+                Log::info('Visitor already tracked today', ['ip' => $ip, 'date' => $date]);
             }
         } catch (\Exception $e) {
-            // Silent fail untuk tidak mengganggu aplikasi
-            Log::error('Visitor tracking failed: ' . $e->getMessage());
+            // Log error detail untuk debugging
+            Log::error('❌ Visitor tracking failed!', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
         }
     }
 }

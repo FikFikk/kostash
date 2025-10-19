@@ -13,6 +13,11 @@ class Visit extends Model
         'date',
         'url',
         'user_agent',
-        'referer'
+        'referer',
+        'sec_fetch_site',
+        'sec_fetch_mode',
+        'sec_fetch_user',
+        'accept_language',
+        'headers_json'
     ];
 }

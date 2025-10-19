@@ -43,94 +43,23 @@ class AppServiceProvider extends ServiceProvider
             $currentPath = $request->path();
             $currentUrl = $request->url();
 
-            // Log semua request untuk debugging
-            Log::info('Request incoming', [
-                'path' => $currentPath,
-                'url' => $currentUrl,
-                'ip' => $request->ip(),
-                'user_agent' => $request->userAgent(),
-                'referer' => $request->header('referer')
-            ]);
-
-            // Skip tracking untuk route yang bukan public/landing page
-            $skipStarts = [
-                'dashboard',
-                'tenant',
-                'auth',
-                'artisan',
-                'api',
-            ];
-
-            foreach ($skipStarts as $skip) {
-                if (str_starts_with($currentPath, $skip)) {
-                    Log::info('Skipping tracking - matched skip prefix', ['prefix' => $skip, 'path' => $currentPath]);
-                    return;
-                }
-            }
-
-            // Inspect sec-fetch headers and accept-language to detect top-level navigations
+            // Collect fetch headers and accept-language (we will store them in DB)
             $secFetchSite = $request->header('sec-fetch-site');
             $secFetchMode = $request->header('sec-fetch-mode');
             $secFetchUser = $request->header('sec-fetch-user');
             $acceptLanguage = $request->header('accept-language');
 
-            Log::info('Fetch headers', [
-                'sec-fetch-site' => $secFetchSite,
-                'sec-fetch-mode' => $secFetchMode,
-                'sec-fetch-user' => $secFetchUser,
-                'accept-language' => $acceptLanguage,
-            ]);
+            // No request-level debug logging per your request. We will persist data to DB for every request.
 
             // Determine if this request looks like a top-level navigation (browser navigated/opened the URL)
             $isTopLevelNavigation = false;
             if ($secFetchMode && strtolower($secFetchMode) === 'navigate') {
-                // sec-fetch-user is '?1' for user-initiated navigations
                 if ($secFetchUser === '?1') {
                     $isTopLevelNavigation = true;
                 }
-
-                // or when sec-fetch-site is none or cross-site it may be an external app/opening the URL
                 if ($secFetchSite && in_array(strtolower($secFetchSite), ['none', 'cross-site'])) {
                     $isTopLevelNavigation = true;
                 }
-            }
-
-            // Treat asset/storage/build/assets requests specially: skip them when the referer is internal (same host)
-            // but allow them to create a visit when the referer is external or when this request is a top-level navigation
-            $assetPrefixes = ['storage', 'uploads', 'assets', 'build'];
-            foreach ($assetPrefixes as $ap) {
-                if (str_starts_with($currentPath, $ap)) {
-                    $referer = $request->header('referer');
-                    $isInternalReferer = false;
-                    if ($referer) {
-                        $refererHost = parse_url($referer, PHP_URL_HOST);
-                        $appHost = parse_url(config('app.url') ?? $request->getSchemeAndHttpHost(), PHP_URL_HOST);
-                        if ($refererHost && $appHost && $refererHost === $appHost) {
-                            $isInternalReferer = true;
-                        }
-                    }
-
-                    // If referer is internal and this is not a top-level navigation, skip the asset request
-                    if ($isInternalReferer && !$isTopLevelNavigation) {
-                        Log::info('Skipping tracking - internal asset request', ['path' => $currentPath, 'referer' => $referer]);
-                        return;
-                    }
-
-                    // If referer is empty but this is not a top-level navigation, skip asset requests
-                    if (!$referer && !$isTopLevelNavigation) {
-                        Log::info('Skipping tracking - asset request without referer and not a navigation', ['path' => $currentPath]);
-                        return;
-                    }
-
-                    // Otherwise allow processing so external app hits (or navigations) can be counted
-                    Log::info('Asset request considered for tracking', ['path' => $currentPath, 'referer' => $referer, 'isNavigation' => $isTopLevelNavigation]);
-                    break;
-                }
-            }
-
-            if ($request->ajax() || $currentPath === 'favicon.ico') {
-                Log::info('Skipping tracking - AJAX or favicon');
-                return;
             }
 
             // Normalize IP (handle IPv6 loopback and proxies if needed)
@@ -192,28 +121,22 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
 
-            if (!$exists || $forceCreate) {
-                $visit = Visit::create([
-                    'ip' => $ip,
-                    'user_id' => $userId,
-                    'visitor_id' => $visitorId,
-                    'date' => $date,
-                    'url' => $url,
-                    'user_agent' => $userAgent,
-                    'referer' => $referer
-                ]);
-
-                Log::info('✅ Visitor tracked successfully!', [
-                    'id' => $visit->id,
-                    'visitor_id' => $visitorId,
-                    'ip' => $ip,
-                    'url' => $url,
-                    'user_agent' => $userAgent,
-                    'referer' => $referer
-                ]);
-            } else {
-                Log::info('Visitor already tracked today', ['visitor_id' => $visitorId, 'ip' => $ip, 'date' => $date]);
-            }
+            // Always persist Visit row (force-create semantics requested)
+            $headersJson = json_encode($request->headers->all());
+            $visit = Visit::create([
+                'ip' => $ip,
+                'user_id' => $userId,
+                'visitor_id' => $visitorId,
+                'date' => $date,
+                'url' => $url,
+                'user_agent' => $userAgent,
+                'referer' => $referer,
+                'sec_fetch_site' => $secFetchSite,
+                'sec_fetch_mode' => $secFetchMode,
+                'sec_fetch_user' => $secFetchUser,
+                'accept_language' => $acceptLanguage,
+                'headers_json' => $headersJson,
+            ]);
         } catch (\Exception $e) {
             // Log error detail untuk debugging
             Log::error('❌ Visitor tracking failed!', [

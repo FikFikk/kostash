@@ -73,15 +73,30 @@ class AppServiceProvider extends ServiceProvider
             $userAgent = $request->userAgent();
             $referer = $request->header('referer'); // Bisa dari Google Maps, Facebook, dll
 
-            // Cek apakah sudah ada kunjungan hari ini dari IP ini (tidak peduli URL)
-            $exists = Visit::where('ip', $ip)
-                ->where('date', $date)
-                ->exists();
+            // Visitor ID via cookie (more reliable than IP for mobile devices)
+            $visitorId = $request->cookie('visitor_id');
+            if (!$visitorId) {
+                $visitorId = (string) \Illuminate\Support\Str::uuid();
+                // queue cookie so it's set in response
+                cookie()->queue(cookie()->forever('visitor_id', $visitorId));
+                Log::info('Assigned new visitor_id cookie', ['visitor_id' => $visitorId]);
+            }
+
+            // Cek apakah sudah ada kunjungan hari ini dari visitor_id atau ip
+            $query = Visit::where('date', $date)->where(function ($q) use ($visitorId, $ip) {
+                if ($visitorId) {
+                    $q->where('visitor_id', $visitorId);
+                }
+                $q->orWhere('ip', $ip);
+            });
+
+            $exists = $query->exists();
 
             if (!$exists) {
                 $visit = Visit::create([
                     'ip' => $ip,
                     'user_id' => $userId,
+                    'visitor_id' => $visitorId,
                     'date' => $date,
                     'url' => $url,
                     'user_agent' => $userAgent,
@@ -90,13 +105,14 @@ class AppServiceProvider extends ServiceProvider
 
                 Log::info('✅ Visitor tracked successfully!', [
                     'id' => $visit->id,
+                    'visitor_id' => $visitorId,
                     'ip' => $ip,
                     'url' => $url,
                     'user_agent' => $userAgent,
                     'referer' => $referer
                 ]);
             } else {
-                Log::info('Visitor already tracked today', ['ip' => $ip, 'date' => $date]);
+                Log::info('Visitor already tracked today', ['visitor_id' => $visitorId, 'ip' => $ip, 'date' => $date]);
             }
         } catch (\Exception $e) {
             // Log error detail untuk debugging

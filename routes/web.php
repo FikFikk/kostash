@@ -146,6 +146,13 @@ Route::middleware(['auth', 'role:admin', 'check.screen.lock'])->prefix('dashboar
         Route::get('/{meter}/preview', [MeterController::class, 'previewExport'])->name('preview');
     });
 
+    // Visit logs
+    Route::prefix('visits')->name('visits.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\VisitController::class, 'index'])->name('index');
+        Route::get('/{visit}', [\App\Http\Controllers\Admin\VisitController::class, 'show'])->name('show');
+        Route::delete('/{visit}', [\App\Http\Controllers\Admin\VisitController::class, 'destroy'])->name('destroy');
+    });
+
     // Room additional routes
     Route::prefix('room')->name('room.')->group(function () {
         Route::patch('{room}/vacate', [RoomController::class, 'vacate'])->name('vacate');

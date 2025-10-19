@@ -67,6 +67,12 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('dashboard.visits.index') }}">
+                        <i class="ri-eye-line"></i> <span data-key="t-visits">Visits</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarReport" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarReport">
                         <i class="ri-file-paper-2-line"></i> <span data-key="t-master">Report</span>

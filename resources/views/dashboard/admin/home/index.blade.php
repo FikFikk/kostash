@@ -149,7 +149,7 @@
         </style>
 
         <div class="row">
-            <div class="col-xl-8">
+            <div class="col-xl-8 mb-4">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-transparent border-0 pb-0">
                         <div class="d-flex justify-content-between align-items-center">
@@ -203,14 +203,44 @@
                 </div>
             </div>
 
-            <div class="col-xl-4">
+            <div class="col-xl-4 mb-4">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-transparent border-0 pb-0">
-                        <h5 class="card-title mb-0">Status Kamar</h5>
+                        <h5 class="card-title mb-0">Top Pendapatan per Pengguna</h5>
                     </div>
-                    <div class="card-body">
-                        <div id="room-status-chart" style="height: 300px;"></div>
-
+                    <div class="card-body" style="height:300px; overflow:auto;">
+                        <div class="list-group list-group-flush">
+                            @forelse($userSpending->take(5) as $u)
+                                @php $v = (float) ($u->total_spend ?? 0); @endphp
+                                <div class="list-group-item d-flex align-items-center justify-content-between py-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3 rounded-circle bg-secondary-subtle d-flex align-items-center justify-content-center"
+                                            style="width:33px;height:33px;">
+                                            <i class="ri-user-3-line text-secondary fs-18"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-semibold">{{ $u->name }}</div>
+                                            <small class="text-muted">{{ $u->email }}</small>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge bg-info-subtle text-info me-2">{{ $u->bills_count }}
+                                            Tagihan</span>
+                                        <div class="fw-bold">
+                                            @if ($v >= 1000000)
+                                                {{ number_format($v / 1000000, 1) }}jt
+                                            @elseif($v >= 1000)
+                                                {{ number_format($v / 1000, 1) }}rb
+                                            @else
+                                                Rp {{ number_format($v, 0, ',', '.') }}
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="text-center text-muted py-3">Belum ada tagihan untuk pengguna manapun.</div>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
             </div>
@@ -219,7 +249,7 @@
         <!-- Statistics Cards -->
 
         <!-- Additional Revenue Cards: Last Month & All-time -->
-        <div class="row mt-4">
+        <div class="row ">
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">

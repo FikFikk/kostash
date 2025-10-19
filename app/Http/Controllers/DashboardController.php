@@ -12,6 +12,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -42,6 +43,9 @@ class DashboardController extends Controller
         // Additional data for view compatibility
         $viewData = $this->getViewCompatibleData($stats, $financialData, $roomAnalytics);
 
+        // User spending summary (users who ever had bills)
+        $userSpendingData = $this->getUserSpending();
+
         // Check if this is an AJAX request
         if ($request->ajax()) {
             return response()->json($chartData);
@@ -54,8 +58,31 @@ class DashboardController extends Controller
             $recentData,
             $chartData,
             $alerts,
-            $viewData
+            $viewData,
+            $userSpendingData
         ));
+    }
+
+    /**
+     * Get per-user spending summary for all users that ever had a meter/bill
+     * Returns array with 'userSpending' (collection) and 'userSpendingTotal' (float)
+     */
+    private function getUserSpending()
+    {
+        $users = User::select('users.id', 'users.name', 'users.email', DB::raw('SUM(meters.total_bill) as total_spend'), DB::raw('COUNT(meters.id) as bills_count'))
+            ->join('meters', 'meters.user_id', '=', 'users.id')
+            ->groupBy('users.id', 'users.name', 'users.email')
+            ->orderByDesc('total_spend')
+            ->get();
+
+        $total = $users->sum(function ($u) {
+            return (float) $u->total_spend;
+        });
+
+        return [
+            'userSpending' => $users,
+            'userSpendingTotal' => $total,
+        ];
     }
 
     private function getViewCompatibleData($stats, $financialData, $roomAnalytics)

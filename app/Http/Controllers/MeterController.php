@@ -184,6 +184,12 @@ class MeterController extends Controller
             $user = $authUser;
         }
 
+        // If no authenticated tenant, attempt to find the tenant assigned to the room
+        // so existing room assignment will receive ownership for new meter entries.
+        if (is_null($user)) {
+            $user = User::where('room_id', $validated['room_id'])->where('role', 'tenants')->first();
+        }
+
         $exists = Meter::where('room_id', $validated['room_id'])
             ->where('period', $period)
             ->exists();

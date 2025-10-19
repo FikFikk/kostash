@@ -34,22 +34,45 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Track visitor unik per hari berdasarkan IP
+     * Track visitor unik per hari berdasarkan IP (hanya untuk public/landing page)
      */
     protected function trackVisitor(): void
     {
         try {
-            $ip = request()->ip();
+            $request = request();
+            $currentUrl = $request->url();
+
+            // Hanya track jika akses ke landing page/public (bukan dashboard/admin/tenant)
+            if (
+                str_contains($currentUrl, '/dashboard') ||
+                str_contains($currentUrl, '/tenant') ||
+                str_contains($currentUrl, '/auth') ||
+                str_contains($currentUrl, '/artisan')
+            ) {
+                return;
+            }
+
+            $ip = $request->ip();
             $userId = Auth::id();
             $date = now()->toDateString();
+            $url = $request->fullUrl();
+            $userAgent = $request->userAgent();
+            $referer = $request->header('referer');
 
-            // Cek apakah sudah ada kunjungan hari ini dari IP ini
-            $exists = Visit::where('ip', $ip)->where('date', $date)->exists();
+            // Cek apakah sudah ada kunjungan hari ini dari IP ini ke URL ini
+            $exists = Visit::where('ip', $ip)
+                ->where('date', $date)
+                ->where('url', $url)
+                ->exists();
+
             if (!$exists) {
                 Visit::create([
                     'ip' => $ip,
                     'user_id' => $userId,
-                    'date' => $date
+                    'date' => $date,
+                    'url' => $url,
+                    'user_agent' => $userAgent,
+                    'referer' => $referer
                 ]);
             }
         } catch (\Exception $e) {

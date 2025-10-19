@@ -77,8 +77,11 @@ class DashboardController extends Controller
         // Tetap definisikan totalTenants agar growthPercent tidak error
         $totalTenants = $stats['totalActiveTenants'] ?? 0;
         // Widget: Pengunjung Hari Ini dan Total Pengunjung (data nyata dari tabel visits)
-        $visitorToday = Visit::where('date', now()->toDateString())->distinct('ip')->count('ip');
-        $visitorTotal = Visit::distinct('ip')->count('ip');
+        $visitorToday = Visit::where('date', now()->toDateString())
+            ->distinct()
+            ->count('ip');
+        $visitorTotal = Visit::distinct()
+            ->count('ip');
 
         // Calculate tenant growth percentage
         $lastMonthEnd = Carbon::now()->startOfMonth()->subDay();
@@ -91,8 +94,8 @@ class DashboardController extends Controller
             $growthPercent = (($totalTenants - $totalTenantsLastMonth) / $totalTenantsLastMonth) * 100;
         }
 
-    // Widget: Total Pengunjung Selama Ini (nyata, dari tabel visits)
-    $visitorTotal = Visit::distinct('ip')->count('ip');
+        // Widget: Total Pengunjung Selama Ini (nyata, dari tabel visits)
+        $visitorTotal = Visit::distinct('ip')->count('ip');
 
         return compact(
             'totalRevenue',

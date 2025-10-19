@@ -9,6 +9,9 @@ class Visit extends Model
     protected $fillable = [
         'ip',
         'user_id',
-        'date'
+        'date',
+        'url',
+        'user_agent',
+        'referer'
     ];
 }

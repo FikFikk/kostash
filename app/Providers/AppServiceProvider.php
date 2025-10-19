@@ -40,14 +40,21 @@ class AppServiceProvider extends ServiceProvider
     {
         try {
             $request = request();
+            $currentPath = $request->path();
             $currentUrl = $request->url();
 
-            // Hanya track jika akses ke landing page/public (bukan dashboard/admin/tenant)
+            // Skip tracking untuk route yang bukan public/landing page
             if (
                 str_contains($currentUrl, '/dashboard') ||
                 str_contains($currentUrl, '/tenant') ||
                 str_contains($currentUrl, '/auth') ||
-                str_contains($currentUrl, '/artisan')
+                str_contains($currentUrl, '/artisan') ||
+                str_contains($currentUrl, '/api') ||
+                str_contains($currentUrl, '/storage') ||
+                str_contains($currentUrl, '/build') ||
+                str_contains($currentUrl, '/assets') ||
+                $request->ajax() ||
+                $currentPath === 'favicon.ico'
             ) {
                 return;
             }
@@ -59,10 +66,9 @@ class AppServiceProvider extends ServiceProvider
             $userAgent = $request->userAgent();
             $referer = $request->header('referer');
 
-            // Cek apakah sudah ada kunjungan hari ini dari IP ini ke URL ini
+            // Cek apakah sudah ada kunjungan hari ini dari IP ini (tidak peduli URL)
             $exists = Visit::where('ip', $ip)
                 ->where('date', $date)
-                ->where('url', $url)
                 ->exists();
 
             if (!$exists) {
@@ -70,6 +76,13 @@ class AppServiceProvider extends ServiceProvider
                     'ip' => $ip,
                     'user_id' => $userId,
                     'date' => $date,
+                    'url' => $url,
+                    'user_agent' => $userAgent,
+                    'referer' => $referer
+                ]);
+
+                Log::info('Visitor tracked', [
+                    'ip' => $ip,
                     'url' => $url,
                     'user_agent' => $userAgent,
                     'referer' => $referer

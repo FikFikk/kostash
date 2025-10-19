@@ -184,7 +184,7 @@
     <div class="invoice-container">
         <div class="content-wrapper">
             <div class="header">
-                <img src="{{ public_path('assets/images/kostash-logo-tp.png') }}" alt="Logo KostASH">
+                <img src="{{ asset('assets/images/kostash-logo-tp.png') }}" alt="Logo KostASH">
                 <h1>Tagihan KostASH</h1>
                 <div class="period">{{ DateTime::createFromFormat('!m', $month)->format('F') }} {{ $year }}</div>
             </div>

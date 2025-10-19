@@ -154,7 +154,7 @@
         });
     </script>
 
-    <!-- <script>
+    <script>
         // Pass PHP data to JavaScript
         window.monthlyRevenue = @json($monthlyRevenue ?? []);
         window.roomsWithTenants = {{ $roomsWithTenants ?? 0 }};
@@ -166,7 +166,7 @@
             roomsWithTenants: window.roomsWithTenants,
             roomsWithoutTenants: window.roomsWithoutTenants
         });
-    </script> -->
+    </script>
     @yield('script')
 
 </body>

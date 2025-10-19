@@ -160,23 +160,15 @@ class DashboardController extends Controller
             $monthStart = $month->copy()->startOfMonth();
             $monthEnd = $month->copy()->endOfMonth();
 
-            // Get revenue for this month using paid_at field
-            $revenue = Meter::where('payment_status', 'paid')
-                ->whereBetween('paid_at', [
-                    $monthStart->format('Y-m-d H:i:s'),
-                    $monthEnd->format('Y-m-d H:i:s')
-                ])
+            // Calculate revenue for the month based on the billing period
+            // Include all bill statuses (paid, unpaid, partial) so the chart
+            // reflects total billed amount per month (including pending/unpaid)
+            $revenue = Meter::whereBetween('period', [
+                $monthStart->format('Y-m-01'),
+                $monthEnd->format('Y-m-d')
+            ])
+                ->whereIn('payment_status', ['paid', 'unpaid', 'partial'])
                 ->sum('total_bill');
-
-            // If no data found using paid_at, try using period field as fallback
-            if ($revenue == 0) {
-                $revenue = Meter::where('payment_status', 'paid')
-                    ->whereBetween('period', [
-                        $monthStart->format('Y-m-01'),
-                        $monthEnd->format('Y-m-d')
-                    ])
-                    ->sum('total_bill');
-            }
 
             $monthlyRevenue->push([
                 'month' => $month->format('M Y'),

@@ -717,27 +717,51 @@
                     if (shareBtn) {
                         shareBtn.style.display = '';
                         shareBtn.onclick = async function() {
+                            const periodSafe = periodText || '';
+
                             // If Web Share API with files is available, use it
-                            if (navigator.canShare && navigator.canShare({
-                                    files: [file]
-                                })) {
-                                try {
-                                    await navigator.share({
-                                        files: [file],
-                                        title: 'Tagihan',
-                                        text: `Tagihan ${safeGuest} - ${safePeriod}`
-                                    });
-                                    return;
-                                } catch (e) {
-                                    console.warn('Share failed', e);
+                            try {
+                                const canShareFiles = (navigator.canShare && navigator.canShare({
+                                        files: [file]
+                                    })) ||
+                                    // some platforms implement navigator.share but not navigator.canShare
+                                    (!!navigator.share && !!file && typeof navigator.share === 'function');
+
+                                if (canShareFiles) {
+                                    try {
+                                        await navigator.share({
+                                            files: [file],
+                                            title: 'Tagihan',
+                                            text: `Tagihan ${safeGuest} - ${periodSafe}`
+                                        });
+                                        return;
+                                    } catch (e) {
+                                        console.warn('Share failed', e);
+                                        // fall through to fallback behavior
+                                    }
                                 }
+                            } catch (e) {
+                                console.warn('CanShare check failed', e);
                             }
 
-                            // Fallback: open WhatsApp Web with prefilled message and instruct user to attach image
-                            const waText = encodeURIComponent(
-                                `Halo, berikut tagihan: ${safeGuest} ${periodText || ''}. File: ${filename}`);
-                            const waUrl = `https://wa.me/?text=${waText}`;
-                            window.open(waUrl, '_blank');
+                            // Fallback: open the image in a new tab and open WhatsApp Web with a helpful message
+                            try {
+                                const blobUrl = URL.createObjectURL(blob);
+                                // open image in new tab so user can save or attach it manually
+                                window.open(blobUrl, '_blank');
+
+                                const waText = encodeURIComponent(
+                                    `Halo, berikut tagihan: ${safeGuest} ${periodSafe}. File: ${filename}. Gambar terbuka di tab baru — silakan lampirkan.`
+                                );
+                                const waUrl = `https://wa.me/?text=${waText}`;
+                                window.open(waUrl, '_blank');
+                            } catch (e) {
+                                console.error('Fallback share failed', e);
+                                // as last resort, prompt user to download
+                                alert(
+                                    'Tidak dapat membagikan secara otomatis. Silakan unduh gambar lalu bagikan secara manual.'
+                                    );
+                            }
                         };
                     }
 

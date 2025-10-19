@@ -62,14 +62,31 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
 
-            // Normalize IP (handle IPv6 loopback and proxies if needed)
-            $ip = $request->ip();
-            if ($ip === '::1' || $ip === '127.0.0.1') {
-                // in local dev use server REMOTE_ADDR when available
-                $serverIp = $request->server('REMOTE_ADDR');
-                if ($serverIp && $serverIp !== $ip) {
-                    $ip = $serverIp;
+            // Normalize IP (prefer X-Forwarded-For first entry, fallback to REMOTE_ADDR or request->ip())
+            $ip = null;
+            $xff = $request->header('x-forwarded-for');
+            if ($xff) {
+                // X-Forwarded-For may contain a comma separated list, prefer the first non-empty one
+                $parts = array_map('trim', explode(',', $xff));
+                foreach ($parts as $p) {
+                    if (filter_var($p, FILTER_VALIDATE_IP)) {
+                        $ip = $p;
+                        break;
+                    }
                 }
+            }
+
+            if (!$ip) {
+                $serverIp = $request->server('REMOTE_ADDR');
+                $ip = $serverIp ?: $request->ip();
+            }
+
+            // Normalize IPv6 loopback to ::1 and IPv4 loopback to 127.0.0.1 consistently
+            if ($ip === '::ffff:127.0.0.1') {
+                $ip = '127.0.0.1';
+            }
+            if ($ip === '::1' || $ip === '127.0.0.1') {
+                // keep as is (local dev); no further action needed
             }
             $userId = Auth::id();
             $date = now()->toDateString();

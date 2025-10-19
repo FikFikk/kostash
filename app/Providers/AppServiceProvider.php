@@ -53,13 +53,13 @@ class AppServiceProvider extends ServiceProvider
             ]);
 
             // Skip tracking untuk route yang bukan public/landing page
-            $skipPaths = ['/dashboard', '/tenant', '/auth', '/artisan', '/api', '/storage', '/build', '/assets'];
-            foreach ($skipPaths as $skipPath) {
-                if (str_starts_with($currentPath, trim($skipPath, '/'))) {
-                    Log::info('Skipping tracking - matched skip path: ' . $skipPath);
-                    return;
-                }
-            }
+            // $skipPaths = ['/dashboard', '/tenant', '/auth', '/artisan', '/api', '/storage', '/build', '/assets'];
+            // foreach ($skipPaths as $skipPath) {
+            //     if (str_starts_with($currentPath, trim($skipPath, '/'))) {
+            //         Log::info('Skipping tracking - matched skip path: ' . $skipPath);
+            //         return;
+            //     }
+            // }
 
             if ($request->ajax() || $currentPath === 'favicon.ico') {
                 Log::info('Skipping tracking - AJAX or favicon');

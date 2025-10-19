@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Visit;
+
 use App\Http\Controllers\Controller;
 use App\Models\Meter;
 use App\Models\Transaction;
@@ -59,37 +61,45 @@ class DashboardController extends Controller
     private function getViewCompatibleData($stats, $financialData, $roomAnalytics)
     {
         // Map existing data to view variable names
-        $totalRevenue = $stats['totalRevenueThisMonth'];
-        $revenueGrowthPercent = $stats['revenueGrowth'];
-        $totalTenants = $stats['totalActiveTenants'];
-        
-        // Calculate tenant growth percentage
+        // Widget 1: Total Pendapatan Bulan Ini (paid + unpaid + partial)
         $currentMonth = Carbon::now()->startOfMonth();
-        $lastMonth = Carbon::now()->subMonth()->startOfMonth();
+        $endOfMonth = $currentMonth->copy()->endOfMonth();
+        // Komentar: Payment gateway masih pending, jadi total pendapatan = semua tagihan bulan ini
+        $totalRevenue = Meter::whereBetween('period', [
+            $currentMonth->format('Y-m-01'),
+            $endOfMonth->format('Y-m-d')
+        ])
+            ->whereIn('payment_status', ['paid', 'unpaid', 'partial'])
+            ->sum('total_bill');
+
+        $revenueGrowthPercent = $stats['revenueGrowth'];
+
+        // Tetap definisikan totalTenants agar growthPercent tidak error
+        $totalTenants = $stats['totalActiveTenants'] ?? 0;
+        // Widget: Pengunjung Hari Ini dan Total Pengunjung (data nyata dari tabel visits)
+        $visitorToday = Visit::where('date', now()->toDateString())->distinct('ip')->count('ip');
+        $visitorTotal = Visit::distinct('ip')->count('ip');
+
+        // Calculate tenant growth percentage
         $lastMonthEnd = Carbon::now()->startOfMonth()->subDay();
-        
         $totalTenantsLastMonth = User::whereHas('room')
             ->where('created_at', '<=', $lastMonthEnd)
             ->count();
-        
+
         $growthPercent = 0;
         if ($totalTenantsLastMonth > 0) {
             $growthPercent = (($totalTenants - $totalTenantsLastMonth) / $totalTenantsLastMonth) * 100;
         }
-        
-        // Get pending transactions count
-        $totalPendingTransactionsCount = Meter::whereIn('payment_status', ['unpaid', 'partial'])
-            ->count();
-        
-        $totalPendingTransactions = $stats['totalOutstanding'];
+
+        // Widget: Total Pengunjung Selama Ini (dummy, implementasi tracking kunjungan bisa pakai DB/tabel visits)
+        $visitorTotal = 0; // TODO: Ganti dengan query visitor tracking jika sudah ada
 
         return compact(
             'totalRevenue',
-            'revenueGrowthPercent', 
-            'totalTenants',
+            'revenueGrowthPercent',
+            'visitorToday',
             'growthPercent',
-            'totalPendingTransactionsCount',
-            'totalPendingTransactions'
+            'visitorTotal'
         );
     }
 
@@ -97,7 +107,7 @@ class DashboardController extends Controller
     {
         $monthlyRevenue = collect();
         $now = Carbon::now();
-        
+
         // Determine the period range
         switch ($period) {
             case '6_months':
@@ -124,7 +134,7 @@ class DashboardController extends Controller
             $month = $now->copy()->subMonths($i);
             $monthStart = $month->copy()->startOfMonth();
             $monthEnd = $month->copy()->endOfMonth();
-            
+
             // Get revenue for this month using paid_at field
             $revenue = Meter::where('payment_status', 'paid')
                 ->whereBetween('paid_at', [
@@ -190,7 +200,7 @@ class DashboardController extends Controller
 
         return compact(
             'totalRevenueThisMonth',
-            'totalRevenueLastMonth', 
+            'totalRevenueLastMonth',
             'revenueGrowth',
             'totalOutstanding',
             'totalRooms',
@@ -210,23 +220,23 @@ class DashboardController extends Controller
 
         // Total Water Usage This Month
         $totalWaterUsage = Meter::whereBetween('period', [
-                $currentMonth->format('Y-m-01'),
-                $currentMonth->copy()->endOfMonth()->format('Y-m-d')
-            ])
+            $currentMonth->format('Y-m-01'),
+            $currentMonth->copy()->endOfMonth()->format('Y-m-d')
+        ])
             ->sum('total_water');
 
         // Total Electric Usage This Month
         $totalElectricUsage = Meter::whereBetween('period', [
-                $currentMonth->format('Y-m-01'),
-                $currentMonth->copy()->endOfMonth()->format('Y-m-d')
-            ])
+            $currentMonth->format('Y-m-01'),
+            $currentMonth->copy()->endOfMonth()->format('Y-m-d')
+        ])
             ->sum('total_electric');
 
         // Collection Rate (Paid vs Total Bills)
         $totalBillsThisMonth = Meter::whereBetween('period', [
-                $currentMonth->format('Y-m-01'),
-                $currentMonth->copy()->endOfMonth()->format('Y-m-d')
-            ])
+            $currentMonth->format('Y-m-01'),
+            $currentMonth->copy()->endOfMonth()->format('Y-m-d')
+        ])
             ->count();
 
         $paidBillsThisMonth = Meter::where('payment_status', 'paid')
@@ -250,10 +260,10 @@ class DashboardController extends Controller
     {
         // Rooms with tenants
         $roomsWithTenants = Room::whereHas('users')->count();
-        
+
         // Rooms without tenants
         $roomsWithoutTenants = Room::whereDoesntHave('users')->count();
-        
+
         // Occupancy Rate
         $totalRooms = Room::count();
         $occupancyRate = $totalRooms > 0 ? ($roomsWithTenants / $totalRooms) * 100 : 0;
@@ -290,11 +300,11 @@ class DashboardController extends Controller
         // High Usage Alerts (above average + 50%)
         $averageWaterUsage = Meter::avg('total_water');
         $averageElectricUsage = Meter::avg('total_electric');
-        
-        $highUsageAlerts = Meter::where(function($query) use ($averageWaterUsage, $averageElectricUsage) {
-                $query->where('total_water', '>', $averageWaterUsage * 1.5)
-                      ->orWhere('total_electric', '>', $averageElectricUsage * 1.5);
-            })
+
+        $highUsageAlerts = Meter::where(function ($query) use ($averageWaterUsage, $averageElectricUsage) {
+            $query->where('total_water', '>', $averageWaterUsage * 1.5)
+                ->orWhere('total_electric', '>', $averageElectricUsage * 1.5);
+        })
             ->whereBetween('period', [
                 Carbon::now()->startOfMonth()->format('Y-m-01'),
                 Carbon::now()->endOfMonth()->format('Y-m-d')

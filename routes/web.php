@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\{
@@ -29,6 +30,39 @@ use App\Http\Controllers\Tenants\{
 
 use Illuminate\Support\Facades\Route;
 
+use Illuminate\Support\Facades\Artisan;
+/*
+|--------------------------------------------------------------------------
+| Maintenance & Artisan Command Routes (Admin Only)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'role:admin'])->prefix('artisan')->group(function () {
+    Route::get('/migrate', function () {
+        Artisan::call('migrate');
+        return 'Migrate executed!';
+    });
+    Route::get('/optimize', function () {
+        Artisan::call('optimize');
+        return 'Optimize executed!';
+    });
+    Route::get('/route-cache', function () {
+        Artisan::call('route:cache');
+        return 'Route cache executed!';
+    });
+    Route::get('/config-cache', function () {
+        Artisan::call('config:cache');
+        return 'Config cache executed!';
+    });
+    Route::get('/view-cache', function () {
+        Artisan::call('view:cache');
+        return 'View cache executed!';
+    });
+    Route::get('/clear', function () {
+        Artisan::call('optimize:clear');
+        return 'Optimize clear executed!';
+    });
+});
 /*
 |--------------------------------------------------------------------------
 | Public Routes

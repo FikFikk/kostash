@@ -91,8 +91,8 @@ class DashboardController extends Controller
             $growthPercent = (($totalTenants - $totalTenantsLastMonth) / $totalTenantsLastMonth) * 100;
         }
 
-        // Widget: Total Pengunjung Selama Ini (dummy, implementasi tracking kunjungan bisa pakai DB/tabel visits)
-        $visitorTotal = 0; // TODO: Ganti dengan query visitor tracking jika sudah ada
+    // Widget: Total Pengunjung Selama Ini (nyata, dari tabel visits)
+    $visitorTotal = Visit::distinct('ip')->count('ip');
 
         return compact(
             'totalRevenue',

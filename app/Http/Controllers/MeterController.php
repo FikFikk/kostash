@@ -20,7 +20,8 @@ class MeterController extends Controller
         // Find meter by ID
         $meter = \App\Models\Meter::findOrFail($id);
         $room = $meter->room;
-        $user = $meter->user ?? \App\Models\User::where('room_id', $room->id)->where('role', 'tenants')->first();
+        // Use the explicit user attached to the meter. Do not fallback to users.room_id lookup.
+        $user = $meter->user;
         $global = \App\Models\GlobalSetting::first();
 
         // Calculate month and year from period
@@ -64,7 +65,8 @@ class MeterController extends Controller
     {
         $meter = \App\Models\Meter::findOrFail($id);
         $room = $meter->room;
-        $user = $meter->user ?? \App\Models\User::where('room_id', $room->id)->where('role', 'tenants')->first();
+        // Use the explicit user attached to the meter. Do not fallback to users.room_id lookup.
+        $user = $meter->user;
         $global = \App\Models\GlobalSetting::first();
 
         $period = \Carbon\Carbon::parse($meter->period);
@@ -175,9 +177,12 @@ class MeterController extends Controller
 
         $period = $this->parsePeriod($validated['period']);
 
-        $user = User::where('room_id', $validated['room_id'])
-            ->where('role', 'tenants')
-            ->first();
+        // Prefer the currently authenticated tenant user when creating a meter.
+        $authUser = \Illuminate\Support\Facades\Auth::user();
+        $user = null;
+        if ($authUser && $authUser->role === 'tenants') {
+            $user = $authUser;
+        }
 
         $exists = Meter::where('room_id', $validated['room_id'])
             ->where('period', $period)
@@ -228,7 +233,15 @@ class MeterController extends Controller
             $global
         );
 
-        $meter->update(array_merge($validated, $billData, ['period' => $period]));
+        // If this meter doesn't have an owner yet, try to assign one based on users.room_id
+        if (is_null($meter->user_id)) {
+            $tenant = User::where('room_id', $meter->room_id)->where('role', 'tenants')->first();
+            if ($tenant) {
+                $meter->user_id = $tenant->id;
+            }
+        }
+
+        $meter->update(array_merge($validated, $billData, ['period' => $period, 'user_id' => $meter->user_id]));
 
         return redirect()->route('dashboard.meter.index')->with('success', 'Meter berhasil diperbarui.');
     }

@@ -217,90 +217,45 @@
         </div>
 
         <!-- Statistics Cards -->
+
+        <!-- Additional Revenue Cards: Last Month & All-time -->
         <div class="row mt-4">
-            <div class="col-md-3">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="bg-secondary bg-opacity-10 p-3 rounded">
+                                    <i class="ri-calendar-2-line text-secondary fs-20"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Pendapatan Bulan Kemarin</h6>
+                                <h4 class="text-secondary mb-0">Rp
+                                    {{ number_format($revenueLastMonth ?? 0, 0, ',', '.') }}
+                                </h4>
+                                <small class="text-muted">Periode:
+                                    {{ \Carbon\Carbon::now()->subMonth()->format('F Y') }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <div class="bg-primary bg-opacity-10 p-3 rounded">
-                                    <i class="ri-money-dollar-circle-line text-primary fs-4"></i>
+                                    <i class="ri-stack-line text-primary fs-20"></i>
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">Pendapatan Bulan Ini</h6>
-                                <h4 class="text-primary mb-0">Rp
-                                    {{ number_format($totalRevenueThisMonth ?? 0, 0, ',', '.') }}</h4>
-                                <small class="text-muted">
-                                    @if (($revenueGrowth ?? 0) > 0)
-                                        <i class="ri-arrow-up-line text-success"></i>
-                                        {{ number_format($revenueGrowth, 1) }}%
-                                    @elseif(($revenueGrowth ?? 0) < 0)
-                                        <i class="ri-arrow-down-line text-danger"></i>
-                                        {{ number_format(abs($revenueGrowth), 1) }}%
-                                    @else
-                                        <i class="ri-subtract-line text-secondary"></i> 0%
-                                    @endif
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="bg-warning bg-opacity-10 p-3 rounded">
-                                    <i class="ri-bill-line text-warning fs-4"></i>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">Tagihan Belum Lunas</h6>
-                                <h4 class="text-warning mb-0">Rp {{ number_format($totalOutstanding ?? 0, 0, ',', '.') }}
+                                <h6 class="mb-0">Pendapatan All-time</h6>
+                                <h4 class="text-primary mb-0">Rp {{ number_format($revenueAllTime ?? 0, 0, ',', '.') }}
                                 </h4>
-                                <small class="text-muted">{{ $overdueBills ?? 0 }} tagihan terlambat</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="bg-info bg-opacity-10 p-3 rounded">
-                                    <i class="ri-home-4-line text-info fs-4"></i>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">Tingkat Hunian</h6>
-                                <h4 class="text-info mb-0">{{ number_format($occupancyRate ?? 0, 1) }}%</h4>
-                                <small class="text-muted">{{ $roomsWithTenants ?? 0 }} dari {{ $totalRooms ?? 0 }}
-                                    kamar</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="bg-success bg-opacity-10 p-3 rounded">
-                                    <i class="ri-percent-line text-success fs-4"></i>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">Tingkat Penagihan</h6>
-                                <h4 class="text-success mb-0">{{ number_format($collectionRate ?? 0, 1) }}%</h4>
-                                <small class="text-muted">Bulan ini</small>
+                                <small class="text-muted">Total semua tagihan</small>
                             </div>
                         </div>
                     </div>

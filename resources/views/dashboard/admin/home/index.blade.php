@@ -9,14 +9,14 @@
                         <h1 class="h3 mb-1 text-gray-800 fw-bold" id="greeting-text">Selamat datang!</h1>
                         <p class="text-muted mb-0">Kelola koskosan Anda dengan mudah dan efisien</p>
                     </div>
-                    <div class="d-flex gap-2">
+                    {{-- <div class="d-flex gap-2">
                         <button class="btn btn-outline-primary btn-sm">
                             <i class="ri-download-line me-1"></i> Export Data
                         </button>
                         <button class="btn btn-primary btn-sm">
                             <i class="ri-add-line me-1"></i> Tambah Data
                         </button>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

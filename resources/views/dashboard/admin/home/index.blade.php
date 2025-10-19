@@ -304,6 +304,9 @@
 
 @section('script')
     <script>
+        // Server-provided initial chart data (avoid dummy fallback on refresh)
+        var monthlyRevenue = @json($monthlyRevenue ?? []);
+
         // Greeting script
         document.addEventListener("DOMContentLoaded", function() {
             const now = new Date();
@@ -322,18 +325,21 @@
             document.getElementById("greeting-text").innerText = `${greeting}, ${userName}!`;
         });
 
+
         // Include the JavaScript code from the previous artifact here
         document.addEventListener('DOMContentLoaded', function() {
             let revenueChart = null;
             let roomChart = null;
             let initialChartData = null;
 
-            // Get initial chart data from PHP (passed from controller)
-            if (typeof monthlyRevenue !== 'undefined') {
+            // Get initial chart data from server-injected variable (may be empty or contain 'pending')
+            if (typeof monthlyRevenue !== 'undefined' && Array.isArray(monthlyRevenue)) {
                 initialChartData = monthlyRevenue;
+            } else {
+                initialChartData = [];
             }
 
-            // Initialize charts with actual data from controller
+            // Initialize charts with data from controller (no dummy fallback)
             initializeCharts();
 
             // Add event listeners for filter buttons
@@ -375,13 +381,21 @@
                 let revenueValues = [];
 
                 if (initialChartData && initialChartData.length > 0) {
-                    // Use actual data from controller
+                    // Use actual data from controller. Accept numeric, null, or 'pending' values.
                     revenueLabels = initialChartData.map(item => item.month);
-                    revenueValues = initialChartData.map(item => parseFloat(item.revenue) || 0);
+                    revenueValues = initialChartData.map(item => {
+                        // allow strings like 'pending' or null; return null for gaps in chart
+                        if (item === null || typeof item === 'undefined') return null;
+                        const r = item.revenue ?? item.value ?? null;
+                        if (r === null || typeof r === 'undefined') return null;
+                        if (typeof r === 'string' && r.toLowerCase() === 'pending') return null;
+                        const num = parseFloat(r);
+                        return Number.isFinite(num) ? num : null;
+                    });
                 } else {
-                    // Fallback to sample data if no data available
-                    revenueLabels = ['Jan 2025', 'Feb 2025', 'Mar 2025', 'Apr 2025', 'May 2025', 'Jun 2025'];
-                    revenueValues = [2500000, 3200000, 2800000, 3500000, 4100000, 3800000];
+                    // No server data: render empty chart (no dummy data)
+                    revenueLabels = [];
+                    revenueValues = [];
                 }
 
                 const revenueOptions = {
@@ -445,6 +459,9 @@
                     tooltip: {
                         y: {
                             formatter: function(value) {
+                                if (value === null || typeof value === 'undefined') {
+                                    return 'Pending';
+                                }
                                 return 'Rp ' + value.toLocaleString('id-ID');
                             }
                         }
@@ -728,6 +745,7 @@
                 const token = csrfToken ? csrfToken.getAttribute('content') : '';
 
                 // Make AJAX request to get filtered data
+                // Note: controller should return JSON with `monthlyRevenue` array
                 fetch(`${window.location.pathname}?period=${period}`, {
                         method: 'GET',
                         headers: {
@@ -744,11 +762,18 @@
                         return response.json();
                     })
                     .then(data => {
-                        if (data.monthlyRevenue && data.monthlyRevenue.length > 0 && revenueChart) {
+                        if (data.monthlyRevenue && revenueChart) {
                             const labels = data.monthlyRevenue.map(item => item.month);
-                            const values = data.monthlyRevenue.map(item => parseFloat(item.revenue) || 0);
+                            const values = data.monthlyRevenue.map(item => {
+                                if (item === null || typeof item === 'undefined') return null;
+                                const r = item.revenue ?? item.value ?? null;
+                                if (r === null || typeof r === 'undefined') return null;
+                                if (typeof r === 'string' && r.toLowerCase() === 'pending') return null;
+                                const num = parseFloat(r);
+                                return Number.isFinite(num) ? num : null;
+                            });
 
-                            // Update chart with new data
+                            // Update chart with new data (allow empty arrays)
                             revenueChart.updateOptions({
                                 xaxis: {
                                     categories: labels,

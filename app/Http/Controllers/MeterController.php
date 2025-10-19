@@ -55,6 +55,43 @@ class MeterController extends Controller
         // Always stream for admin
         return $pdf->stream($filename);
     }
+
+    /**
+     * Preview export as HTML (renders same view used for PDF but returns HTML)
+     * This allows front-end to render the export layout and convert to image if needed.
+     */
+    public function previewExport($id)
+    {
+        $meter = \App\Models\Meter::findOrFail($id);
+        $room = $meter->room;
+        $user = $meter->user ?? \App\Models\User::where('room_id', $room->id)->where('role', 'tenants')->first();
+        $global = \App\Models\GlobalSetting::first();
+
+        $period = \Carbon\Carbon::parse($meter->period);
+        $month = (int) $period->format('m');
+        $year = (int) $period->format('Y');
+
+        $electricUsage = max(0, $meter->electric_meter_end - $meter->electric_meter_start);
+        $waterUsage = max(0, $meter->water_meter_end - $meter->water_meter_start);
+        $totalBill = ($electricUsage * $global->electric_price) + ($waterUsage * $global->water_price) + $global->monthly_room_price;
+
+        $data = [
+            'user' => $user,
+            'room' => $room,
+            'month' => $month,
+            'year' => $year,
+            'meter' => $meter,
+            'global' => $global,
+            'electricUsage' => $electricUsage,
+            'waterUsage' => $waterUsage,
+            'totalBill' => $totalBill,
+        ];
+
+        // Render the same view but return HTML so front-end can render/convert to image
+        $html = view('dashboard.tenants.image.export', $data)->render();
+
+        return response()->json(['html' => $html]);
+    }
     public function index(Request $request)
     {
         $selectedYear = $request->get('year', now()->year);

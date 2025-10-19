@@ -142,6 +142,8 @@ Route::middleware(['auth', 'role:admin', 'check.screen.lock'])->prefix('dashboar
         Route::get('/{meter:uuid}/details', [MeterController::class, 'getMeterDetails'])->name('details');
         Route::get('/room/{room:uuid}/details', [MeterController::class, 'getRoomDetails'])->name('room.details');
         Route::get('/{meter}/export', [MeterController::class, 'export'])->name('export');
+        // Preview export as HTML for client-side image generation
+        Route::get('/{meter}/preview', [MeterController::class, 'previewExport'])->name('preview');
     });
 
     // Room additional routes

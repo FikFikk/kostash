@@ -358,11 +358,17 @@
                                                                 <i class="ri-pencil-line"></i>
                                                             </a>
 
-                                                            <a href="{{ route('dashboard.meter.export', $meter->id) }}"
-                                                                target="_blank" class="btn btn-sm btn-outline-success"
-                                                                title="Ekspor PDF">
+                                                            {{-- Export PDF (keberadaan tombol lama dikomentari sesuai permintaan) --}}
+                                                            {{-- <a href="{{ route('dashboard.meter.export', $meter->id) }}" target="_blank" class="btn btn-sm btn-outline-success" title="Ekspor PDF">
                                                                 <i class="ri-file-download-line"></i>
-                                                            </a>
+                                                            </a> --}}
+
+                                                            <!-- New: Preview as image (render export view and convert to image) -->
+                                                            <button type="button" class="btn btn-sm btn-outline-success"
+                                                                title="Preview Export"
+                                                                onclick="previewExportAsImage('{{ $meter->id }}')">
+                                                                <i class="ri-image-line"></i>
+                                                            </button>
 
                                                             <form
                                                                 action="{{ route('dashboard.meter.destroy', $meter->id) }}"
@@ -419,6 +425,32 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview export modal -->
+    <div class="modal fade" id="exportPreviewModal" tabindex="-1" aria-labelledby="exportPreviewLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exportPreviewLabel">Preview Export</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="exportPreviewContent" class="text-center">
+                        <div class="spinner-border text-primary" role="status"><span
+                                class="visually-hidden">Loading...</span></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="exportPreviewShare" type="button" class="btn btn-success" style="display:none;">Share
+                        to WhatsApp</button>
+                    <a id="exportPreviewDownload" href="#" class="btn btn-primary" download="preview.png"
+                        style="display:none;">Download Image</a>
+                </div>
             </div>
         </div>
     </div>
@@ -572,6 +604,151 @@
             };
 
             document.addEventListener('DOMContentLoaded', () => MeterApp.init());
+        </script>
+
+        <!-- html2canvas CDN (used to convert HTML to image in-browser) -->
+        <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+        <script>
+            async function previewExportAsImage(meterId) {
+                const modalEl = document.getElementById('exportPreviewModal');
+                const modal = new bootstrap.Modal(modalEl);
+                const contentEl = document.getElementById('exportPreviewContent');
+                const downloadLink = document.getElementById('exportPreviewDownload');
+
+                // show loading state
+                contentEl.innerHTML =
+                    `<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2 text-muted">Mempersiapkan preview...</p></div>`;
+                downloadLink.style.display = 'none';
+                modal.show();
+
+                try {
+                    let url = '{{ route('dashboard.meter.preview', ':id') }}'.replace(':id', meterId);
+                    if (window.location.protocol === 'https:') url = url.replace(/^http:/, 'https:');
+
+                    const resp = await fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (!resp.ok) throw new Error('Gagal memuat preview');
+
+                    const data = await resp.json();
+                    // create a temporary container to render the HTML
+                    const tempDiv = document.createElement('div');
+                    tempDiv.style.position = 'fixed';
+                    tempDiv.style.left = '-9999px';
+                    tempDiv.style.top = '0';
+                    tempDiv.innerHTML = data.html;
+                    document.body.appendChild(tempDiv);
+
+                    // Use html2canvas to capture the rendered HTML
+                    const canvas = await html2canvas(tempDiv, {
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: '#ffffff'
+                    });
+
+                    // convert canvas to image and show in modal
+                    const imgData = canvas.toDataURL('image/png');
+                    contentEl.innerHTML = `<img src="${imgData}" class="img-fluid" alt="Preview Export" />`;
+
+                    // prepare filename using invoice info if available
+                    const invoiceEl = tempDiv.querySelector('.invoice-container') || tempDiv;
+                    // attempt to get a guest/room name from the rendered invoice (best-effort)
+                    let guestName = '';
+                    try {
+                        const firstStrong = invoiceEl.querySelector('.meta strong');
+                        if (firstStrong) {
+                            // try to get the text after the strong element
+                            guestName = firstStrong.nextSibling ? firstStrong.nextSibling.textContent.trim() : firstStrong
+                                .textContent.trim();
+                        }
+                    } catch (e) {
+                        guestName = '';
+                    }
+                    if (!guestName) guestName = 'tagihan_kamar';
+
+                    let periodText = invoiceEl.querySelector('.header .period')?.textContent?.trim() || '';
+                    if (!periodText) {
+                        const m = (tempDiv.textContent || '').match(/[A-Za-z]+\s\d{4}/);
+                        periodText = m ? m[0] : '';
+                    }
+
+                    // create filename in format: tagihan_{Month}-{YY}_{roomSlug}_{unixSeconds}.png
+                    const unixSeconds = Math.floor(Date.now() / 1000);
+                    const monthMatch = (periodText || '').match(/^([A-Za-z]+)\b/);
+                    const monthPart = monthMatch ? monthMatch[1] : 'month';
+                    const yearMatch = (periodText || '').match(/(\d{4})$/);
+                    const yearPart = yearMatch ? yearMatch[1].slice(-2) : new Date().getFullYear().toString().slice(-2);
+                    const safeGuest = guestName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_\-]/g, '') || 'namakamar';
+                    const filename = `tagihan_${monthPart}-${yearPart}_${safeGuest}_${unixSeconds}.png`;
+
+                    // create blob and set download link
+                    const byteString = atob(imgData.split(',')[1]);
+                    const ab = new ArrayBuffer(byteString.length);
+                    const ia = new Uint8Array(ab);
+                    for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+                    const blob = new Blob([ab], {
+                        type: 'image/png'
+                    });
+                    const file = new File([blob], filename, {
+                        type: 'image/png'
+                    });
+
+                    downloadLink.href = URL.createObjectURL(blob);
+                    downloadLink.download = filename;
+                    downloadLink.style.display = '';
+
+                    // set up open-full-preview link to original export page (keeps footer intact)
+                    const openLink = document.getElementById('exportPreviewOpen');
+                    if (openLink) {
+                        let openUrl = '{{ route('dashboard.meter.export', ':id') }}'.replace(':id', meterId);
+                        if (window.location.protocol === 'https:') openUrl = openUrl.replace(/^http:/, 'https:');
+                        openLink.href = openUrl;
+                        openLink.style.display = '';
+                    }
+
+                    // set share button logic
+                    const shareBtn = document.getElementById('exportPreviewShare');
+                    if (shareBtn) {
+                        shareBtn.style.display = '';
+                        shareBtn.onclick = async function() {
+                            // If Web Share API with files is available, use it
+                            if (navigator.canShare && navigator.canShare({
+                                    files: [file]
+                                })) {
+                                try {
+                                    await navigator.share({
+                                        files: [file],
+                                        title: 'Tagihan',
+                                        text: `Tagihan ${safeGuest} - ${safePeriod}`
+                                    });
+                                    return;
+                                } catch (e) {
+                                    console.warn('Share failed', e);
+                                }
+                            }
+
+                            // Fallback: open WhatsApp Web with prefilled message and instruct user to attach image
+                            const waText = encodeURIComponent(
+                                `Halo, berikut tagihan: ${safeGuest} ${periodText || ''}. File: ${filename}`);
+                            const waUrl = `https://wa.me/?text=${waText}`;
+                            window.open(waUrl, '_blank');
+                        };
+                    }
+
+                    // cleanup
+                    document.body.removeChild(tempDiv);
+                } catch (err) {
+                    contentEl.innerHTML =
+                        `<div class="text-center py-4"><p class="text-danger">Gagal memuat preview. Silakan coba lagi atau gunakan tombol Export PDF.</p></div>`;
+                    console.error(err);
+                }
+            }
         </script>
     @endpush
 @endsection

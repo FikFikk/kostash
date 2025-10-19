@@ -64,7 +64,7 @@ class DashboardController extends Controller
         // Widget 1: Total Pendapatan Bulan Ini (paid + unpaid + partial)
         $currentMonth = Carbon::now()->startOfMonth();
         $endOfMonth = $currentMonth->copy()->endOfMonth();
-        // Komentar: Payment gateway masih pending, jadi total pendapatan = semua tagihan bulan ini
+        // Total bills for current month (includes paid, unpaid, partial)
         $totalRevenue = Meter::whereBetween('period', [
             $currentMonth->format('Y-m-01'),
             $endOfMonth->format('Y-m-d')
@@ -72,7 +72,27 @@ class DashboardController extends Controller
             ->whereIn('payment_status', ['paid', 'unpaid', 'partial'])
             ->sum('total_bill');
 
-        $revenueGrowthPercent = $stats['revenueGrowth'];
+        // Revenue for last month (same rule)
+        $lastMonthStart = Carbon::now()->subMonth()->startOfMonth();
+        $lastMonthEnd = Carbon::now()->startOfMonth()->subDay();
+        $revenueLastMonth = Meter::whereBetween('period', [
+            $lastMonthStart->format('Y-m-01'),
+            $lastMonthEnd->format('Y-m-d')
+        ])
+            ->whereIn('payment_status', ['paid', 'unpaid', 'partial'])
+            ->sum('total_bill');
+
+        // All-time total of all bills
+        $revenueAllTime = Meter::sum('total_bill');
+
+        // Compute growth percent comparing current month vs last month
+        if ($revenueLastMonth > 0) {
+            $revenueGrowthPercent = (($totalRevenue - $revenueLastMonth) / $revenueLastMonth) * 100;
+        } elseif ($totalRevenue > 0) {
+            $revenueGrowthPercent = 100;
+        } else {
+            $revenueGrowthPercent = 0;
+        }
 
         // Tetap definisikan totalTenants agar growthPercent tidak error
         $totalTenants = $stats['totalActiveTenants'] ?? 0;
@@ -100,6 +120,8 @@ class DashboardController extends Controller
         return compact(
             'totalRevenue',
             'revenueGrowthPercent',
+            'revenueLastMonth',
+            'revenueAllTime',
             'visitorToday',
             'growthPercent',
             'visitorTotal'

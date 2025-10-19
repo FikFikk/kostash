@@ -53,20 +53,62 @@ class AppServiceProvider extends ServiceProvider
             ]);
 
             // Skip tracking untuk route yang bukan public/landing page
-            // $skipPaths = ['/dashboard', '/tenant', '/auth', '/artisan', '/api', '/storage', '/build', '/assets'];
-            // foreach ($skipPaths as $skipPath) {
-            //     if (str_starts_with($currentPath, trim($skipPath, '/'))) {
-            //         Log::info('Skipping tracking - matched skip path: ' . $skipPath);
-            //         return;
-            //     }
-            // }
+            $skipStarts = [
+                'dashboard',
+                'tenant',
+                'auth',
+                'artisan',
+                'api',
+            ];
+
+            foreach ($skipStarts as $skip) {
+                if (str_starts_with($currentPath, $skip)) {
+                    Log::info('Skipping tracking - matched skip prefix', ['prefix' => $skip, 'path' => $currentPath]);
+                    return;
+                }
+            }
+
+            // Treat asset/storage/build/assets requests specially: skip them when the referer is internal (same host)
+            // but allow them to create a visit when the referer is external (for example, Android app referrals or Google Maps)
+            $assetPrefixes = ['storage', 'uploads', 'assets', 'build'];
+            foreach ($assetPrefixes as $ap) {
+                if (str_starts_with($currentPath, $ap)) {
+                    $referer = $request->header('referer');
+                    $isInternalReferer = false;
+                    if ($referer) {
+                        $refererHost = parse_url($referer, PHP_URL_HOST);
+                        $appHost = parse_url(config('app.url') ?? $request->getSchemeAndHttpHost(), PHP_URL_HOST);
+                        if ($refererHost && $appHost && $refererHost === $appHost) {
+                            $isInternalReferer = true;
+                        }
+                    }
+
+                    if ($isInternalReferer) {
+                        Log::info('Skipping tracking - internal asset request', ['path' => $currentPath, 'referer' => $referer]);
+                        return;
+                    }
+
+                    // if referer is null or external, allow further processing so first-party hits coming from external apps
+                    // (eg. android-app://com.google...) can be counted as a landing.
+                    Log::info('Asset request with external/empty referer - will consider for tracking', ['path' => $currentPath, 'referer' => $referer]);
+                    break;
+                }
+            }
 
             if ($request->ajax() || $currentPath === 'favicon.ico') {
                 Log::info('Skipping tracking - AJAX or favicon');
                 return;
             }
 
+            // Normalize IP (handle IPv6 loopback and proxies if needed)
             $ip = $request->ip();
+            if ($ip === '::1' || $ip === '127.0.0.1') {
+                // in local dev use server REMOTE_ADDR when available
+                $serverIp = $request->server('REMOTE_ADDR');
+                if ($serverIp && $serverIp !== $ip) {
+                    $ip = $serverIp;
+                }
+            }
             $userId = Auth::id();
             $date = now()->toDateString();
             $url = $request->fullUrl();

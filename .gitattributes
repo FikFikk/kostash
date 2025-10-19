@@ -1,3 +1,36 @@
+# Auto-detect text files and normalize their line endings in the repository
+* text=auto
+
+# Enforce LF in repo for common text files (prevents CRLF noise on Windows)
+*.php text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.env text eol=lf
+
+# Normalize cached/bootstrap files too
+/bootstrap/cache/* text eol=lf
+
+# Views and resources
+/resources/** text eol=lf
+/routes/** text eol=lf
+
+# Public assets where text isn't expected; mark as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.tar.gz binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
 * text=auto eol=lf
 
 *.blade.php diff=html

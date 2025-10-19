@@ -33,7 +33,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::lv571VxcXIAMIRxg',
+            '_route' => 'generated::Up4lxKPWRKXtn47E',
           ),
           1 => NULL,
           2 => 
@@ -53,7 +53,127 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::VNZLbuXNv9dZsIbY',
+            '_route' => 'generated::0yjCIBV3PEpLyfYk',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      '/artisan/migrate' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'generated::un0UvWdW27ePh983',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      '/artisan/optimize' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'generated::5tqzDIatRXZxBRQ6',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      '/artisan/route-cache' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'generated::QHosUqrBiEq4qrWc',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      '/artisan/config-cache' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'generated::7rzBhH7WCHctHawA',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      '/artisan/view-cache' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'generated::L12ntFMgXnVM82uw',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      '/artisan/clear' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'generated::q2OMne1JwUk5ElZP',
           ),
           1 => NULL,
           2 => 
@@ -105,6 +225,26 @@ app('router')->setCompiledRoutes(
             'PATCH' => 4,
             'DELETE' => 5,
             'OPTIONS' => 6,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      '/debug/visit-check' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'generated::v5tXXgwer8fFl70i',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
           ),
           3 => NULL,
           4 => false,
@@ -2334,7 +2474,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::lv571VxcXIAMIRxg' => 
+    'generated::Up4lxKPWRKXtn47E' => 
     array (
       'methods' => 
       array (
@@ -2351,13 +2491,13 @@ app('router')->setCompiledRoutes(
         ),
         'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:77:"function (\\Illuminate\\Http\\Request $request) {
     return $request->user();
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"0000000000000a440000000000000000";}}',
+}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000006b60000000000000000";}}',
         'namespace' => NULL,
         'prefix' => 'api',
         'where' => 
         array (
         ),
-        'as' => 'generated::lv571VxcXIAMIRxg',
+        'as' => 'generated::Up4lxKPWRKXtn47E',
       ),
       'fallback' => false,
       'defaults' => 
@@ -2373,7 +2513,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::VNZLbuXNv9dZsIbY' => 
+    'generated::0yjCIBV3PEpLyfYk' => 
     array (
       'methods' => 
       array (
@@ -2401,8 +2541,254 @@ app('router')->setCompiledRoutes(
                     return response(\\Illuminate\\Support\\Facades\\View::file(\'C:\\\\laragon\\\\www\\\\kostash\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Configuration\'.\'/../resources/health-up.blade.php\', [
                         \'exception\' => $exception,
                     ]), status: $exception ? 500 : 200);
-                }";s:5:"scope";s:54:"Illuminate\\Foundation\\Configuration\\ApplicationBuilder";s:4:"this";N;s:4:"self";s:32:"0000000000000a470000000000000000";}}',
-        'as' => 'generated::VNZLbuXNv9dZsIbY',
+                }";s:5:"scope";s:54:"Illuminate\\Foundation\\Configuration\\ApplicationBuilder";s:4:"this";N;s:4:"self";s:32:"00000000000006b90000000000000000";}}',
+        'as' => 'generated::0yjCIBV3PEpLyfYk',
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'generated::un0UvWdW27ePh983' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'artisan/migrate',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'role:admin',
+        ),
+        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:117:"function () {
+        \\Illuminate\\Support\\Facades\\Artisan::call(\'migrate\');
+        return \'Migrate executed!\';
+    }";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000006b00000000000000000";}}',
+        'namespace' => NULL,
+        'prefix' => '/artisan',
+        'where' => 
+        array (
+        ),
+        'as' => 'generated::un0UvWdW27ePh983',
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'generated::5tqzDIatRXZxBRQ6' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'artisan/optimize',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'role:admin',
+        ),
+        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:119:"function () {
+        \\Illuminate\\Support\\Facades\\Artisan::call(\'optimize\');
+        return \'Optimize executed!\';
+    }";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000006ae0000000000000000";}}',
+        'namespace' => NULL,
+        'prefix' => '/artisan',
+        'where' => 
+        array (
+        ),
+        'as' => 'generated::5tqzDIatRXZxBRQ6',
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'generated::QHosUqrBiEq4qrWc' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'artisan/route-cache',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'role:admin',
+        ),
+        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:125:"function () {
+        \\Illuminate\\Support\\Facades\\Artisan::call(\'route:cache\');
+        return \'Route cache executed!\';
+    }";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000006ac0000000000000000";}}',
+        'namespace' => NULL,
+        'prefix' => '/artisan',
+        'where' => 
+        array (
+        ),
+        'as' => 'generated::QHosUqrBiEq4qrWc',
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'generated::7rzBhH7WCHctHawA' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'artisan/config-cache',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'role:admin',
+        ),
+        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:127:"function () {
+        \\Illuminate\\Support\\Facades\\Artisan::call(\'config:cache\');
+        return \'Config cache executed!\';
+    }";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000006aa0000000000000000";}}',
+        'namespace' => NULL,
+        'prefix' => '/artisan',
+        'where' => 
+        array (
+        ),
+        'as' => 'generated::7rzBhH7WCHctHawA',
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'generated::L12ntFMgXnVM82uw' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'artisan/view-cache',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'role:admin',
+        ),
+        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:123:"function () {
+        \\Illuminate\\Support\\Facades\\Artisan::call(\'view:cache\');
+        return \'View cache executed!\';
+    }";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000006a80000000000000000";}}',
+        'namespace' => NULL,
+        'prefix' => '/artisan',
+        'where' => 
+        array (
+        ),
+        'as' => 'generated::L12ntFMgXnVM82uw',
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'generated::q2OMne1JwUk5ElZP' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'artisan/clear',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'role:admin',
+        ),
+        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:131:"function () {
+        \\Illuminate\\Support\\Facades\\Artisan::call(\'optimize:clear\');
+        return \'Optimize clear executed!\';
+    }";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000006a60000000000000000";}}',
+        'namespace' => NULL,
+        'prefix' => '/artisan',
+        'where' => 
+        array (
+        ),
+        'as' => 'generated::q2OMne1JwUk5ElZP',
       ),
       'fallback' => false,
       'defaults' => 
@@ -2488,6 +2874,108 @@ app('router')->setCompiledRoutes(
       array (
         'destination' => '/auth/login',
         'status' => 302,
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'generated::v5tXXgwer8fFl70i' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'debug/visit-check',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+        ),
+        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:2383:"function (\\Illuminate\\Http\\Request $request) {
+    // Only allow in non-production or when app debug is enabled
+    if (\\app()->environment(\'production\') && !\\config(\'app.debug\')) {
+        \\abort(404);
+    }
+
+    $headers = $request->headers->all();
+    $cookies = $request->cookies->all();
+    $visitorId = $request->cookie(\'visitor_id\');
+    $ip = $request->ip();
+    $referer = $request->header(\'referer\');
+    $userAgent = $request->userAgent();
+
+    $response = [
+        \'ok\' => true,
+        \'visitor_id_cookie\' => $visitorId,
+        \'ip\' => $ip,
+        \'referer\' => $referer,
+        \'user_agent\' => $userAgent,
+        \'headers\' => $headers,
+        \'cookies\' => $cookies,
+        \'note\' => \'Call with ?create=1 to attempt creating a Visit row (idempotent for the day)\'
+    ];
+
+    // Optionally create a Visit for testing
+    if ($request->query(\'create\') == \'1\') {
+        try {
+            $date = \\now()->toDateString();
+            if (!$visitorId) {
+                $visitorId = (string) \\Illuminate\\Support\\Str::uuid();
+                // Queue cookie so it\'s set in response
+                \\cookie()->queue(\\cookie()->forever(\'visitor_id\', $visitorId));
+                $response[\'visitor_id_assigned\'] = $visitorId;
+            }
+
+            $exists = \\App\\Models\\Visit::where(\'date\', $date)
+                ->where(function ($q) use ($visitorId, $ip) {
+                    if ($visitorId) {
+                        $q->where(\'visitor_id\', $visitorId);
+                    }
+                    $q->orWhere(\'ip\', $ip);
+                })->exists();
+
+            if (!$exists) {
+                $visit = \\App\\Models\\Visit::create([
+                    \'ip\' => $ip,
+                    \'user_id\' => null,
+                    \'visitor_id\' => $visitorId,
+                    \'date\' => $date,
+                    \'url\' => $request->fullUrl(),
+                    \'user_agent\' => $userAgent,
+                    \'referer\' => $referer,
+                ]);
+
+                $response[\'created\'] = true;
+                $response[\'visit_id\'] = $visit->id;
+            } else {
+                $response[\'created\'] = false;
+                $response[\'reason\'] = \'already exists for today (by visitor_id or ip)\';
+            }
+        } catch (\\Exception $e) {
+            $response[\'error\'] = $e->getMessage();
+        }
+    }
+
+    return \\response()->json($response);
+}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000006a40000000000000000";}}',
+        'namespace' => NULL,
+        'prefix' => '',
+        'where' => 
+        array (
+        ),
+        'as' => 'generated::v5tXXgwer8fFl70i',
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
       ),
       'wheres' => 
       array (
@@ -6608,7 +7096,7 @@ app('router')->setCompiledRoutes(
                         $config,
                         $isProduction
                     ))($request, $path);
-                }";s:5:"scope";s:47:"Illuminate\\Filesystem\\FilesystemServiceProvider";s:4:"this";N;s:4:"self";s:32:"0000000000000a410000000000000000";}}',
+                }";s:5:"scope";s:47:"Illuminate\\Filesystem\\FilesystemServiceProvider";s:4:"this";N;s:4:"self";s:32:"000000000000069d0000000000000000";}}',
         'as' => 'storage.local',
       ),
       'fallback' => false,

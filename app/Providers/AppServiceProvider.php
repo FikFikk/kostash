@@ -68,8 +68,35 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
 
+            // Inspect sec-fetch headers and accept-language to detect top-level navigations
+            $secFetchSite = $request->header('sec-fetch-site');
+            $secFetchMode = $request->header('sec-fetch-mode');
+            $secFetchUser = $request->header('sec-fetch-user');
+            $acceptLanguage = $request->header('accept-language');
+
+            Log::info('Fetch headers', [
+                'sec-fetch-site' => $secFetchSite,
+                'sec-fetch-mode' => $secFetchMode,
+                'sec-fetch-user' => $secFetchUser,
+                'accept-language' => $acceptLanguage,
+            ]);
+
+            // Determine if this request looks like a top-level navigation (browser navigated/opened the URL)
+            $isTopLevelNavigation = false;
+            if ($secFetchMode && strtolower($secFetchMode) === 'navigate') {
+                // sec-fetch-user is '?1' for user-initiated navigations
+                if ($secFetchUser === '?1') {
+                    $isTopLevelNavigation = true;
+                }
+
+                // or when sec-fetch-site is none or cross-site it may be an external app/opening the URL
+                if ($secFetchSite && in_array(strtolower($secFetchSite), ['none', 'cross-site'])) {
+                    $isTopLevelNavigation = true;
+                }
+            }
+
             // Treat asset/storage/build/assets requests specially: skip them when the referer is internal (same host)
-            // but allow them to create a visit when the referer is external (for example, Android app referrals or Google Maps)
+            // but allow them to create a visit when the referer is external or when this request is a top-level navigation
             $assetPrefixes = ['storage', 'uploads', 'assets', 'build'];
             foreach ($assetPrefixes as $ap) {
                 if (str_starts_with($currentPath, $ap)) {
@@ -83,14 +110,20 @@ class AppServiceProvider extends ServiceProvider
                         }
                     }
 
-                    if ($isInternalReferer) {
+                    // If referer is internal and this is not a top-level navigation, skip the asset request
+                    if ($isInternalReferer && !$isTopLevelNavigation) {
                         Log::info('Skipping tracking - internal asset request', ['path' => $currentPath, 'referer' => $referer]);
                         return;
                     }
 
-                    // if referer is null or external, allow further processing so first-party hits coming from external apps
-                    // (eg. android-app://com.google...) can be counted as a landing.
-                    Log::info('Asset request with external/empty referer - will consider for tracking', ['path' => $currentPath, 'referer' => $referer]);
+                    // If referer is empty but this is not a top-level navigation, skip asset requests
+                    if (!$referer && !$isTopLevelNavigation) {
+                        Log::info('Skipping tracking - asset request without referer and not a navigation', ['path' => $currentPath]);
+                        return;
+                    }
+
+                    // Otherwise allow processing so external app hits (or navigations) can be counted
+                    Log::info('Asset request considered for tracking', ['path' => $currentPath, 'referer' => $referer, 'isNavigation' => $isTopLevelNavigation]);
                     break;
                 }
             }
@@ -116,7 +149,8 @@ class AppServiceProvider extends ServiceProvider
             $referer = $request->header('referer'); // Bisa dari Google Maps, Facebook, dll
 
             // Visitor ID via cookie (more reliable than IP for mobile devices)
-            $visitorId = $request->cookie('visitor_id');
+            $incomingVisitorCookie = $request->cookie('visitor_id');
+            $visitorId = $incomingVisitorCookie;
             if (!$visitorId) {
                 $visitorId = (string) \Illuminate\Support\Str::uuid();
                 // queue cookie so it's set in response
@@ -134,7 +168,31 @@ class AppServiceProvider extends ServiceProvider
 
             $exists = $query->exists();
 
-            if (!$exists) {
+            // Decide whether to force-create a Visit in cases where the incoming request had no cookie
+            // but clearly looks like an external app navigation (android-app referer, sec-fetch navigation,
+            // or Android user-agent with no referer). This helps capture arrivals from apps that don't
+            // send cookies on their first request.
+            $forceCreate = false;
+            $referer = $referer ?? $request->header('referer');
+            $ua = strtolower($userAgent ?? '');
+            if (!$incomingVisitorCookie) {
+                // android-app referer example: android-app://com.google.android.googlequicksearchbox/
+                if ($referer && str_starts_with($referer, 'android-app://')) {
+                    $forceCreate = true;
+                }
+
+                // sec-fetch navigation (top-level)
+                if ($isTopLevelNavigation) {
+                    $forceCreate = true;
+                }
+
+                // If no referer but UA looks like Android or Google app, consider forcing creation
+                if (!$referer && (str_contains($ua, 'android') || str_contains($ua, 'googlequicksearchbox') || str_contains($ua, 'google'))) {
+                    $forceCreate = true;
+                }
+            }
+
+            if (!$exists || $forceCreate) {
                 $visit = Visit::create([
                     'ip' => $ip,
                     'user_id' => $userId,

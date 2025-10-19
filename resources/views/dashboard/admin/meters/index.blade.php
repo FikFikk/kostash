@@ -1,8 +1,37 @@
 @extends('dashboard.admin.layouts.app')
 
-@section('title', 'Meter Readings')
+@section('title', 'Data Pemakaian Meter')
 
 @push('styles')
+    <style>
+        @media (max-width: 767.98px) {
+
+            .room-card .card-header,
+            .room-card .card-body {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+            }
+
+            .table-condensed th,
+            .table-condensed td {
+                font-size: 0.95rem;
+                padding: 0.5rem 0.5rem;
+                white-space: nowrap;
+            }
+
+            .d-flex.justify-content-end.gap-1 {
+                gap: 0.25rem !important;
+            }
+
+            .btn-sm {
+                font-size: 0.95rem;
+                padding: 0.4rem 0.7rem;
+            }
+        }
+    </style>
     <style>
         :root {
             --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -77,13 +106,13 @@
                 <div class="d-flex align-items-lg-center flex-lg-row flex-column">
                     <div class="flex-grow-1">
                         <h1 class="h3 fw-bold text-gradient mb-1">
-                            <i class="ri-dashboard-2-line me-2"></i>Meter Readings
+                            <i class="ri-dashboard-2-line me-2"></i>Data Pemakaian Meter
                         </h1>
-                        <p class="text-muted mb-0">Monitor water and electricity usage across all rooms</p>
+                        <p class="text-muted mb-0">Pantau pemakaian air dan listrik setiap kamar</p>
                     </div>
                     <div class="d-flex gap-2 mt-3 mt-lg-0">
                         <a href="{{ route('dashboard.meter.create') }}" class="btn btn-primary">
-                            <i class="ri-add-line me-1"></i> Add Reading
+                            <i class="ri-add-line me-1"></i> Tambah Tagihan
                         </a>
                         <button class="btn btn-outline-primary" id="viewToggleBtn" onclick="toggleView()">
                             <i class="ri-layout-grid-line me-1"></i> <span id="viewToggleText">Grid View</span>
@@ -111,20 +140,20 @@
                                     @endforeach
                                 </select>
                                 <input type="hidden" name="room" value="{{ request('room', 'all') }}">
-                                <input type="hidden" name="view_mode" value="{{ request('view_mode', 'table') }}">
+                                <input type="hidden" name="view_mode" value="{{ request('view_mode', 'grid') }}">
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-8 d-none d-md-block"><!-- desktop only -->
                 <div class="row">
                     <div class="col-md-4">
                         <div class="card content-card metric-card" style="--color: #3b82f6;">
                             <div class="card-body text-center">
                                 <i class="ri-water-flash-line text-info fs-3 mb-2"></i>
                                 <h4 class="mb-1">{{ number_format($yearlyStats['total_water'] ?? 0) }}</h4>
-                                <small class="text-muted">Total Water (m³)</small>
+                                <small class="text-muted">Total Air (m³)</small>
                             </div>
                         </div>
                     </div>
@@ -133,7 +162,7 @@
                             <div class="card-body text-center">
                                 <i class="ri-flashlight-line text-warning fs-3 mb-2"></i>
                                 <h4 class="mb-1">{{ number_format($yearlyStats['total_electric'] ?? 0) }}</h4>
-                                <small class="text-muted">Total Electric (kWh)</small>
+                                <small class="text-muted">Total Listrik (kWh)</small>
                             </div>
                         </div>
                     </div>
@@ -142,7 +171,43 @@
                             <div class="card-body text-center">
                                 <i class="ri-file-list-3-line text-success fs-3 mb-2"></i>
                                 <h4 class="mb-1">{{ $totalReadings ?? 0 }}</h4>
-                                <small class="text-muted">Total Readings</small>
+                                <small class="text-muted">Total Tagihan</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile stats at the very bottom, only on mobile -->
+        <div class="container-fluid d-block d-md-none mt-4">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <div class="card content-card metric-card" style="--color: #3b82f6;">
+                                <div class="card-body text-center py-3">
+                                    <i class="ri-water-flash-line text-info fs-3 mb-2"></i>
+                                    <h5 class="mb-1">{{ number_format($yearlyStats['total_water'] ?? 0) }}</h5>
+                                    <small class="text-muted">Air</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="card content-card metric-card" style="--color: #f59e0b;">
+                                <div class="card-body text-center py-3">
+                                    <i class="ri-flashlight-line text-warning fs-3 mb-2"></i>
+                                    <h5 class="mb-1">{{ number_format($yearlyStats['total_electric'] ?? 0) }}</h5>
+                                    <small class="text-muted">Listrik</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="card content-card metric-card" style="--color: #10b981;">
+                                <div class="card-body text-center py-3">
+                                    <i class="ri-file-list-3-line text-success fs-3 mb-2"></i>
+                                    <h5 class="mb-1">{{ $totalReadings ?? 0 }}</h5>
+                                    <small class="text-muted">Tagihan</small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -157,7 +222,7 @@
                     <button type="button"
                         class="btn btn-sm btn-outline-primary room-filter-btn {{ request('room', 'all') == 'all' ? 'active' : '' }}"
                         data-room="all">
-                        All Rooms
+                        Semua
                     </button>
                     @foreach ($rooms as $room)
                         <button type="button"
@@ -170,17 +235,17 @@
             </div>
         </div>
 
-        <div id="tableView" class="card content-card {{ request('view_mode', 'table') == 'grid' ? 'd-none' : '' }}">
+        <div id="tableView" class="card content-card {{ request('view_mode', 'grid') == 'grid' ? 'd-none' : '' }}">
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Room</th>
+                                <th>Kamar</th>
                                 @foreach (['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as $monthName)
                                     <th class="text-center month-header">{{ $monthName }}</th>
                                 @endforeach
-                                <th class="text-center">Actions</th>
+                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -223,11 +288,11 @@
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item"
                                                         href="{{ route('dashboard.meter.create', ['room' => $room->id]) }}">
-                                                        <i class="ri-add-line me-2"></i>Add Reading
+                                                        <i class="ri-add-line me-2"></i>Tambah Tagihan
                                                     </a></li>
                                                 <li><a class="dropdown-item" href="javascript:void(0);"
                                                         onclick="showRoomDetails('{{ $room->id }}')">
-                                                        <i class="ri-eye-line me-2"></i>View Details
+                                                        <i class="ri-eye-line me-2"></i>Lihat Detail
                                                     </a></li>
                                             </ul>
                                         </div>
@@ -237,7 +302,7 @@
                                 <tr>
                                     <td colspan="14" class="text-center text-muted py-3">
                                         <i class="ri-file-list-line fs-4 mb-2 d-block"></i>
-                                        No rooms found.
+                                        Tidak ada kamar ditemukan.
                                     </td>
                                 </tr>
                             @endforelse
@@ -247,7 +312,7 @@
             </div>
         </div>
 
-        <div id="gridView" class="row {{ request('view_mode', 'table') == 'table' ? 'd-none' : '' }}">
+        <div id="gridView" class="row {{ request('view_mode', 'grid') == 'table' ? 'd-none' : '' }}">
             @forelse($rooms as $room)
                 <div class="col-lg-6 col-xl-4 mb-4 room-card" data-room="{{ $room->id }}">
                     <div class="card content-card h-100">
@@ -255,7 +320,7 @@
                             <h6 class="mb-0">
                                 <i class="ri-home-4-line me-2"></i>{{ $room->name }}
                                 <span class="badge bg-primary-subtle text-primary ms-2">
-                                    {{ count($roomMeters[$room->id] ?? []) }} readings
+                                    {{ count($roomMeters[$room->id] ?? []) }} tagihan
                                 </span>
                             </h6>
                         </div>
@@ -265,9 +330,9 @@
                                     <table class="table table-sm table-condensed">
                                         <thead>
                                             <tr>
-                                                <th>Period</th>
-                                                <th class="text-center">Water</th>
-                                                <th class="text-center">Electric</th>
+                                                <th>Periode</th>
+                                                <th class="text-center">Air</th>
+                                                <th class="text-center">Listrik</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -283,19 +348,19 @@
                                                         <div class="d-flex justify-content-end gap-1">
                                                             <button type="button" class="btn btn-sm btn-outline-info"
                                                                 onclick="window.viewMeterDetail('{{ $meter->id }}')"
-                                                                title="View Individual Reading Details">
+                                                                title="Lihat Detail Tagihan">
                                                                 <i class="ri-eye-line"></i>
                                                             </button>
 
                                                             <a href="{{ route('dashboard.meter.edit', $meter->id) }}"
                                                                 class="btn btn-sm btn-outline-warning"
-                                                                title="Edit Reading">
+                                                                title="Edit Tagihan">
                                                                 <i class="ri-pencil-line"></i>
                                                             </a>
 
                                                             <a href="{{ route('dashboard.meter.export', $meter->id) }}"
                                                                 target="_blank" class="btn btn-sm btn-outline-success"
-                                                                title="Export PDF">
+                                                                title="Ekspor PDF">
                                                                 <i class="ri-file-download-line"></i>
                                                             </a>
 
@@ -307,7 +372,7 @@
                                                                 @method('DELETE')
                                                                 <button type="submit"
                                                                     class="btn btn-sm btn-outline-danger"
-                                                                    title="Delete Reading">
+                                                                    title="Hapus Tagihan">
                                                                     <i class="ri-delete-bin-line"></i>
                                                                 </button>
                                                             </form>
@@ -329,7 +394,7 @@
                             @else
                                 <div class="text-center text-muted py-3">
                                     <i class="ri-file-list-line fs-4 mb-2 d-block"></i>
-                                    No readings for {{ request('year', now()->year) }}
+                                    Tidak ada tagihan untuk {{ request('year', now()->year) }}
                                 </div>
                             @endif
                         </div>
@@ -339,7 +404,7 @@
                 <div class="col-12">
                     <div class="text-center py-4">
                         <i class="ri-file-list-line fs-1 text-muted mb-3 d-block"></i>
-                        <h6 class="text-muted">No rooms found.</h6>
+                        <h6 class="text-muted">Tidak ada kamar ditemukan.</h6>
                     </div>
                 </div>
             @endforelse

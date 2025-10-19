@@ -147,7 +147,7 @@
         }
 
         .footer-1 {
-            margin-top: auto;
+            margin-top: 20px;
             padding-top: 20px;
             text-align: center;
             font-size: 9px;
@@ -185,7 +185,7 @@
         <div class="content-wrapper">
             <div class="header">
                 <img src="{{ asset('assets/images/kostash-logo-tp.png') }}" alt="Logo KostASH">
-                <h1>Tagihan KostASH</h1>
+                <h1>Tagihan</h1>
                 <div class="period">{{ DateTime::createFromFormat('!m', $month)->format('F') }} {{ $year }}</div>
             </div>
 
@@ -249,7 +249,7 @@
         </div>
 
         <div class="footer-1">
-            <div class="footer-brand">KostASH.id</div>
+            <div class="footer-brand">KostASH.my.id</div>
             <div class="footer-address">PH4Q+X6G, RT.02/RW.01, Plosorejo, Menganti, Kec. Menganti, Kabupaten Gresik,
                 Jawa Timur 61174</div>
             <div class="footer-contact">WA: 0813-1579-3349 | Email: fikfikk14@gmail.com</div>

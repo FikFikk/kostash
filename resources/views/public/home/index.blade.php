@@ -37,21 +37,45 @@
                                     <img src="{{ asset('assets/dashboard/images/landing/img-pattern.png') }}"
                                         class="d-block img-fluid" alt="...">
                                 </div>
-                                <div class="carousel slide carousel-fade" data-bs-ride="carousel">
+
+                                <div class="carousel slide carousel-fade" data-bs-ride="carousel" id="heroCarousel">
                                     <div class="carousel-inner shadow-lg p-2 bg-white rounded">
-                                        <div class="carousel-item active" data-bs-interval="3000">
-                                            <img src="{{ asset('assets/images/image-lp.jpg') }}" class="d-block w-100"
-                                                alt="...">
-                                        </div>
-                                        <div class="carousel-item" data-bs-interval="3000">
-                                            <img src="{{ asset('assets/images/image-lp2.jpg') }}" class="d-block w-100"
-                                                alt="...">
-                                        </div>
-                                        <div class="carousel-item" data-bs-interval="3000">
-                                            <img src="{{ asset('assets/images/image-lp3.jpg') }}" class="d-block w-100"
-                                                alt="...">
-                                        </div>
+                                        @if (isset($viewGalleries) && $viewGalleries->isNotEmpty())
+                                            @foreach ($viewGalleries as $i => $gallery)
+                                                <div class="carousel-item {{ $i === 0 ? 'active' : '' }}"
+                                                    data-bs-interval="3000">
+                                                    <img src="{{ asset('storage/' . $gallery->filename) }}"
+                                                        class="d-block w-100" alt="{{ $gallery->title }}">
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <div class="carousel-item active" data-bs-interval="3000">
+                                                <img src="{{ asset('assets/images/image-lp.jpg') }}" class="d-block w-100"
+                                                    alt="...">
+                                            </div>
+                                            <div class="carousel-item" data-bs-interval="3000">
+                                                <img src="{{ asset('assets/images/image-lp2.jpg') }}" class="d-block w-100"
+                                                    alt="...">
+                                            </div>
+                                            <div class="carousel-item" data-bs-interval="3000">
+                                                <img src="{{ asset('assets/images/image-lp3.jpg') }}" class="d-block w-100"
+                                                    alt="...">
+                                            </div>
+                                        @endif
                                     </div>
+
+                                    @if (isset($viewGalleries) && $viewGalleries->isNotEmpty() && $viewGalleries->count() > 1)
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel"
+                                            data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel"
+                                            data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    @endif
                                 </div>
                             </div>
                         </div>

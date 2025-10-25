@@ -66,6 +66,8 @@ class GalleryController extends Controller
             'filename' => ($isCreate ? 'required' : 'nullable') . '|image|max:2048',
             'uploader_name' => 'nullable|string|max:100',
             'description' => 'nullable|string',
+            'is_gallery' => 'nullable',
+            'is_carousel' => 'nullable',
             'preset_categories' => 'nullable|array',
             'preset_categories.*' => 'string|max:50',
             'custom_categories' => 'nullable|string',
@@ -88,6 +90,10 @@ class GalleryController extends Controller
             $request->input('preset_categories', []),
             $request->input('custom_categories', '')
         );
+
+        // Ensure boolean flags are set (checkboxes may not be sent when unchecked)
+        $validated['is_gallery'] = $request->has('is_gallery') ? true : false;
+        $validated['is_carousel'] = $request->has('is_carousel') ? true : false;
 
         return $validated;
     }

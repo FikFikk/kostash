@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Gallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class GalleryController extends Controller
 {
@@ -83,6 +84,27 @@ class GalleryController extends Controller
             }
 
             $validated['filename'] = $request->file('filename')->store('uploads/gallery', 'public');
+        }
+
+        // Handle FilePond file-encode (base64) fallback: if the input contains a data URL
+        // FilePond's File Encode plugin may put a base64 data URL into the input with the same name.
+        if (!isset($validated['filename']) && $request->filled('filename') && is_string($request->input('filename')) && str_starts_with($request->input('filename'), 'data:')) {
+            $dataUrl = $request->input('filename');
+
+            // parse mime and data
+            [$meta, $data] = explode(',', $dataUrl, 2) + [1 => ''];
+            preg_match('/data:(.*?);base64/', $meta, $matches);
+            $mime = $matches[1] ?? 'image/png';
+            $ext = explode('/', $mime)[1] ?? 'png';
+
+            // remove old file if exists
+            if ($gallery) {
+                $this->deleteFile($gallery->filename);
+            }
+
+            $filename = 'uploads/gallery/' . Str::random(20) . '.' . $ext;
+            Storage::disk('public')->put($filename, base64_decode($data));
+            $validated['filename'] = $filename;
         }
 
         // If filename was present in the validated data but no file was uploaded,

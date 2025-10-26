@@ -314,54 +314,81 @@
 
 
             <section class="section bg-light" id="room">
-                <div class="container py-5">
+                <div class="container"> {{-- Removed extra padding class py-5 --}}
                     <div class="row justify-content-center">
                         <div class="col-lg-8">
                             <div class="text-center mb-5">
-                                <h2 class="mb-3 fw-semibold">Kamar</h2>
-                                <p class="text-muted mb-4">Lihat daftar kamar yang tersedia dan cek status ketersediaannya
-                                    secara real-time.</p>
+                                <h2 class="mb-3 fw-semibold">Pilih Kamar Anda</h2>
+                                <p class="text-muted mb-4">Temukan kamar yang sesuai dengan kebutuhan Anda. Semua informasi
+                                    ketersediaan diperbarui secara real-time.</p>
                             </div>
                         </div>
                     </div>
-                    <div class="row row-cols-1 row-cols-md-3 g-4">
-                        @foreach ($rooms as $room)
+
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        @foreach ($rooms->sortBy(function ($room) {
+            preg_match('/\d+/', $room->name, $matches);
+            return $matches ? (int) $matches[0] : 0;
+        }) as $room)
                             @php
                                 $tenant = $users->firstWhere('room_id', $room->id);
                                 $isOccupied = $tenant !== null;
                             @endphp
                             <div class="col">
-                                <div class="card h-100 shadow-sm border-0">
-                                    <img src="{{ asset('storage/' . $room->image) }}" class="card-img-top"
-                                        alt="{{ $room->name }}" style="height: 180px; object-fit: cover;">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $room->name }}</h5>
+                                <div class="card h-100 border-0 shadow-sm room-card">
+                                    <!-- Room Image with Status Badge -->
+                                    <div class="position-relative overflow-hidden">
+                                        <img src="{{ asset('storage/' . $room->image) }}" class="card-img-top room-img"
+                                            alt="{{ $room->name }}">
 
-                                        <p class="card-text mb-1">
-                                            <strong>Status:</strong>
+                                        <!-- Status Badge -->
+                                        <div class="position-absolute top-0 end-0 m-3">
                                             @if ($isOccupied)
-                                                <span class="badge bg-danger">Terisi</span>
+                                                <span class="badge bg-danger px-3 py-2">
+                                                    <i class="ri-close-circle-line me-1"></i> Terisi
+                                                </span>
                                             @else
-                                                <span class="badge bg-success">Available</span>
+                                                <span class="badge bg-success px-3 py-2">
+                                                    <i class="ri-checkbox-circle-line me-1"></i> Tersedia
+                                                </span>
                                             @endif
-                                        </p>
-
-                                        <p class="small text-muted">
-                                            @php
-                                                $tenant = $users->firstWhere('room_id', $room->id);
-                                            @endphp
-                                            <strong>Penghuni:</strong> {{ $tenant->name ?? '-' }}
-                                        </p>
-
-                                        <div class="mb-2">
-                                            <strong>Fasilitas:</strong><br>
-                                            @foreach (json_decode($room->facilities ?? '[]') as $facility)
-                                                @foreach (explode(',', $facility) as $item)
-                                                    <span
-                                                        class="badge badge-soft-primary text-dark badge-border">{{ trim($item) }}</span>
-                                                @endforeach
-                                            @endforeach
                                         </div>
+                                    </div>
+
+                                    <div class="card-body p-4">
+                                        <!-- Room Title -->
+                                        <h5 class="card-title mb-3 fw-bold text-dark">{{ $room->name }}</h5>
+
+                                        <!-- Status Info -->
+                                        <div
+                                            class="d-flex align-items-center justify-content-between mb-4 p-3 rounded {{ $isOccupied ? 'bg-danger-subtle' : 'bg-success-subtle' }}">
+                                            <div>
+                                                <p class="mb-0 small text-muted">Status</p>
+                                                <p
+                                                    class="mb-0 fw-semibold {{ $isOccupied ? 'text-danger' : 'text-success' }}">
+                                                    {{ $isOccupied ? 'Tidak Tersedia' : 'Siap Dihuni' }}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <i
+                                                    class="{{ $isOccupied ? 'ri-lock-line text-danger' : 'ri-check-line text-success' }} fs-24"></i>
+                                            </div>
+                                        </div>
+
+                                        <!-- Action Button -->
+                                        @if (!$isOccupied)
+                                            <a href="https://wa.me/6281315793349?text=Halo,%20saya%20tertarik%20dengan%20{{ urlencode($room->name) }}"
+                                                target="_blank"
+                                                class="btn btn-success w-100 btn-label waves-effect waves-light">
+                                                <i class="ri-whatsapp-line label-icon align-middle fs-16 me-2"></i>
+                                                Hubungi Kami
+                                            </a>
+                                        @else
+                                            <button class="btn btn-light w-100 disabled text-muted" disabled>
+                                                <i class="ri-information-line me-2"></i>
+                                                Tidak Tersedia
+                                            </button>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -594,6 +621,27 @@
         <!-- end layout wrapper -->
 
 
+
+        <style>
+            .room-card {
+                transition: all 0.3s ease;
+            }
+
+            .room-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+            }
+
+            .room-img {
+                height: 220px;
+                object-fit: cover;
+                transition: transform 0.4s ease;
+            }
+
+            .room-card:hover .room-img {
+                transform: scale(1.08);
+            }
+        </style>
 
     </div>
 @endsection

@@ -20,6 +20,12 @@
                             required>
                     </div>
                     <div class="mb-3">
+                        <label>Nama Pengunggah</label>
+                        {{-- Show current authenticated user name (or existing uploader as fallback). The server will set uploader_name to the authenticated user. --}}
+                        <input type="text" class="form-control"
+                            value="{{ auth()->user()->name ?? $gallery->uploader_name }}" disabled>
+                    </div>
+                    <div class="mb-3">
                         <label>Deskripsi</label>
                         <textarea name="description" class="form-control">{{ old('description', $gallery->description) }}</textarea>
                     </div>
@@ -46,23 +52,21 @@
                             width="200">
                     </div>
                     <div class="mb-3">
-                        <label>Ganti Gambar (opsional)</label>
-                        <input type="file" name="filename" class="form-control filepond" accept="image/*"
-                            @if (!empty($gallery->filename)) data-initial-file="{{ asset('storage/' . $gallery->filename) }}" @endif>
+                        <label>Tipe Tampilan</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_gallery" value="1" id="isGallery"
+                                {{ $gallery->is_gallery ? 'checked' : '' }}>
+                            <label class="form-check-label" for="isGallery">Gallery</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_carousel" value="1"
+                                id="isCarousel" {{ $gallery->is_carousel ? 'checked' : '' }}>
+                            <label class="form-check-label" for="isCarousel">Carousel</label>
+                        </div>
                     </div>
-
                     <div class="mb-3">
-                        <label>Display Options</label><br>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" name="is_gallery" id="isGallery"
-                                {{ old('is_gallery', $gallery->is_gallery) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="isGallery">Tampilkan di Gallery</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" name="is_carousel" id="isCarousel"
-                                {{ old('is_carousel', $gallery->is_carousel) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="isCarousel">Tampilkan di Carousel</label>
-                        </div>
+                        <label>Ganti Gambar (opsional)</label>
+                        <input type="file" name="filename" class="form-control" accept="image/*">
                     </div>
                     <a href="{{ route('dashboard.gallery.index') }}" class="btn btn-outline-primary me-2">Batal</a>
                     <button type="submit" class="btn btn-primary">Update</button>
@@ -70,34 +74,4 @@
             </div>
         </div>
     </div>
-@endsection
-
-@section('script')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.FilePond) {
-                try {
-                    // Register only safe plugins (do not register File Encode plugin).
-                    FilePond.registerPlugin(
-                        window.FilePondPluginImagePreview,
-                        window.FilePondPluginFileValidateSize
-                    );
-                } catch (e) {
-                    // ignore if already registered or plugin missing
-                }
-
-                const input = document.querySelector('input[type="file"][name="filename"]');
-                if (input) {
-                    FilePond.create(input, {
-                        allowMultiple: false,
-                        acceptedFileTypes: ['image/*'],
-                        maxFileSize: '2MB',
-                        allowFileEncode: false,
-                        allowProcess: false,
-                        labelIdle: 'Tarik & lepas gambar atau <span class="filepond--label-action">Pilih</span>'
-                    });
-                }
-            }
-        });
-    </script>
 @endsection

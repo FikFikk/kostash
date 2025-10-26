@@ -109,7 +109,7 @@
     <script src="{{ asset('assets/dashboard/libs/jsvectormap/maps/world-merc.js') }}"></script>
     <script src="{{ asset('assets/dashboard/libs/swiper/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('assets/dashboard/libs/prismjs/prism.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="{{ asset('https://cdn.jsdelivr.net/npm/toastify-js') }}"></script>
 
     <script src="{{ asset('assets/dashboard/libs/apexcharts/apexcharts.min.js') }}"></script>
 
@@ -165,103 +165,6 @@
             monthlyRevenue: window.monthlyRevenue,
             roomsWithTenants: window.roomsWithTenants,
             roomsWithoutTenants: window.roomsWithoutTenants
-        });
-    </script>
-    <script>
-        // Global FilePond initializer: attach to any input with class "filepond"
-        document.addEventListener('DOMContentLoaded', function() {
-            if (!window.FilePond) return; // layout may include public assets; ensure present
-
-            // Register plugins if available (safe-guard)
-            try {
-                // Register all available FilePond plugins that may be loaded via public assets.
-                const plugins = [];
-                if (window.FilePondPluginImagePreview) plugins.push(window.FilePondPluginImagePreview);
-                if (window.FilePondPluginFileValidateSize) plugins.push(window.FilePondPluginFileValidateSize);
-                if (window.FilePondPluginFileValidateType) plugins.push(window.FilePondPluginFileValidateType);
-                // Intentionally do NOT register the FilePond File Encode plugin here.
-                // The File Encode plugin converts files to base64 data URLs which we
-                // explicitly disallow on the server. Keeping base64 off prevents
-                // very long strings from being submitted as `filename` and avoids
-                // database truncation errors.
-                if (window.FilePondPluginImageExifOrientation) plugins.push(window
-                    .FilePondPluginImageExifOrientation);
-
-                if (plugins.length) {
-                    FilePond.registerPlugin(...plugins);
-                }
-            } catch (e) {
-                // plugins may already be registered or missing
-                console.warn('FilePond plugin register error', e);
-            }
-
-            const inputs = document.querySelectorAll('input[type="file"].filepond');
-            inputs.forEach((input) => {
-                const opts = {
-                    allowMultiple: input.hasAttribute('multiple'),
-                    acceptedFileTypes: ['image/*'],
-                    maxFileSize: '2MB',
-                    // Disable File Encode explicitly so FilePond does not convert files
-                    // to base64 strings.
-                    allowFileEncode: false,
-                    // Enable async processing so we get a visible upload progress and
-                    // a short token returned from the server. The returned token will
-                    // be set as the file's value so the form can submit a small id.
-                    allowProcess: true,
-                    labelIdle: 'Tarik & lepas atau <span class="filepond--label-action">Pilih</span>'
-                };
-
-                // Configure server endpoints for FilePond async upload
-                const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                opts.server = {
-                    process: {
-                        url: '{{ url('/dashboard/uploads/process') }}',
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': csrf
-                        },
-                        // FilePond expects the server response text as the file id
-                        onload: (response) => response,
-                        onerror: (response) => {
-                            console.error('FilePond upload error', response);
-                        }
-                    },
-                    revert: {
-                        url: '{{ url('/dashboard/uploads/revert') }}',
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': csrf
-                        }
-                    }
-                };
-
-                // Allow overriding max files via data attribute (e.g., data-max-files="5")
-                const maxFiles = input.getAttribute('data-max-files');
-                if (maxFiles && input.hasAttribute('multiple')) {
-                    opts.maxFiles = parseInt(maxFiles, 10) || undefined;
-                }
-
-                try {
-                    // avoid double-init
-                    if (!FilePond.find(input)) {
-                        // If input has a pre-existing file URL, include it as an initial local file so FilePond shows preview
-                        const initialFile = input.getAttribute('data-initial-file');
-                        if (initialFile) {
-                            opts.files = [{
-                                source: initialFile,
-                                options: {
-                                    type: 'local'
-                                }
-                            }];
-                        }
-
-                        FilePond.create(input, opts);
-                    }
-                } catch (e) {
-                    // ignore initialization errors for non-supported inputs
-                    console.warn('FilePond init error for', input, e);
-                }
-            });
         });
     </script>
     @yield('script')

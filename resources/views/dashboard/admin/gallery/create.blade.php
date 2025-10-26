@@ -15,7 +15,21 @@
                         <label>Judul</label>
                         <input type="text" name="title" class="form-control" required>
                     </div>
-                    {{-- uploader_name will be set automatically from the authenticated user --}}
+                    <div class="mb-3">
+                        {{-- Uploader name will be set to the currently authenticated user on the server. --}}
+                    </div>
+                    <div class="mb-3">
+                        <label>Tipe Tampilan</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_gallery" value="1" id="isGallery">
+                            <label class="form-check-label" for="isGallery">Gallery</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_carousel" value="1"
+                                id="isCarousel">
+                            <label class="form-check-label" for="isCarousel">Carousel</label>
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <label>Deskripsi</label>
                         <textarea name="description" class="form-control" rows="3"></textarea>
@@ -44,20 +58,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label>Display Options</label><br>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" name="is_gallery" id="isGallery">
-                            <label class="form-check-label" for="isGallery">Tampilkan di Gallery</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" name="is_carousel" id="isCarousel">
-                            <label class="form-check-label" for="isCarousel">Tampilkan di Carousel</label>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
                         <label>Gambar</label>
-                        <input type="file" name="filename" class="form-control filepond" accept="image/*" required>
+                        <input type="file" name="filename" class="form-control" accept="image/*" required>
                     </div>
                     <a href="{{ route('dashboard.gallery.index') }}" class="btn btn-outline-primary me-2">Batal</a>
                     <button type="submit" class="btn btn-primary">Upload</button>
@@ -65,35 +67,4 @@
             </div>
         </div>
     </div>
-@endsection
-
-@section('script')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Register plugins provided by the layout's included scripts
-            if (window.FilePond) {
-                try {
-                    // Register only safe plugins (do not register File Encode plugin).
-                    FilePond.registerPlugin(
-                        window.FilePondPluginImagePreview,
-                        window.FilePondPluginFileValidateSize
-                    );
-                } catch (e) {
-                    // ignore if already registered or plugin missing
-                }
-
-                const input = document.querySelector('input[type="file"][name="filename"]');
-                if (input) {
-                    FilePond.create(input, {
-                        allowMultiple: false,
-                        acceptedFileTypes: ['image/*'],
-                        maxFileSize: '2MB',
-                        allowFileEncode: false,
-                        allowProcess: false,
-                        labelIdle: 'Tarik & lepas gambar atau <span class="filepond--label-action">Pilih</span>'
-                    });
-                }
-            }
-        });
-    </script>
 @endsection

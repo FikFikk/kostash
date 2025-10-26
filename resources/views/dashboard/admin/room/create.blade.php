@@ -29,7 +29,8 @@
 
                         <div class="mb-3">
                             <label for="image" class="form-label">Room Image</label>
-                            <input type="file" class="form-control filepond" name="image" accept="image/*">
+                            <input type="file" class="form-control" name="image" accept="image/*"
+                                onchange="validateFileSize(this)">
                             <br><small id="image-error" style="color:red;"></small>
                         </div>
 

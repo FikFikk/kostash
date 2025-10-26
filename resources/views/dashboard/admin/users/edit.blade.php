@@ -110,8 +110,7 @@
                                             </div>
                                         </label>
                                         <input type="file" name="photo" id="photo" class="filepond"
-                                            accept="image/*"
-                                            @if (!empty($user->photo)) data-initial-file="{{ asset('storage/uploads/profile/' . $user->photo) }}" @endif>
+                                            accept="image/*">
                                         <p class="text-muted small mt-2">Recommended size: 300x300px</p>
                                     </div>
 
@@ -132,8 +131,8 @@
                                                 {{ old('status', $user->status) === 'aktif' ? 'selected' : '' }}>Aktif
                                             </option>
                                             <option value="tidak_aktif"
-                                                {{ old('status', $user->status) === 'tidak_aktif' ? 'selected' : '' }}>
-                                                Tidak Aktif</option>
+                                                {{ old('status', $user->status) === 'tidak_aktif' ? 'selected' : '' }}>Tidak
+                                                Aktif</option>
                                         </select>
                                     </div>
                                 </div>
@@ -221,8 +220,6 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // If FilePond is present we'll let it handle the UI and preview.
-            if (window.FilePond) return;
             // Image preview script
             const fileInput = document.getElementById('photo');
             const imagePreview = document.getElementById('image-preview');

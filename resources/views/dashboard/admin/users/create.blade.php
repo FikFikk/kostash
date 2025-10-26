@@ -106,8 +106,7 @@
                                             <img src="" alt="Image Preview" class="image-preview" id="image-preview"
                                                 style="display: none;">
                                         </label>
-                                        <input type="file" name="photo" id="photo" class="filepond"
-                                            accept="image/*">
+                                        <input type="file" name="photo" id="photo" class="d-none" accept="image/*">
                                         <p class="text-muted small mt-2">Recommended size: 300x300px</p>
                                     </div>
 
@@ -207,8 +206,6 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // If FilePond is present we'll let it handle the UI and preview.
-            if (window.FilePond) return;
             // Image preview script
             const fileInput = document.getElementById('photo');
             const imagePreview = document.getElementById('image-preview');

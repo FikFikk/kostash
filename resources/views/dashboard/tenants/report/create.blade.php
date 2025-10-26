@@ -88,8 +88,8 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="images" class="form-label">Bukti Foto/Video (Opsional)</label>
-                                <input type="file" class="form-control filepond @error('images.*') is-invalid @enderror"
-                                    name="images[]" multiple accept="image/*" data-max-files="5">
+                                <input type="file" class="form-control @error('images.*') is-invalid @enderror"
+                                    name="images[]" multiple accept="image/*">
                                 <div class="form-text">Anda bisa mengunggah lebih dari satu gambar (Maks. 5).</div>
                                 @error('images.*')
                                     <div class="invalid-feedback">{{ $message }}</div>

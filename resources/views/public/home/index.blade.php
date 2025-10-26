@@ -596,7 +596,7 @@
             <section class="section bg-light" id="lokasi">
                 <div class="container">
                     <div class="text-center mb-4">
-                        <h3 class="fw-semibold">Lokasiii Kos</h3>
+                        <h3 class="fw-semibold">Lokasi Kos</h3>
                         <p class="text-muted ff-secondary">
                             Berikut adalah lokasi Kos Bu Aspiyah. Klik peta untuk membuka di Google Maps.
                         </p>

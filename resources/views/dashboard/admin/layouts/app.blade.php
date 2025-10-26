@@ -184,7 +184,8 @@
                 // explicitly disallow on the server. Keeping base64 off prevents
                 // very long strings from being submitted as `filename` and avoids
                 // database truncation errors.
-                if (window.FilePondPluginImageExifOrientation) plugins.push(window.FilePondPluginImageExifOrientation);
+                if (window.FilePondPluginImageExifOrientation) plugins.push(window
+                    .FilePondPluginImageExifOrientation);
 
                 if (plugins.length) {
                     FilePond.registerPlugin(...plugins);

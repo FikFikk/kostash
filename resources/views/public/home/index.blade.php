@@ -618,7 +618,7 @@
 
 
         </div>
-        <!-- end layout wrapper  -->
+        <!-- end layout wrapper -->
 
 
 

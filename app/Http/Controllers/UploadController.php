@@ -23,7 +23,10 @@ class UploadController extends Controller
 
         $file = $request->file('file');
         $ext = $file->getClientOriginalExtension() ?: 'png';
-        $filename = 'uploads/tmp/' . Str::random(24) . '.' . $ext;
+        // Build readable temporary filename: {timestamp}_{slug(original_name)}_{rand}.{ext}
+        $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $slug = Str::slug($originalName) ?: 'file';
+        $filename = 'uploads/tmp/' . time() . '_' . $slug . '_' . Str::random(6) . '.' . $ext;
         Storage::disk('public')->put($filename, file_get_contents($file->getRealPath()));
 
         // Return the token as plain text (FilePond will use the response text as the file id)

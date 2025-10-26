@@ -104,7 +104,12 @@ class GalleryController extends Controller
                 $this->deleteFile($gallery->filename);
             }
 
-            $validated['filename'] = $request->file('filename')->store('uploads/gallery', 'public');
+            $file = $request->file('filename');
+            $origName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $slug = Str::slug($origName) ?: 'file';
+            $ext = $file->getClientOriginalExtension() ?: 'png';
+            $basename = time() . '_' . $slug . '.' . $ext;
+            $validated['filename'] = $file->storeAs('uploads/gallery', $basename, 'public');
         }
 
         // Handle FilePond async upload token: FilePond will upload the file to
@@ -120,8 +125,13 @@ class GalleryController extends Controller
                     $this->deleteFile($gallery->filename);
                 }
 
-                $ext = pathinfo($token, PATHINFO_EXTENSION) ?: 'png';
-                $newPath = 'uploads/gallery/' . Str::random(20) . '.' . $ext;
+                // Preserve readable basename from temp file when moving: keep timestamp + slug
+                $basename = basename($token);
+                $newPath = 'uploads/gallery/' . $basename;
+                // If a file with same basename already exists, prefix with current time to avoid collision
+                if (Storage::disk('public')->exists($newPath)) {
+                    $newPath = 'uploads/gallery/' . time() . '_' . $basename;
+                }
                 Storage::disk('public')->move($token, $newPath);
                 $validated['filename'] = $newPath;
             } elseif (str_starts_with($token, 'uploads/gallery/')) {

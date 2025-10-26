@@ -47,7 +47,8 @@
                     </div>
                     <div class="mb-3">
                         <label>Ganti Gambar (opsional)</label>
-                        <input type="file" name="filename" class="form-control" accept="image/*">
+                        <input type="file" name="filename" class="form-control filepond" accept="image/*"
+                            @if (!empty($gallery->filename)) data-initial-file="{{ asset('storage/' . $gallery->filename) }}" @endif>
                     </div>
 
                     <div class="mb-3">
@@ -69,4 +70,32 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.FilePond) {
+                try {
+                    FilePond.registerPlugin(
+                        window.FilePondPluginImagePreview,
+                        window.FilePondPluginFileValidateSize,
+                        window.FilePondPluginFileEncode || undefined
+                    );
+                } catch (e) {
+                    // ignore if already registered or plugin missing
+                }
+
+                const input = document.querySelector('input[type="file"][name="filename"]');
+                if (input) {
+                    FilePond.create(input, {
+                        allowMultiple: false,
+                        acceptedFileTypes: ['image/*'],
+                        maxFileSize: '2MB',
+                        labelIdle: 'Tarik & lepas gambar atau <span class="filepond--label-action">Pilih</span>'
+                    });
+                }
+            }
+        });
+    </script>
 @endsection

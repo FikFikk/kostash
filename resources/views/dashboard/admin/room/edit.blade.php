@@ -7,11 +7,11 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Create Room</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Edit Room</h4>
                 <div class="flex-shrink-0">
                     <div class="form-check form-switch form-switch-right form-switch-md">
                         <!-- <label for="form-grid-showcode" class="form-label text-muted">Show Code</label>
-                                                    <input class="form-check-input code-switcher"  type="checkbox" id="form-grid-showcode"> -->
+                                                                <input class="form-check-input code-switcher"  type="checkbox" id="form-grid-showcode"> -->
                     </div>
                 </div>
             </div><!-- end card header -->
@@ -32,14 +32,9 @@
 
                         <div class="mb-3">
                             <label for="image" class="form-label">Room Image</label>
-                            <input type="file" name="image" accept="image/*" onchange="validateFileSize(this)">
+                            <input type="file" name="image" class="filepond" accept="image/*"
+                                @if (!empty($room->image)) data-initial-file="{{ asset('storage/' . $room->image) }}" @endif>
                             <br><small id="image-error" style="color:red;"></small>
-                            @if ($room->image)
-                                <div class="mt-2">
-                                    <small>Current image:</small><br>
-                                    <img src="{{ asset('storage/' . $room->image) }}" alt="Room Image" width="200">
-                                </div>
-                            @endif
                         </div>
 
                         <div class="mb-3">

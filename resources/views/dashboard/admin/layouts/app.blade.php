@@ -167,6 +167,60 @@
             roomsWithoutTenants: window.roomsWithoutTenants
         });
     </script>
+    <script>
+        // Global FilePond initializer: attach to any input with class "filepond"
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!window.FilePond) return; // layout may include public assets; ensure present
+
+            // Register plugins if available (safe-guard)
+            try {
+                FilePond.registerPlugin(
+                    window.FilePondPluginImagePreview,
+                    window.FilePondPluginFileValidateSize,
+                    window.FilePondPluginFileValidateType
+                );
+            } catch (e) {
+                // plugins may already be registered or missing
+            }
+
+            const inputs = document.querySelectorAll('input[type="file"].filepond');
+            inputs.forEach((input) => {
+                const opts = {
+                    allowMultiple: input.hasAttribute('multiple'),
+                    acceptedFileTypes: ['image/*'],
+                    maxFileSize: '2MB',
+                    labelIdle: 'Tarik & lepas atau <span class="filepond--label-action">Pilih</span>'
+                };
+
+                // Allow overriding max files via data attribute (e.g., data-max-files="5")
+                const maxFiles = input.getAttribute('data-max-files');
+                if (maxFiles && input.hasAttribute('multiple')) {
+                    opts.maxFiles = parseInt(maxFiles, 10) || undefined;
+                }
+
+                try {
+                    // avoid double-init
+                    if (!FilePond.find(input)) {
+                        // If input has a pre-existing file URL, include it as an initial local file so FilePond shows preview
+                        const initialFile = input.getAttribute('data-initial-file');
+                        if (initialFile) {
+                            opts.files = [{
+                                source: initialFile,
+                                options: {
+                                    type: 'local'
+                                }
+                            }];
+                        }
+
+                        FilePond.create(input, opts);
+                    }
+                } catch (e) {
+                    // ignore initialization errors for non-supported inputs
+                    console.warn('FilePond init error for', input, e);
+                }
+            });
+        });
+    </script>
     @yield('script')
 
 </body>

@@ -57,7 +57,7 @@
 
                     <div class="mb-3">
                         <label>Gambar</label>
-                        <input type="file" name="filename" class="form-control" accept="image/*" required>
+                        <input type="file" name="filename" class="form-control filepond" accept="image/*" required>
                     </div>
                     <a href="{{ route('dashboard.gallery.index') }}" class="btn btn-outline-primary me-2">Batal</a>
                     <button type="submit" class="btn btn-primary">Upload</button>
@@ -65,4 +65,33 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Register plugins provided by the layout's included scripts
+            if (window.FilePond) {
+                try {
+                    FilePond.registerPlugin(
+                        window.FilePondPluginImagePreview,
+                        window.FilePondPluginFileValidateSize,
+                        window.FilePondPluginFileEncode || undefined
+                    );
+                } catch (e) {
+                    // ignore if already registered or plugin missing
+                }
+
+                const input = document.querySelector('input[type="file"][name="filename"]');
+                if (input) {
+                    FilePond.create(input, {
+                        allowMultiple: false,
+                        acceptedFileTypes: ['image/*'],
+                        maxFileSize: '2MB',
+                        labelIdle: 'Tarik & lepas gambar atau <span class="filepond--label-action">Pilih</span>'
+                    });
+                }
+            }
+        });
+    </script>
 @endsection

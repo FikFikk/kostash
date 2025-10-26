@@ -21,9 +21,8 @@
                     </div>
                     <div class="mb-3">
                         <label>Nama Pengunggah</label>
-                        {{-- Show current authenticated user name (or existing uploader as fallback). The server will set uploader_name to the authenticated user. --}}
-                        <input type="text" class="form-control"
-                            value="{{ auth()->user()->name ?? $gallery->uploader_name }}" disabled>
+                        {{-- Show uploader from database. Editing should not change the uploader. --}}
+                        <input type="text" class="form-control" value="{{ $gallery->uploader_name ?? '-' }}" disabled>
                     </div>
                     <div class="mb-3">
                         <label>Deskripsi</label>

@@ -589,6 +589,11 @@
             const CHAT_WEBHOOK_URL = {!! json_encode($global->n8n_webhook_url ?? '') !!};
             const GOOGLE_MAPS_URL = 'https://maps.google.com/?q=Menganti+Gresik+Jawa+Timur';
 
+            // Detect mobile devices to avoid auto-focusing the input and opening
+            // the on-screen keyboard when the chat panel is opened on phones.
+            const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator
+                .userAgent);
+
             // Knowledge base for auto-reply
             const knowledgeBase = {
                 'harga|biaya|sewa|bayar|tarif': {
@@ -679,7 +684,11 @@
                 chatPanel.classList.add('open');
                 chatPanel.setAttribute('aria-hidden', 'false');
                 notificationBadge.style.display = 'none';
-                chatInput.focus();
+                // Only focus the input on non-mobile devices to prevent the mobile
+                // keyboard from popping up automatically when the panel opens.
+                if (!isMobileDevice) {
+                    chatInput.focus();
+                }
             }
 
             function closePanel() {
@@ -836,7 +845,10 @@
                 await processMessage(text);
 
                 chatSend.disabled = false;
-                chatInput.focus();
+                // Don't force focus on mobile devices; let the user tap the input to open keyboard.
+                if (!isMobileDevice) {
+                    chatInput.focus();
+                }
             }
 
             window.sendQuickReply = async function(text) {

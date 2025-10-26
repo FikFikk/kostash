@@ -218,7 +218,7 @@
             <!-- end services -->
 
             <!-- start swiper -->
-            <div class="swiper effect-coverflow-swiper rounded pb-5">
+            {{-- <div class="swiper effect-coverflow-swiper rounded pb-5">
                 <div class="swiper-wrapper">
                     @forelse($viewGalleries as $gallery)
                         <div class="swiper-slide">
@@ -233,7 +233,7 @@
                     @endforelse
                 </div>
                 <div class="swiper-pagination swiper-pagination-dark"></div>
-            </div>
+            </div> --}}
             <!-- end swiper -->
 
             <!-- start gallery -->

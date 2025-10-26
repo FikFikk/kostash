@@ -127,6 +127,9 @@ Route::middleware(['auth', 'role:admin', 'check.screen.lock'])->prefix('dashboar
     // Resource Routes
     Route::resource('room', RoomController::class);
     Route::resource('gallery', GalleryController::class);
+    // FilePond async upload endpoints (UploadController)
+    Route::post('uploads/process', [\App\Http\Controllers\UploadController::class, 'process'])->name('uploads.process');
+    Route::delete('uploads/revert', [\App\Http\Controllers\UploadController::class, 'revert'])->name('uploads.revert');
     Route::resource('meter', MeterController::class)->except(['show']);
     Route::resource('user', UserController::class);
 

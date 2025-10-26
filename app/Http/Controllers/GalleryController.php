@@ -26,6 +26,10 @@ class GalleryController extends Controller
         $validated = $this->validateGallery($request);
         $data = $this->prepareGalleryData($request, $validated);
 
+        if (!isset($data['filename'])) {
+            $data['filename'] = '';
+        }
+
         Gallery::create($data);
 
         return redirect()->route('dashboard.gallery.index')
@@ -77,17 +81,15 @@ class GalleryController extends Controller
         // If the request contains an uploaded file, validate as file image (max in KB)
         $messages = [];
         if ($request->hasFile('filename')) {
+            // Multipart uploaded file — validate as an image with a 2MB max
             $rules['filename'] = ($isCreate ? 'required' : 'nullable') . '|image|max:2048';
         } else {
-            // Reject base64 data URLs (FilePond File Encode) — prefer multipart uploads or FilePond async server process.
+            // When a string is provided it should be a short token/path (e.g. uploads/tmp/...) or base64 data URL
+            $rules['filename'] = ($isCreate ? 'required' : 'nullable') . '|string|max:500000';
+
             $filenameInput = $request->input('filename');
-            if (is_string($filenameInput) && str_starts_with($filenameInput, 'data:')) {
-                // Explicitly prohibit base64 payloads so they don't get stored as filenames.
-                $rules['filename'] = 'prohibited';
-                $messages['filename.prohibited'] = 'Base64 data URLs are not accepted. Configure FilePond to upload files to the server (server.process) or submit as a multipart file.';
-            } else {
-                // otherwise allow nullable (no file provided)
-                $rules['filename'] = ($isCreate ? 'required' : 'nullable');
+            if (is_string($filenameInput)) {
+                // Allow any string input for filename
             }
         }
 
@@ -105,13 +107,76 @@ class GalleryController extends Controller
             $validated['filename'] = $request->file('filename')->store('uploads/gallery', 'public');
         }
 
-        // Note: base64/data URL inputs are intentionally not supported here. File uploads must be sent
+        // Handle FilePond async upload token: FilePond will upload the file to
+        // a temporary location and submit a short token (the stored path). If the
+        // provided filename is a string and exists on the public disk (tmp upload),
+        // move it into the final gallery folder.
+        if (!isset($validated['filename']) && $request->filled('filename') && is_string($request->input('filename'))) {
+            $token = $request->input('filename');
+            // Only accept tokens that reference our temporary folder for safety
+            if (str_starts_with($token, 'uploads/tmp/') && Storage::disk('public')->exists($token)) {
+                // Delete old file if exists
+                if ($gallery) {
+                    $this->deleteFile($gallery->filename);
+                }
+
+                $ext = pathinfo($token, PATHINFO_EXTENSION) ?: 'png';
+                $newPath = 'uploads/gallery/' . Str::random(20) . '.' . $ext;
+                Storage::disk('public')->move($token, $newPath);
+                $validated['filename'] = $newPath;
+            } elseif (str_starts_with($token, 'uploads/gallery/')) {
+                // If it's already a gallery path, keep it
+                $validated['filename'] = $token;
+            } else {
+                // Token is not valid — ensure we don't keep a bad filename value in the
+                // validated data (prevents inserting HTML or arbitrary long strings).
+                if (array_key_exists('filename', $validated)) {
+                    unset($validated['filename']);
+                }
+            }
+        }
+
+        // Handle base64 data URL
+        if (!isset($validated['filename']) && $request->filled('filename') && is_string($request->input('filename'))) {
+            $input = $request->input('filename');
+            if (str_starts_with($input, 'data:image/')) {
+                // It's a base64 data URL
+                if ($gallery) {
+                    $this->deleteFile($gallery->filename);
+                }
+
+                $dataUrl = $input;
+                $parts = explode(',', $dataUrl);
+                if (count($parts) === 2) {
+                    $mimePart = $parts[0];
+                    $base64 = $parts[1];
+                    $mime = explode(';', $mimePart)[0];
+                    $ext = explode('/', $mime)[1] ?? 'png';
+                    $content = base64_decode($base64);
+                    if ($content !== false) {
+                        $filename = 'uploads/gallery/' . Str::random(20) . '.' . $ext;
+                        Storage::disk('public')->put($filename, $content);
+                        $validated['filename'] = $filename;
+                    }
+                }
+            }
+        }        // Note: base64/data URL inputs are intentionally not supported here. File uploads must be sent
         // as multipart files (standard file upload) or via FilePond's async server.process flow. This
         // keeps filenames on disk as real files and avoids storing raw base64 in the DB.
 
         // If filename was present in the validated data but no file was uploaded,
-        // remove it so we don't overwrite existing DB value with null.
-        if (!$request->hasFile('filename') && array_key_exists('filename', $validated) && empty($validated['filename'])) {
+        // keep it even if empty, to avoid DB error.
+        // if (!$request->hasFile('filename') && array_key_exists('filename', $validated) && empty($validated['filename'])) {
+        //     unset($validated['filename']);
+        // }
+
+        // Ensure only valid file paths are kept (starting with 'uploads/')
+        // if (isset($validated['filename']) && !empty($validated['filename']) && !str_starts_with($validated['filename'], 'uploads/')) {
+        //     unset($validated['filename']);
+        // }
+
+        // Prevent HTML injection
+        if (isset($validated['filename']) && strpos($validated['filename'], '<') !== false) {
             unset($validated['filename']);
         }
 

@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Cookie;
 use App\Models\Visit;
 use Illuminate\Support\Facades\Auth;
 
@@ -95,12 +97,17 @@ class AppServiceProvider extends ServiceProvider
             $referer = $request->header('referer'); // Bisa dari Google Maps, Facebook, dll
 
             // Visitor ID via cookie (more reliable than IP for mobile devices)
-            $incomingVisitorCookie = $request->cookie('visitor_id');
+            $incomingVisitorCookie = null;
+            try {
+                $incomingVisitorCookie = Crypt::decrypt($request->cookie('visitor_id'));
+            } catch (\Exception $e) {
+                // If decrypt fails, treat as no cookie
+            }
             $visitorId = $incomingVisitorCookie;
             if (!$visitorId) {
                 $visitorId = (string) \Illuminate\Support\Str::uuid();
-                // queue cookie so it's set in response
-                cookie()->queue(cookie()->forever('visitor_id', $visitorId));
+                // queue encrypted cookie
+                Cookie::queue(Cookie::make('visitor_id', $visitorId, 5256000, '/', null, false, true));
                 Log::info('Assigned new visitor_id cookie', ['visitor_id' => $visitorId]);
             }
 

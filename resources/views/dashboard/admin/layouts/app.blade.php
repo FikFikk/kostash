@@ -109,7 +109,7 @@
     <script src="{{ asset('assets/dashboard/libs/jsvectormap/maps/world-merc.js') }}"></script>
     <script src="{{ asset('assets/dashboard/libs/swiper/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('assets/dashboard/libs/prismjs/prism.js') }}"></script>
-    <script src="{{ asset('https://cdn.jsdelivr.net/npm/toastify-js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script src="{{ asset('assets/dashboard/libs/apexcharts/apexcharts.min.js') }}"></script>
 
@@ -202,13 +202,37 @@
                     acceptedFileTypes: ['image/*'],
                     maxFileSize: '2MB',
                     // Disable File Encode explicitly so FilePond does not convert files
-                    // to base64 strings. We prefer multipart form uploads or async
-                    // server.process uploads.
+                    // to base64 strings.
                     allowFileEncode: false,
-                    // Do not attempt to process files automatically (async). If you
-                    // want async upload, configure server.process explicitly.
-                    allowProcess: false,
+                    // Enable async processing so we get a visible upload progress and
+                    // a short token returned from the server. The returned token will
+                    // be set as the file's value so the form can submit a small id.
+                    allowProcess: true,
                     labelIdle: 'Tarik & lepas atau <span class="filepond--label-action">Pilih</span>'
+                };
+
+                // Configure server endpoints for FilePond async upload
+                const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                opts.server = {
+                    process: {
+                        url: '{{ url('/dashboard/uploads/process') }}',
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrf
+                        },
+                        // FilePond expects the server response text as the file id
+                        onload: (response) => response,
+                        onerror: (response) => {
+                            console.error('FilePond upload error', response);
+                        }
+                    },
+                    revert: {
+                        url: '{{ url('/dashboard/uploads/revert') }}',
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': csrf
+                        }
+                    }
                 };
 
                 // Allow overriding max files via data attribute (e.g., data-max-files="5")

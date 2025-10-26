@@ -73,10 +73,10 @@
             // Register plugins provided by the layout's included scripts
             if (window.FilePond) {
                 try {
+                    // Register only safe plugins (do not register File Encode plugin).
                     FilePond.registerPlugin(
                         window.FilePondPluginImagePreview,
-                        window.FilePondPluginFileValidateSize,
-                        window.FilePondPluginFileEncode || undefined
+                        window.FilePondPluginFileValidateSize
                     );
                 } catch (e) {
                     // ignore if already registered or plugin missing
@@ -88,6 +88,8 @@
                         allowMultiple: false,
                         acceptedFileTypes: ['image/*'],
                         maxFileSize: '2MB',
+                        allowFileEncode: false,
+                        allowProcess: false,
                         labelIdle: 'Tarik & lepas gambar atau <span class="filepond--label-action">Pilih</span>'
                     });
                 }

@@ -62,9 +62,9 @@ class GalleryController extends Controller
 
     protected function validateGallery(Request $request, bool $isCreate = true): array
     {
-        return $request->validate([
+        // Adjust validation depending on whether filename is an uploaded file or a base64 data URL
+        $rules = [
             'title' => 'required|string|max:255',
-            'filename' => ($isCreate ? 'required' : 'nullable') . '|image|max:2048',
             'uploader_name' => 'nullable|string|max:100',
             'description' => 'nullable|string',
             'is_gallery' => 'nullable',
@@ -72,7 +72,26 @@ class GalleryController extends Controller
             'preset_categories' => 'nullable|array',
             'preset_categories.*' => 'string|max:50',
             'custom_categories' => 'nullable|string',
-        ]);
+        ];
+
+        // If the request contains an uploaded file, validate as file image (max in KB)
+        $messages = [];
+        if ($request->hasFile('filename')) {
+            $rules['filename'] = ($isCreate ? 'required' : 'nullable') . '|image|max:2048';
+        } else {
+            // Reject base64 data URLs (FilePond File Encode) — prefer multipart uploads or FilePond async server process.
+            $filenameInput = $request->input('filename');
+            if (is_string($filenameInput) && str_starts_with($filenameInput, 'data:')) {
+                // Explicitly prohibit base64 payloads so they don't get stored as filenames.
+                $rules['filename'] = 'prohibited';
+                $messages['filename.prohibited'] = 'Base64 data URLs are not accepted. Configure FilePond to upload files to the server (server.process) or submit as a multipart file.';
+            } else {
+                // otherwise allow nullable (no file provided)
+                $rules['filename'] = ($isCreate ? 'required' : 'nullable');
+            }
+        }
+
+        return $request->validate($rules, $messages);
     }
 
     protected function prepareGalleryData(Request $request, array $validated, ?Gallery $gallery = null): array
@@ -86,26 +105,9 @@ class GalleryController extends Controller
             $validated['filename'] = $request->file('filename')->store('uploads/gallery', 'public');
         }
 
-        // Handle FilePond file-encode (base64) fallback: if the input contains a data URL
-        // FilePond's File Encode plugin may put a base64 data URL into the input with the same name.
-        if (!isset($validated['filename']) && $request->filled('filename') && is_string($request->input('filename')) && str_starts_with($request->input('filename'), 'data:')) {
-            $dataUrl = $request->input('filename');
-
-            // parse mime and data
-            [$meta, $data] = explode(',', $dataUrl, 2) + [1 => ''];
-            preg_match('/data:(.*?);base64/', $meta, $matches);
-            $mime = $matches[1] ?? 'image/png';
-            $ext = explode('/', $mime)[1] ?? 'png';
-
-            // remove old file if exists
-            if ($gallery) {
-                $this->deleteFile($gallery->filename);
-            }
-
-            $filename = 'uploads/gallery/' . Str::random(20) . '.' . $ext;
-            Storage::disk('public')->put($filename, base64_decode($data));
-            $validated['filename'] = $filename;
-        }
+        // Note: base64/data URL inputs are intentionally not supported here. File uploads must be sent
+        // as multipart files (standard file upload) or via FilePond's async server.process flow. This
+        // keeps filenames on disk as real files and avoids storing raw base64 in the DB.
 
         // If filename was present in the validated data but no file was uploaded,
         // remove it so we don't overwrite existing DB value with null.

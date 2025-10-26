@@ -174,13 +174,24 @@
 
             // Register plugins if available (safe-guard)
             try {
-                FilePond.registerPlugin(
-                    window.FilePondPluginImagePreview,
-                    window.FilePondPluginFileValidateSize,
-                    window.FilePondPluginFileValidateType
-                );
+                // Register all available FilePond plugins that may be loaded via public assets.
+                const plugins = [];
+                if (window.FilePondPluginImagePreview) plugins.push(window.FilePondPluginImagePreview);
+                if (window.FilePondPluginFileValidateSize) plugins.push(window.FilePondPluginFileValidateSize);
+                if (window.FilePondPluginFileValidateType) plugins.push(window.FilePondPluginFileValidateType);
+                // Intentionally do NOT register the FilePond File Encode plugin here.
+                // The File Encode plugin converts files to base64 data URLs which we
+                // explicitly disallow on the server. Keeping base64 off prevents
+                // very long strings from being submitted as `filename` and avoids
+                // database truncation errors.
+                if (window.FilePondPluginImageExifOrientation) plugins.push(window.FilePondPluginImageExifOrientation);
+
+                if (plugins.length) {
+                    FilePond.registerPlugin(...plugins);
+                }
             } catch (e) {
                 // plugins may already be registered or missing
+                console.warn('FilePond plugin register error', e);
             }
 
             const inputs = document.querySelectorAll('input[type="file"].filepond');
@@ -189,6 +200,13 @@
                     allowMultiple: input.hasAttribute('multiple'),
                     acceptedFileTypes: ['image/*'],
                     maxFileSize: '2MB',
+                    // Disable File Encode explicitly so FilePond does not convert files
+                    // to base64 strings. We prefer multipart form uploads or async
+                    // server.process uploads.
+                    allowFileEncode: false,
+                    // Do not attempt to process files automatically (async). If you
+                    // want async upload, configure server.process explicitly.
+                    allowProcess: false,
                     labelIdle: 'Tarik & lepas atau <span class="filepond--label-action">Pilih</span>'
                 };
 

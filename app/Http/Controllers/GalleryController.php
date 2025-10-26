@@ -85,6 +85,12 @@ class GalleryController extends Controller
             $validated['filename'] = $request->file('filename')->store('uploads/gallery', 'public');
         }
 
+        // If filename was present in the validated data but no file was uploaded,
+        // remove it so we don't overwrite existing DB value with null.
+        if (!$request->hasFile('filename') && array_key_exists('filename', $validated) && empty($validated['filename'])) {
+            unset($validated['filename']);
+        }
+
         // Parse categories
         $validated['categories'] = $this->parseCategories(
             $request->input('preset_categories', []),

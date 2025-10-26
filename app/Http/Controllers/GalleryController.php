@@ -95,6 +95,19 @@ class GalleryController extends Controller
         $validated['is_gallery'] = $request->has('is_gallery') ? true : false;
         $validated['is_carousel'] = $request->has('is_carousel') ? true : false;
 
+        // Set uploader_name automatically from the authenticated user (if available).
+        // If no authenticated user, preserve existing value when updating, or null on create.
+        if ($request->user()) {
+            $validated['uploader_name'] = $request->user()->name;
+        } else {
+            // If updating and no auth (edge case), keep existing gallery uploader_name
+            if ($gallery) {
+                $validated['uploader_name'] = $gallery->uploader_name;
+            } else {
+                $validated['uploader_name'] = $validated['uploader_name'] ?? null;
+            }
+        }
+
         return $validated;
     }
 

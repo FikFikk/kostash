@@ -20,11 +20,6 @@
                             required>
                     </div>
                     <div class="mb-3">
-                        <label>Nama Pengunggah</label>
-                        <input type="text" name="uploader_name"
-                            value="{{ old('uploader_name', $gallery->uploader_name) }}" class="form-control">
-                    </div>
-                    <div class="mb-3">
                         <label>Deskripsi</label>
                         <textarea name="description" class="form-control">{{ old('description', $gallery->description) }}</textarea>
                     </div>

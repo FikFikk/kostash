@@ -15,10 +15,7 @@
                         <label>Judul</label>
                         <input type="text" name="title" class="form-control" required>
                     </div>
-                    <div class="mb-3">
-                        <label>Nama Pengunggah</label>
-                        <input type="text" name="uploader_name" class="form-control">
-                    </div>
+                    {{-- uploader_name will be set automatically from the authenticated user --}}
                     <div class="mb-3">
                         <label>Deskripsi</label>
                         <textarea name="description" class="form-control" rows="3"></textarea>

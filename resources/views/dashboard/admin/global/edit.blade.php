@@ -12,6 +12,36 @@
             --gradient-info: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --shadow-elegant: 0 10px 30px rgba(0, 0, 0, 0.08);
             --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.12);
+
+            /* Light mode colors */
+            --bg-card: #ffffff;
+            --bg-secondary: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --nav-bg: #f1f5f9;
+            --nav-hover: #e2e8f0;
+            --form-border: #d1d5db;
+            --form-focus: #667eea;
+            --form-bg: #ffffff;
+        }
+
+        /* Dark mode variables */
+        [data-bs-theme="dark"] {
+            --bg-card: #1a1d20;
+            --bg-secondary: #2a2f34;
+            --text-primary: #e9ecef;
+            --text-secondary: #adb5bd;
+            --text-muted: #6c757d;
+            --border-color: #495057;
+            --nav-bg: #2a2f34;
+            --nav-hover: #343a40;
+            --form-border: #495057;
+            --form-focus: #667eea;
+            --form-bg: #2a2f34;
+            --shadow-elegant: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.4);
         }
 
         .content-card {
@@ -19,6 +49,7 @@
             border-radius: 1rem;
             box-shadow: var(--shadow-elegant);
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background: var(--bg-card);
         }
 
         .content-card:hover {
@@ -41,15 +72,15 @@
             border: none;
             border-radius: 0.75rem;
             padding: 0.75rem 1.5rem;
-            color: #64748b;
-            background: #f1f5f9;
+            color: var(--text-secondary);
+            background: var(--nav-bg);
             transition: all 0.3s ease;
             font-weight: 500;
         }
 
         .nav-tabs-modern .nav-link:hover {
-            background: #e2e8f0;
-            color: #475569;
+            background: var(--nav-hover);
+            color: var(--text-primary);
         }
 
         .nav-tabs-modern .nav-link.active {
@@ -87,21 +118,23 @@
 
         .form-label-modern {
             font-weight: 600;
-            color: #374151;
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
             font-size: 0.875rem;
         }
 
         .form-control-modern {
-            border: 1px solid #d1d5db;
+            border: 1px solid var(--form-border);
             border-radius: 0.5rem;
             padding: 0.75rem 1rem;
             transition: all 0.3s ease;
             font-size: 0.875rem;
+            background: var(--form-bg);
+            color: var(--text-primary);
         }
 
         .form-control-modern:focus {
-            border-color: #667eea;
+            border-color: var(--form-focus);
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
@@ -132,7 +165,8 @@
                 <div class="d-flex align-items-lg-center flex-lg-row flex-column">
                     <div class="flex-grow-1">
                         <h1 class="h3 fw-bold text-gradient mb-1"><i class="ri-edit-line me-2"></i>Edit Global Settings</h1>
-                        <p class="text-muted mb-0">Configure your kost system settings and preferences.</p>
+                        <p class="text-muted mb-0" style="color: var(--text-muted) !important;">Configure your kost system
+                            settings and preferences.</p>
                     </div>
                     <div class="d-flex gap-2 mt-3 mt-lg-0">
                         <a href="{{ route('dashboard.global.index') }}" class="btn btn-secondary">
@@ -192,7 +226,8 @@
                     </ul>
 
                     <!-- Tab Content -->
-                    <div class="tab-content p-4" id="settingsTabContent">
+                    <div class="tab-content p-4" id="settingsTabContent"
+                        style="background: var(--bg-card); color: var(--text-primary);">
                         <!-- Pricing & Bills Tab -->
                         <div class="tab-pane fade show active" id="pricing" role="tabpanel">
                             <div class="row g-4">

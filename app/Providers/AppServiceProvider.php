@@ -45,6 +45,11 @@ class AppServiceProvider extends ServiceProvider
             $currentPath = $request->path();
             $currentUrl = $request->url();
 
+            // Skip tracking for admin dashboard routes
+            if ($request->is('dashboard/*')) {
+                return;
+            }
+
             // Collect fetch headers and accept-language (we will store them in DB)
             $secFetchSite = $request->header('sec-fetch-site');
             $secFetchMode = $request->header('sec-fetch-mode');

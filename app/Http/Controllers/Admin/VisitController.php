@@ -26,7 +26,61 @@ class VisitController extends Controller
             });
         }
 
+        // Apply filters
+        $filter = $request->get('filter');
+        if ($filter) {
+            switch ($filter) {
+                case 'real':
+                    // Real people: have accept_language, not bots, not too frequent
+                    $query->whereNotNull('accept_language')
+                        ->where('accept_language', '!=', '')
+                        ->where(function ($q) {
+                            $q->where('user_agent', 'not regexp', 'bot|spider|crawl|curl|wget|python-requests');
+                        });
+                    break;
+                case 'bots':
+                    // Bots: user agent contains bot keywords
+                    $query->where('user_agent', 'regexp', 'bot|spider|crawl|curl|wget|python-requests');
+                    break;
+                case 'suspicious':
+                    // Suspicious: no accept_language OR very frequent IP
+                    $query->where(function ($q) {
+                        $q->whereNull('accept_language')
+                            ->orWhere('accept_language', '=', '')
+                            ->orWhere('user_agent', 'regexp', 'bot|spider|crawl|curl|wget|python-requests');
+                    });
+                    break;
+            }
+        }
+
         $visits = $query->paginate($perPage)->withQueryString();
+
+        // Calculate stats for overview cards
+        $statsQuery = Visit::query();
+
+        // Get all visits for stats calculation (not filtered)
+        $allVisits = $statsQuery->get();
+
+        $stats = [
+            'total' => $allVisits->count(),
+            'real_visitors' => 0,
+            'bots' => 0,
+            'suspicious' => 0,
+        ];
+
+        foreach ($allVisits as $visit) {
+            $ua = $visit->user_agent ?? '';
+            $isBot = preg_match('/bot|spider|crawl|curl|wget|python-requests/i', $ua);
+            $isSuspicious = empty($visit->accept_language) || $isBot;
+
+            if ($isBot) {
+                $stats['bots']++;
+            } elseif ($isSuspicious) {
+                $stats['suspicious']++;
+            } else {
+                $stats['real_visitors']++;
+            }
+        }
 
         // Heuristic: mark suspicious when accept_language is missing or ip repeated several times in short list
         $ipCounts = [];
@@ -82,7 +136,7 @@ class VisitController extends Controller
             $languages[$v->id] = $friendly ? "$friendly ({$v->accept_language})" : ($v->accept_language ?: null);
         }
 
-        return view('dashboard.admin.visits.index', compact('visits', 'ipCounts', 'labels', 'languages'));
+        return view('dashboard.admin.visits.index', compact('visits', 'ipCounts', 'labels', 'languages', 'stats'));
     }
 
     /**

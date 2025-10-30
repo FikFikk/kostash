@@ -362,14 +362,14 @@
                     <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         <span class="d-flex align-items-center">
-                            {{-- @if ($user->photo)
-                                <img src="{{ asset('storage/uploads/profile/' . $user->photo) }}" 
-                                    alt="Profile Picture" 
-                                    class="rounded-circle header-profile-user" style='object-fit: cover;'>
+                            @if ($user->photo)
+                                <img src="{{ asset('storage/uploads/profile/' . $user->photo) }}"
+                                    alt="Profile Picture" class="rounded-circle header-profile-user"
+                                    style='object-fit: cover;'>
                             @else
                                 <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=667eea&color=fff&size=120&font-size=0.4"
                                     alt="Avatar" class="rounded-circle header-profile-user">
-                            @endif --}}
+                            @endif
                             <span class="text-start ms-xl-2">
                                 <span
                                     class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $name }}</span>

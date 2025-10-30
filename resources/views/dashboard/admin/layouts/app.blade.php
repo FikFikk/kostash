@@ -42,6 +42,17 @@
         rel="stylesheet" />
 
 
+    {{-- FilePond Core CSS --}}
+    <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet">
+
+    {{-- FilePond Plugins CSS --}}
+    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
+        rel="stylesheet">
+
+    {{-- Optional: FilePond Image Edit CSS (jika ingin fitur edit gambar) --}}
+    <link href="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.css" rel="stylesheet">
+
+
     <script src="{{ asset('assets/dashboard/js/layout.js') }}"></script>
     <link href="{{ asset('assets/dashboard/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/dashboard/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
@@ -97,6 +108,34 @@
         <i class="ri-arrow-up-line"></i>
     </button>
 
+    {{-- FilePond Core JS --}}
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+
+    {{-- FilePond Plugins (pilih sesuai kebutuhan) --}}
+
+    {{-- Plugin untuk preview gambar --}}
+    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+
+    {{-- Plugin untuk orientasi gambar --}}
+    <script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js">
+    </script>
+
+    {{-- Plugin untuk validasi ukuran file --}}
+    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
+
+    {{-- Plugin untuk validasi tipe file --}}
+    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+
+    {{-- Plugins untuk crop, resize, dan transform gambar --}}
+    <script src="https://unpkg.com/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.js"></script>
+
+    {{-- Optional: Plugin untuk edit gambar (crop, rotate, dll) --}}
+    {{-- <script src="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.js"></script> --}}
+
+    {{-- Optional: Plugin untuk encode file --}}
+    {{-- <script src="https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.js"></script> --}}
     <script src="{{ asset('assets/dashboard/js/plugins.js') }}"></script>
     <script src="{{ asset('assets/dashboard/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
     <script src="{{ asset('assets/dashboard/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
